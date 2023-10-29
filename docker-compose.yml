@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - ${API_PORT}:${API_PORT}
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/mydb
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    depends_on:
+      - backend
+    environment:
+      VITE_APP_API_URL: ${API_URL}
+      PORT: ${FRONTEND_PORT}
+    # env_file:
+    #   - .env
+
+  mongo:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASS}
+
