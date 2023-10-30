@@ -107,7 +107,6 @@ const getClients = async () => {
     const res = await auth.api.get(
       `/clients?search=${search.value}&page=${clientsPage.value}&perPage=${clientsPerPage.value}`)
     clients.value = res.data
-    console.log(res.data)
   } catch(err: any) {
     console.log(err.message)
   }

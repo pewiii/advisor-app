@@ -3,7 +3,6 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { plugin, defaultConfig } from '@formkit/vue'
 
 import Notifications from '@kyvg/vue3-notification'
 

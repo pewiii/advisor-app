@@ -4,7 +4,7 @@ import cors from 'cors'
 import auth from './auth/index.js'
 import api from './api/index.js'
 import multer from 'multer'
-
+import comm from './comm/index.js'
 
 import mongoose from './db/connect.js'
 
