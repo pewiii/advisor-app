@@ -1,5 +1,5 @@
 <template>
-  <div :class="isAdmin ? 'bg-red-950' : 'bg-slate-900'" class="p-4 flex justify-between">
+  <div class="p-4 flex justify-between bg-primary">
     <div class="text-white">
       Logo
     </div>
@@ -11,7 +11,6 @@
         <div
         @click="showMenu = true"
         class="w-8 h-8 rounded-full border-2 border-gray-200 flex justify-center items-center cursor-pointer"
-        :class="isAdmin ? 'bg-red-950' : 'bg-slate-900'"
           >
           <span class="material-icons text-gray-200 md-24">person</span>
         </div>

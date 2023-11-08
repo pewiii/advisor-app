@@ -63,7 +63,7 @@ const csvUpload = async (req, res) => {
         address2: data['Address Line 2'],
         city: data['City'],
         state: data['State'],
-        zipCode: data['Zip'] || data['Zip Code'],
+        zip: data['Zip'] || data['Zip Code'],
         age: data['Age'] || data['age'],
         homeOwner,
         netWorth,
@@ -71,7 +71,7 @@ const csvUpload = async (req, res) => {
         race,
         vetInHouse,
         wealthRating: data['Wealth Rating'] || data['wealth rating'],
-        offerCode: 'ABCDEF',
+        offerCode: data['Offer Code'] || data['offer code'],
         campaign
       }
 

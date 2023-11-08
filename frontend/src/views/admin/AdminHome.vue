@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-300">
+  <div class="bg-gray-300 flex flex-col min-h-screen">
     <RouterView />
   </div>
 </template>

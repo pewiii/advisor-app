@@ -1,10 +1,23 @@
 import './assets/main.css'
+import './assets/theme.css'
+import 'primeicons/primeicons.css'
 // import '@/assets/main.css'
+// import 'primevue/resources/themes/lara-light-teal/theme.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import Notifications from '@kyvg/vue3-notification'
+
+import PrimeVue from 'primevue/config'
+import Ripple from 'primevue/ripple';
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Calendar from 'primevue/calendar'
+import Dropdown from 'primevue/dropdown'
+import Row from 'primevue/row'
 
 import App from './App.vue'
 import router from './router'
@@ -14,6 +27,18 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Notifications)
+// app.use(PrimeVue)
+
+app.directive('ripple', Ripple);
+app.use(PrimeVue, { ripple: true });
+
+app.component('pvDataTable', DataTable)
+app.component('pvRow', Row)
+app.component('pvColumn', Column)
+app.component('pvButton', Button)
+app.component('pvInputText', InputText)
+app.component('pvCalendar', Calendar)
+app.component('pvDropdown', Dropdown)
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })
 for (const path in modules) {

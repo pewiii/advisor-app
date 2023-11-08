@@ -4,11 +4,13 @@ const emptyClient = {
   company: '',
   phone: '',
   email: '',
-  address1: '',
-  address2: '',
-  city: '',
-  state: '',
-  zip: ''
+  address: {
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+  }
 }
 
 const emptyCampaign = {
@@ -34,10 +36,11 @@ const emptyEvent = {
   city: '',
   state: '',
   zip: '',
-  // eventDate: ''
+  eventDate: null,
   date: '',
   time: '',
   timezone: 'America/New_York'
+
 }
 
 const emptyQuestion = {

@@ -1,20 +1,56 @@
 <template>
-  <!-- <div class="flex flex-col-reverse sm:flex-row justify-end gap-4 mb-4"> -->
-    <!-- <RouterLink to="/staff/clients"><div class="btn hover:bg-sky-500 hover:!text-gray-200"><span class="material-icons md-36 translate-y-3 -mt-6">arrow_back</span>Back</div></RouterLink> -->
-    <!-- <div class="flex gap-4"> -->
-      <!-- <input v-model="query.search" type="text" placeholder="Search" class="border-1 px-4 h-12" /> -->
-      <!-- <RouterLink to="/staff/clients/add-edit"><div class="btn"><span class="material-icons md-30 translate-y-2 -mt-6">add</span>Add Client</div></RouterLink> -->
-    <!-- </div> -->
-  <!-- </div> -->
-  <!-- <div class=""> -->
-    <table class="w-full">
+    <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
+      <template #header>
+        <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
+          <div>
+            <span class="text-xl font-bold">Clients</span>
+          </div>
+          <div class="flex gap-4">
+            <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
+            <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditClient()"><span class="material-icons">add</span></pvButton>
+          </div>
+            </div>
+      </template>
+      <template #loading><div class="loader"></div></template>
+      <pvColumn field="fullName" header="Name"></pvColumn>
+      <pvColumn field="company" header="Company"></pvColumn>
+      <pvColumn field="createdAt" header="Created">
+        <template #body="{ data }">
+          {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
+        </template>
+      </pvColumn>
+      <pvColumn field="updatedAt" header="Updated">
+        <template #body="{ data }">
+          {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
+        </template>
+      </pvColumn>
+      <pvColumn field="status" header="Status">
+        <template #body="{ data }">
+          <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
+            {{ data.status }}
+          </div>
+        </template>
+      </pvColumn>
+      <!-- <pvColumn field="status" header="Status">
+        <template #body="{ data }">
+          {{ data.status }}
+        </template>
+      </pvColumn> -->
+      <pvColumn field="actions" header="Actions">
+        <template #body="{ data }">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div>
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
+        </template>
+      </pvColumn>
+    </pvDataTable>
+    <!-- <table class="w-full">
       <thead class="bg-gray-200 border-t-1 border-b-1 border-gray-300">
         <tr class="w-full">
           <td>Client</td>
           <td class="hidden md:table-cell truncate whitespace-nowrap overflow-hidden">Company</td>
           <td class="hidden sm:table-cell truncate whitespace-nowrap overflow-hidden">Phone</td>
-          <td class="hidden sm:table-cell truncate whitespace-nowrap overflow-hidden">Email</td>
-          <!-- <td class="hidden xs:table-cell">Campaigns</td> -->
+          <td class="hidden sm:table-cell truncate whitespace-nowrap overflow-hidden">Email</td>  
+          <td class="hidden sm:table-cell truncate whitespace-nowrap overflow-hidden">Status</td>  
           <td>Actions</td>
         </tr>
       </thead>
@@ -24,7 +60,7 @@
         :key="client._id" 
         @click="selectClient(client)" 
         class="border-b-1 border-gray-300 cursor-pointer" 
-        :class="selectedClient && client._id === selectedClient._id ? 'bg-red-950 text-white' : 'hover:bg-white'"
+        :class="selectedClient && client._id === selectedClient._id ? 'bg-red-950 text-white' : 'hover:bg-slate-100'"
         >
           <td class="truncate whitespace-nowrap overflow-hidden">
             {{ `${client.firstName} ${client.lastName}` }}
@@ -38,9 +74,16 @@
           <td class="hidden sm:table-cell truncate whitespace-nowrap overflow-hidden">
             {{ client.email }}
           </td>
-          <!-- <td class="hidden xs:table-cell">
-            <span class="font-semibold">{{ client.activeCampaigns }}</span> | <span>{{ client.totalCampaigns }}</span>
-          </td> -->
+          <td class="hidden sm:table-cell whitespace-nowrap">
+            <span v-if="client.usablePassword" class="material-icons font-bold text-green-500" title="Has access">check</span>
+            <div
+            v-else
+            class=""
+            title="No access" 
+            >
+              <span class="material-icons text-red-500 font-bold">block</span>
+            </div>
+          </td>
           <td class="flex gap-2">
             <div class="cursor-pointer material-icons md-24 action" title="New Campaign" @click="newCampaign()">add_circle</div>
             <div class="cursor-pointer material-icons md-24 action" title="View Dashboard">visibility</div>
@@ -48,13 +91,17 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { format } from 'date-fns'
+import { useAuthStore } from '@/stores/auth';
 
-const props = defineProps(['modelValue', 'clients', 'newCampaign', 'editClient'])
+const auth = useAuthStore()
+
+const props = defineProps(['modelValue', 'search', 'newCampaign', 'addEditClient'])
 const emit = defineEmits(['update:modelValue'])
 
 const selectedClient = computed({
@@ -62,17 +109,57 @@ const selectedClient = computed({
     return props.modelValue
   },
   set(client: any) {
-    emit('update:modelValue', client)
+    if (props.modelValue === client) {
+      emit('update:modelValue', null)
+    } else {
+      emit('update:modelValue', client)
+    }
   }
 })
 
-const selectClient = (client: any) => {
-  if (selectedClient.value === client) {
-    selectedClient.value = null
-  } else {
-    selectedClient.value = client
+// const showEmailMenu = ref(false)
+const loading = ref(false)
+const clients = ref([])
+const page = ref(1)
+const perPage = ref(5)
+// const selectedClient = computed({
+//   get() {
+
+//   },
+//   set() {
+
+//   }
+// })
+
+const getClients = async () => {
+  try {
+    loading.value = true
+    const res = await auth.api.get(
+      `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+    clients.value = res.data
+  } catch(err: any) {
+    console.log(err.message)
   }
+  loading.value = false
 }
+
+watch(() => props.search, getClients)
+
+const refresh = () => {
+  page.value = 1
+  perPage.value = 5
+  getClients()
+}
+
+// const selectClient = (client: any) => {
+//   if (selectedClient.value === client) {
+//     selectedClient.value = null
+//   } else {
+//     selectedClient.value = client
+//   }
+// }
+
+onMounted(getClients)
 
 </script>
 

@@ -50,7 +50,6 @@ const clientSchema = new mongoose.Schema({
   fullName: String,
   phone: {
     type: String,
-    required: true
   },
   email: {
     type: String,
@@ -59,7 +58,6 @@ const clientSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   company: {
     type: String,
@@ -71,6 +69,15 @@ const clientSchema = new mongoose.Schema({
     city: String,
     state: String,
     zip: String,
+  },
+  resetToken: {
+    type: String
+  },
+  resetTokenExpiration: {
+    type: Date
+  },
+  emailSentAt: {
+    type: Date
   }
 }, { timestamps: true })
 
@@ -92,7 +99,7 @@ const recordSchema = new mongoose.Schema({
     type: String,
     maxlength: 2,
   },
-  zipCode: String,
+  zip: String,
   offerCode: String,
   campaign: {
     type: mongoose.Schema.Types.ObjectId,

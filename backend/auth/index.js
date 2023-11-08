@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import db from '../db/index.js'
+import crypto from 'crypto'
 
 const JWT_KEY = process.env.JWT_KEY
 
@@ -41,36 +42,66 @@ const adminRegister = async (req, res) => {
 }
 
 const adminLogin = async (req, res) => {
-
-  const { email, password } = req.body
-  const user = await db.users.getUser({ email })
-  if (!user) {
-    return res.sendStatus(401)
+  try {
+    const { email, password } = req.body
+    const user = await db.users.getUser({ email })
+    if (!user) {
+      return res.sendStatus(401)
+    }
+    const validPassword = await bcrypt.compare(password, user.password)
+    if (!validPassword) {
+      return res.sendStatus(401)
+    }
+    const token = generateToken(user)
+    res.send({ 
+      token, 
+      user: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        _id: user._id,
+        userType: 'admin',
+        superUser: user.isAdmin
+      } 
+    })
+  } catch(err) {
+    console.log(err.message)
+    res.status(500).send({ message: 'Server error' })
   }
-  const validPassword = await bcrypt.compare(password, user.password)
-  if (!validPassword) {
-    return res.sendStatus(401)
-  }
-  const token = generateToken(user)
-  res.send({ 
-    token, 
-    user: {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      _id: user._id,
-      userType: 'admin',
-      superUser: user.isAdmin
-    } 
-  })
 }
 
 const register = (req, res) => {
   res.sendStatus(201)
 }
 
-const login = () => (req, res) => {
-  res.sendStatus(401)
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body
+    const client = await db.clients.getFullClient({ email })
+    if (!client) {
+      return res.sendStatus(401)
+    }
+    console.log(client)
+    const validPassword = await bcrypt.compare(password, client.password)
+    if (!validPassword) {
+      return res.sendStatus(401)
+    }
+    const token = generateToken(client)
+    res.send({
+      token,
+      user: {
+        email: client.email,
+        firstName: client.firstName,
+        _id: client._id,
+        userType: 'user',
+        superUser: false
+      }
+    })
+  } catch(err) {
+    console.log(err.message)
+    res.status(500).send({ message: 'Server error'})
+  }
+
 }
 
 
@@ -88,6 +119,10 @@ const verifyToken = (req, res, next) => {
   })
 }
 
+const generateResetToken = () => {
+  return crypto.randomBytes(20).toString('hex');
+}
+
 
 
 export default {
@@ -96,5 +131,6 @@ export default {
   register,
   login,
   verifyToken,
-  hashPassword
+  hashPassword,
+  generateResetToken
 }

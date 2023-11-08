@@ -65,7 +65,7 @@ const getList = async (search, page, perPage) => {
                 ],
               },
               then: 'active', // Set to "active" if there are future events
-              else: 'complete', // Set to "complete" if there are no future events
+              else: 'inactive', // Set to "complete" if there are no future events
             },
           },
         },
@@ -101,8 +101,13 @@ const getList = async (search, page, perPage) => {
   }
 };
 
+const getById = (id) => {
+  return models.Campaign.findById(id)
+}
+
 export default {
   create,
   update,
-  getList
+  getList,
+  getById,
 }
