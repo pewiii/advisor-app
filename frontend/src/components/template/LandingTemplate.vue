@@ -49,6 +49,10 @@ const questions = computed(() => {
   return props.templateData.campaign.questions
 })
 
+const config = computed(() => {
+  return props.templateData.config
+})
+
 const arrowDown = ref(false)
 
 onMounted(() => {

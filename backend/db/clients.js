@@ -17,10 +17,14 @@ const deleteClient = (clientId) => {
   return models.Client.findByIdAndDelete(clientId);
 }
 
+const updateClient = (clientId, data) => {
+  return models.Client.findOneAndUpdate({ _id: clientId }, data)
+}
+
 
 const getList = async (search, page, perPage) => {
-  const skip = (page - 1) * perPage;
   const limit = parseInt(perPage, 10);
+  const skip = (page - 1) * limit;
   
   const query = {};
   
@@ -194,4 +198,5 @@ export default {
   deleteClient,
   getList,
   getFullClient,
+  updateClient
 }

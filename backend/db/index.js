@@ -2,6 +2,8 @@ import users from './users.js'
 import clients from './clients.js'
 import campaigns from './campaigns.js'
 import records from './records.js'
+import templates from './templates.js'
+
 
 // import models from './models.js'
 
@@ -21,5 +23,6 @@ export default {
   users,
   clients,
   campaigns,
-  records
+  records,
+  templates
 }

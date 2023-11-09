@@ -1,262 +1,181 @@
 <template>
-
-      <form class="">
-        <div>
-          <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-            <div class="text-lg">
-              Name
-            </div>
-            <div class="material-icons md-30">person</div>
+    <form class="">
+      <div>
+        <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+          <div class="text-lg">
+            Name
           </div>
-  
-  
-          <div class="md:pl-4">
-            <!-- <span class="material-icons text-gray-600 md-36">edit</span> -->
-            <label for="client-first" class="">
-              First Name
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-first" v-model="client.firstName" placeholder="First Name" class="w-full h-9"/>
-            </div>
-            <!-- <input type="text" v-model="client.firstName" placeholder="First Name" class="w-full"/> -->
-            <!-- <input type="text" v-model="campaign.lastName" placeholder="Last Name" class=""/> -->
-          </div>
-
-          <div class="md:pl-4">
-            <!-- <span class="material-icons text-gray-600 md-36">edit</span> -->
-            <label for="client-last" class="">
-              Last Name
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-last" v-model="client.lastName" placeholder="Last Name" class="w-full h-9"/>
-            </div>
-            <!-- <input type="text" v-model="client.firstName" placeholder="First Name" class="w-full"/> -->
-            <!-- <input type="text" v-model="campaign.lastName" placeholder="Last Name" class=""/> -->
-          </div>
-  
+          <div class="material-icons md-30">person</div>
         </div>
-
-        <div class="mt-6">
-          <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-            <div class="text-lg">
-              Company
-            </div>
-            <div class="material-icons md-30">apartment</div>
+        <div class="md:pl-4">
+          <label for="client-first" class="">
+            First Name
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-first" v-model="client.firstName" placeholder="First Name" class="w-full h-9"/>
           </div>
-
-
-          <div class="md:pl-4">
-            <label for="client-company" class="">
-              Company Name
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-company" v-model="client.company" placeholder="Company Name" class="w-full h-9"/>
-            </div>
-          </div>
-
-          <!-- <div class="border-b-2 border-gray-300 flex mt-2">
-            <label class="">
-              Name:
-            </label>
-            <input type="text" v-model="client.company" placeholder="Company Name" class="w-full"/>
-          </div> -->
-
         </div>
-
-
-        <div class="mt-6">
-          <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-            <div class="text-lg">
-              Contact Info
-            </div>
-            <div class="material-icons md-30">phone</div>
+        <div class="md:pl-4">
+          <label for="client-last" class="">
+            Last Name
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-last" v-model="client.lastName" placeholder="Last Name" class="w-full h-9"/>
           </div>
-
-          <div class="md:pl-4">
-            <label for="client-phone" class="">
-              Phone Number
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-phone" v-model="client.phone" placeholder="Phone Number" class="w-full h-9"/>
-            </div>
-          </div>
-
-
-          <div class="md:pl-4">
-            <label for="client-email" class="">
-              Email
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-email" v-model="client.email" placeholder="Email Address" class="w-full h-9"/>
-            </div>
-          </div>
-
         </div>
-
-
-        <div class="mt-6">
-          <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-            <div class="text-lg">
-              Address
-            </div>
-            <div class="material-icons md-30">location_on</div>
+      </div>
+      <div class="mt-6">
+        <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+          <div class="text-lg">
+            Company
           </div>
-
-          <div class="md:pl-4">
-            <label for="client-address1" class="">
-              Address 1
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-address1" v-model="client.address.address1" placeholder="Primary Address" class="w-full h-9"/>
-            </div>
-          </div>
-
-          <div class="md:pl-4">
-            <label for="client-address2 " class="">
-              Address 2
-            </label>
-            <div class="pl-2">
-              <pvInputText id="client-address2" v-model="client.address.address2" placeholder="Secondary Address" class="w-full h-9"/>
-            </div>
-          </div>
-
-          <div class="flex gap-x-2 flex-col md:flex-row">
-
-
-            <div class="md:pl-4 flex-1 sm:min-w-2">
-              <label for="client-city " class="">
-                City
-              </label>
-              <div class="pl-2">
-                <pvInputText id="client-city" v-model="client.address.city" placeholder="City" class="w-full h-9"/>
-              </div>
-            </div>
-  
-            <div class="md:pl-4 md:w-32 w-full">
-              <label for="client-state" class="">
-                State
-              </label>
-              <div class="pl-2">
-                <pvInputText id="client-state" v-model="client.address.state" placeholder="State" class="w-full h-9"/>
-              </div>
-            </div>
-  
-            <div class="md:pl-4 flex-0">
-              <label for="client-zip" class="">
-                Zip Code
-              </label>
-              <div class="pl-2">
-                <pvInputText id="client-zip" v-model="client.address.zip" placeholder="Zip Code" class="w-full h-9"/>
-              </div>
-            </div>
-          </div>
-
-
-
+          <div class="material-icons md-30">apartment</div>
         </div>
-
-        <div class="mt-8" v-if="client._id">
-          <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-            <div class="text-lg">
-              Status
-            </div>
-            <div class="material-icons md-30">key</div>
+        <div class="md:pl-4">
+          <label for="client-company" class="">
+            Company Name
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-company" v-model="client.company" placeholder="Company Name" class="w-full h-9"/>
           </div>
-
-          <div class="md:pl-4 flex gap-x-4 justify-between flex-wrap">
-            <div>
-              <span>
-                Access
-              </span>
-              <span v-if="client.usablePassword" class="material-icons text-green-600 font-bold translate-y-1">check</span>
-              <span v-else class="text-red-600 material-icons font-bold translate-y-1">close</span>
-              <!-- <span class="material-icons text-green-600 font-bold translate-y-1">check</span> -->
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+          <div class="text-lg">
+            Contact Info
+          </div>
+          <div class="material-icons md-30">phone</div>
+        </div>
+        <div class="md:pl-4">
+          <label for="client-phone" class="">
+            Phone Number
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-phone" v-model="client.phone" placeholder="Phone Number" class="w-full h-9"/>
+          </div>
+        </div>
+        <div class="md:pl-4">
+          <label for="client-email" class="">
+            Email
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-email" v-model="client.email" placeholder="Email Address" class="w-full h-9"/>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+          <div class="text-lg">
+            Address
+          </div>
+          <div class="material-icons md-30">location_on</div>
+        </div>
+        <div class="md:pl-4">
+          <label for="client-address1" class="">
+            Address 1
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-address1" v-model="client.address.address1" placeholder="Primary Address" class="w-full h-9"/>
+          </div>
+        </div>
+        <div class="md:pl-4">
+          <label for="client-address2 " class="">
+            Address 2
+          </label>
+          <div class="pl-2">
+            <pvInputText id="client-address2" v-model="client.address.address2" placeholder="Secondary Address" class="w-full h-9"/>
+          </div>
+        </div>
+        <div class="flex gap-x-2 flex-col md:flex-row">
+          <div class="md:pl-4 flex-1 sm:min-w-2">
+            <label for="client-city " class="">
+              City
+            </label>
+            <div class="pl-2">
+              <pvInputText id="client-city" v-model="client.address.city" placeholder="City" class="w-full h-9"/>
             </div>
-            <div>
-              <span>
-                Link Sent
-              </span>
-              <div class="inline text-green-600" v-if="client.emailSentAt">
-                <span class="material-icons font-bold translate-y-1">check</span>
-                <span class="">{{ format(new Date(client.emailSentAt), 'dd/MM/yyyy HH:mm') }}</span>
-              </div>
-              <div v-else class="inline text-red-600">
-                <span class="material-icons font-bold translate-y-1">close</span>
-                <!-- <span class="font-semibold hover:text-red-500 cursor-pointer">Send Link?</span> -->
-              </div>
-              <Modal :userType="'admin'" v-if="!client.usablePassword">
-                <template v-slot:trigger="{open}">
-                  <span @click="open" class="ml-2 text-primary font-semibold cursor-pointer hover:text-opacity-75">{{ client.emailSentAt ? 'Resend?' : 'Send?' }}</span>
-                </template>
-                <template v-slot:header>Email Link</template>
-                <template v-slot:content>
-                  <div v-if="emailLoading" class="h-16 flex justify-center"><div class="loader"></div></div>
-                  <div v-else-if="emailSuccess">Email sent successfully</div>
-                  <div v-else>Send {{ client.fullName }} a password setup link?</div>
-                </template>
-                <template v-slot:footer="{close}">
-                  <div v-if="!emailSuccess" class="flex justify-end gap-4">
-                    <div class="admin-btn btn-sm !bg-slate-800" @click="close">Cancel</div>
-                    <div class="admin-btn btn-sm" @click="emailClient">
-                      Send
-                    </div>
+          </div>
+          <div class="md:pl-4 md:w-32 w-full">
+            <label for="client-state" class="">
+              State
+            </label>
+            <div class="pl-2">
+              <pvInputText id="client-state" v-model="client.address.state" placeholder="State" class="w-full h-9"/>
+            </div>
+          </div>
+          <div class="md:pl-4 flex-0">
+            <label for="client-zip" class="">
+              Zip Code
+            </label>
+            <div class="pl-2">
+              <pvInputText id="client-zip" v-model="client.address.zip" placeholder="Zip Code" class="w-full h-9"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8" v-if="client._id">
+        <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+          <div class="text-lg">
+            Status
+          </div>
+          <div class="material-icons md-30">key</div>
+        </div>
+        <div class="md:pl-4 flex gap-x-4 justify-between flex-wrap">
+          <div>
+            <span>
+              Access
+            </span>
+            <span v-if="client.usablePassword" class="material-icons text-green-600 font-bold translate-y-1">check</span>
+            <span v-else class="text-red-600 material-icons font-bold translate-y-1">close</span>
+          </div>
+          <div>
+            <span>
+              Link Sent
+            </span>
+            <div class="inline text-green-600" v-if="client.emailSentAt">
+              <span class="material-icons font-bold translate-y-1">check</span>
+              <span class="">{{ format(new Date(client.emailSentAt), 'dd/MM/yyyy HH:mm') }}</span>
+            </div>
+            <div v-else class="inline text-red-600">
+              <span class="material-icons font-bold translate-y-1">close</span>
+            </div>
+            <Modal :userType="'admin'" v-if="!client.usablePassword">
+              <template v-slot:trigger="{open}">
+                <span @click="open" class="ml-2 text-primary font-semibold cursor-pointer hover:text-opacity-75">{{ client.emailSentAt ? 'Resend?' : 'Send?' }}</span>
+              </template>
+              <template v-slot:header>Email Link</template>
+              <template v-slot:content>
+                <div v-if="emailLoading" class="h-16 flex justify-center"><div class="loader"></div></div>
+                <div v-else-if="emailSuccess">Email sent successfully</div>
+                <div v-else>Send {{ client.fullName }} a password setup link?</div>
+              </template>
+              <template v-slot:footer="{close}">
+                <div v-if="!emailSuccess" class="flex justify-end gap-4">
+                  <div class="admin-btn btn-sm !bg-slate-800" @click="close">Cancel</div>
+                  <div class="admin-btn btn-sm" @click="emailClient">
+                    Send
                   </div>
-                  <div v-else class="flex justify-end gap-4">
-                    <div class="admin-btn btn-sm" @click="close">Close</div>
-                  </div>
-                </template>
-              </Modal>
-              <!-- <span v-if="!client.usablePassword" class="ml-2 text-primary font-semibold">{{ client.emailSentAt ? 'Resend?' : 'Send Link?' }}</span> -->
-            </div>
-
-            <div class="md:pl-4">
-              <span>
-                Active Campaigns
-              </span>
-              <span class="material-icons text-green-600 font-bold translate-y-1">check</span>
-  
-            </div>
-          </div>
-
-
-
-        </div>
-
-        
-
-
-          <!-- <Modal :userType="'admin'">
-            <template v-slot:trigger="{open}">
-              <div class="text-end">
-                <span @click="open" class="text-red-600 text-sm font-regular hover:text-red-500 cursor-pointer">Delete Client</span>
-              </div>
-            </template>
-            <template v-slot:header>Delete Client</template>
-            <template v-slot:content>
-              <div>Are you sure you would like to delete {{ client.fullName }}?</div>
-              <div>This has <span class="text-red-600 font-bold">{{ client.campaignCount }}</span> campaigns.</div>
-            </template>
-            <template v-slot:footer="{close}">
-              <div class="flex justify-end gap-4">
-                <div class="admin-btn btn-sm !bg-slate-800" @click="close">Cancel</div>
-                <div class="admin-btn btn-sm" @click="deleteClient">
-                  Delete 
                 </div>
-              </div>
-            </template>
-          </Modal> -->
-
-
-        <div class="flex justify-center mt-16 gap-4">
-          <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
-          <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient(client)" raised />
-          <!-- <div class="admin-btn !bg-slate-800" @click="cancel">Cancel</div> -->
-          <!-- <button class="admin-btn" @click.prevent="submitClient">Submit</button> -->
+                <div v-else class="flex justify-end gap-4">
+                  <div class="admin-btn btn-sm" @click="close">Close</div>
+                </div>
+              </template>
+            </Modal>
+          </div>
+          <div class="md:pl-4">
+            <span>
+              Active Campaigns
+            </span>
+            <span class="material-icons text-green-600 font-bold translate-y-1">check</span>
+          </div>
         </div>
-        <!-- <div class="flex justify-end mt-8">
-          <button class="admin-btn" @click.prevent="submitClient(client)">Submit</button>
-        </div> -->
-      </form>
+      </div>
+      <div class="flex justify-center mt-16 gap-4">
+        <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
+        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient(client)" raised />
+      </div>
+    </form>
 </template>
 
 <script lang="ts" setup>

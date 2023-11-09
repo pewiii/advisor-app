@@ -33,8 +33,12 @@ const upload = multer({ storage: storage })
 // const upload = multer({ storage: storage });
 app.post('/login', auth.login)
 
-app.post('/uploads/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
-app.post('/uploads/delete', auth.verifyToken, api.uploads.csvDelete)
+app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
+app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
+
+app.post('/uploads/media/add', auth.verifyToken, upload.single('file'), api.uploads.mediaUpload)
+app.post('/uploads/media/delete', auth.verifyToken, upload.single('file'), api.uploads.mediaDelete)
+
 
 app.post('/admin/login', auth.adminLogin)
 
@@ -55,6 +59,13 @@ app.get('/campaigns', auth.verifyToken, api.campaigns.getList)
 
 app.get('/client-setup/:clientId/:resetToken', api.clients.getSetupClient)
 app.post('/client-setup/:clientId/:resetToken', api.clients.setupClient)
+
+app.post('/templates/add', auth.verifyToken, api.templates.create)
+app.post('/templates/update', auth.verifyToken, api.templates.update)
+// app.post('/templates/delete', auth.verifyToken, api.templates.destroy)
+app.get('/templates', auth.verifyToken, api.templates.getList)
+// app.get('/templates/:templateId', api.templates.get)
+
 
 app.post('/offer-code', api.offers.handleOfferCode)
 

@@ -622,7 +622,7 @@ const uploadFile = async (file: any) => {
   const formData = new FormData()
   formData.append('file', file)
   formData.append('campaign', campaign.value._id)
-  const res = await auth.api.post('/uploads/add', formData, {
+  const res = await auth.api.post('/uploads/csv/add', formData, {
     headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -654,7 +654,7 @@ const removeFile = async () => {
     const data = {
       campaign: campaign.value._id
     }
-    const res = await auth.api.post('/uploads/delete', data)
+    const res = await auth.api.post('/uploads/csv/delete', data)
     campaign.value = res.data
     notify({
       title: 'Mail File',

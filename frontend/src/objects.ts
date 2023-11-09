@@ -50,9 +50,15 @@ const emptyQuestion = {
   placeholder: ''
 }
 
+const emptyTemplate = {
+  title: '',
+  config: {},
+}
+
 export default {
   emptyClient,
   emptyCampaign,
   emptyEvent,
-  emptyQuestion
+  emptyQuestion,
+  emptyTemplate,
 }

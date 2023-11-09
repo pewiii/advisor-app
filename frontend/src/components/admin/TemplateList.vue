@@ -1,23 +1,23 @@
 <template>
-  <pvDataTable :value="campaigns" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
+  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
-          <span class="text-xl font-bold">Campaigns</span>
+          <span class="text-xl font-bold">Templates</span>
         </div>
         <div class="flex gap-4">
           <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditCampaign()"><span class="material-icons">add</span></pvButton>
+          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditTemplate()"><span class="material-icons">add</span></pvButton>
         </div>
           </div>
     </template>
     <template #loading><div class="loader"></div></template>
     <pvColumn field="title" header="Title"></pvColumn>
-    <pvColumn field="client" header="Client">
+    <!-- <pvColumn field="client" header="Client">
       <template #body="{ data }">
         {{ data.client.fullName }}
       </template>
-    </pvColumn>
+    </pvColumn> -->
     <pvColumn field="createdAt" header="Created">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
@@ -30,15 +30,16 @@
     </pvColumn>
     <pvColumn field="status" header="Status">
       <template #body="{ data }">
-        <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
+        Status
+        <!-- <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
-        </div>
+        </div> -->
       </template>
     </pvColumn>
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div>
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditCampaign(data)">edit</div>
+        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditTemplate(data)">edit</div>
       </template>
     </pvColumn>
   </pvDataTable>
@@ -87,36 +88,48 @@
   
   const auth = useAuthStore()
   
-  const props = defineProps(['addEditCampaign', 'search'])
+  const props = defineProps(['modelValue', 'addEditTemplate', 'search'])
+  const emit = defineEmits(['update:modelValue'])
   
-  const campaigns = ref([])
+  const templates = ref([])
   const loading = ref(false)
   const page = ref(1)
   const perPage = ref(5)
+
+
+  const selectedTemplate = computed({
+    get() {
+      return props.modelValue
+    },
+    set(selectedTemplate) {
+      emit('update:modelValue', selectedTemplate)
+    }
+  })
+
   
-  // const search = computed(() => props.search)
-  
-  const getCampaigns = async () => {
+  const getTemplates = async () => {
     loading.value = true
     try {
       const res = await auth.api.get(
-        `/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
-      campaigns.value = res.data
+        `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+
+      console.log(res)
+      templates.value = res.data
     } catch(err: any) {
       console.log(err.message)
     }
     loading.value = false
   }
   
-  watch(() => props.search, getCampaigns)
+  watch(() => props.search, getTemplates)
   
-  onMounted(getCampaigns)
+  onMounted(getTemplates)
   
   
   const refresh = () => {
     page.value = 1
     perPage.value = 5
-    getCampaigns()
+    getTemplates()
   }
   // const formatDate = (dateText: string) => {
   

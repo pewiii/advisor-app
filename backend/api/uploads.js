@@ -2,6 +2,62 @@ import fs from 'fs'
 import csv from 'csv-parser'
 import { Readable } from 'stream'
 import db from '../db/index.js'
+import {
+  S3Client,
+  PutObjectCommand,
+  CreateBucketCommand,
+  DeleteObjectCommand,
+  DeleteBucketCommand,
+  paginateListObjectsV2,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+
+const S3ACCESSKEYID = process.env.S3ACCESSKEYID
+const S3SECRETACCESSKEY = process.env.S3SECRETACCESSKEY
+
+const s3Client = new S3Client({ 
+  region: 'us-east-1',
+   credentials: {
+    accessKeyId: S3ACCESSKEYID,
+    secretAccessKey: S3SECRETACCESSKEY
+  }
+})
+
+
+const mediaUpload = async (req, res) => {
+
+  const file = req.file
+
+  if (!file) {
+    res.status(400).send({ message: 'No file uploaded' })
+  }
+
+  try {
+    console.log("HERE")
+
+    const putCommand = new PutObjectCommand({
+      Bucket:'advisorapp',
+      Body: file.buffer,
+      // ContentType:'content-type',
+      Key: Date.now() + file.originalname
+    });
+  
+    const result = await s3Client.send(putCommand);
+    console.log(result)
+    res.send(result)
+  } catch(err) {
+    console.log(err)
+    res.status(500).send({ message: 'Server error' })
+  }
+  
+}
+
+
+
+
+
+
+
 
 
 const csvDelete = async (req, res) => {
@@ -17,6 +73,10 @@ const csvDelete = async (req, res) => {
     console.log(err.message)
     res.status(400).send({ message: err.message })
   }
+}
+
+const mediaDelete = async (req, res) => {
+  res.sendStatus(201)
 }
 
 
@@ -101,5 +161,7 @@ const csvUpload = async (req, res) => {
 
 export default {
   csvUpload,
-  csvDelete
+  csvDelete,
+  mediaUpload,
+  mediaDelete
 }

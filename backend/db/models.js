@@ -155,12 +155,6 @@ const respondentSchema = new mongoose.Schema({
   // other info
 }, { timestamps: true })
 
-const landingTemplateSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  }
-}, { timestamps: true })
 
 const campaignSchema = new mongoose.Schema({
   title: {
@@ -224,19 +218,43 @@ const campaignSchema = new mongoose.Schema({
   ]
 }, { timestamps: true })
 
+const templateSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  config: {
+    type: Object,
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+}, { timestamps: true })
+
+const mediaSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  }
+})
+
 
 const User = mongoose.model('User', userSchema);
 const Client = mongoose.model('Client', clientSchema)
 const Record = mongoose.model('Record', recordSchema)
 const Respondent = mongoose.model('Respondent', respondentSchema)
-const LandingTemplate = mongoose.model('LandingTemplate', landingTemplateSchema)
+const Template = mongoose.model('Template', templateSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)
+const Media = mongoose.model('Media', mediaSchema)
 
 export default {
   User,
   Client,
   Record,
   Respondent,
-  LandingTemplate,
-  Campaign
+  Template,
+  Campaign,
+  Media
 }

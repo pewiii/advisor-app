@@ -14,10 +14,16 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  const data = req.body
-  console.log(data)
-
-  res.sendStatus(201)
+  try {
+    const data = req.body
+    const clientId = data._id
+    const client = await db.clients.updateClient(clientId, data)
+  
+    res.status(201).send(client)
+  } catch(err) {
+    console.log(err)
+    res.status(500).send({ message: err.message })
+  }
 }
 
 const get = async (req, res) => {

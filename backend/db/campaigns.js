@@ -19,8 +19,9 @@ const update = async (objectId, data) => {
 const getList = async (search, page, perPage) => {
   try {
     const currentDate = new Date();
-    const skip = (page - 1) * perPage;
+
     const limit = parseInt(perPage, 10);
+    const skip = (page - 1) * limit;
 
     const query = {}; // Define an empty query object
 
