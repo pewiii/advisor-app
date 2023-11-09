@@ -52,7 +52,16 @@ const emptyQuestion = {
 
 const emptyTemplate = {
   title: '',
-  config: {},
+  config: {
+    headerImage: null,
+    headerPanelBgColor: '#fff',
+    headerPanelTextColor: '#000',
+    headerSectionBgColor: '#fff',
+    headerSectionTextColor: '#000',
+    infoImage: null,
+    infoPanelBgColor: '#fff',
+    infoPanelTextColor: '#000',
+  },
 }
 
 export default {

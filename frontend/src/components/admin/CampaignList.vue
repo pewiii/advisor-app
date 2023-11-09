@@ -1,5 +1,5 @@
 <template>
-<pvDataTable :value="campaigns" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
+<pvDataTable :value="campaigns" tableStyle="min-width: 50rem" :loading="loading">
   <template #header>
     <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
       <div>
@@ -41,7 +41,16 @@
       <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditCampaign(data)">edit</div>
     </template>
   </pvColumn>
+  <template #footer>
+    <div class="h-10 flex justify-between items-center">
+      <div>
+        Total Campaigns: {{ totalRecords }}
+      </div>
+      <pvPaginator ref="campaignPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+    </div>
+  </template>
 </pvDataTable>
+
   <!-- <table class="w-full bg-green-300">
     <thead class="bg-gray-200 border-t-1 border-b-1 border-gray-300">
       <tr class="w-full">
@@ -89,10 +98,12 @@ const auth = useAuthStore()
 
 const props = defineProps(['addEditCampaign', 'search'])
 
+const campaignPaginator = ref(null as any)
 const campaigns = ref([])
 const loading = ref(false)
-const page = ref(1)
+const page = ref(0)
 const perPage = ref(5)
+const totalRecords = ref(0)
 
 // const search = computed(() => props.search)
 
@@ -101,7 +112,8 @@ const getCampaigns = async () => {
   try {
     const res = await auth.api.get(
       `/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
-    campaigns.value = res.data
+    campaigns.value = res.data.data
+    totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
   }
@@ -113,11 +125,34 @@ watch(() => props.search, getCampaigns)
 onMounted(getCampaigns)
 
 
-const refresh = () => {
-  page.value = 1
-  perPage.value = 5
+
+const refresh = (e: any) => {
+  if (campaignPaginator.value) {
+    console.log(campaignPaginator.value)
+    if (campaignPaginator.value.page !== 0) {
+      campaignPaginator.value.changePageToFirst(e)
+    } else {
+      getCampaigns()
+    }
+  }
+  // page.value = 1
+  // perPage.value = 5
+  // getCampaigns()
+}
+
+const handlePage = (pagination: any) => {
+  console.log(pagination)
+  perPage.value = pagination.rows
+  page.value = pagination.page
   getCampaigns()
 }
+
+
+// const refresh = () => {
+//   page.value = 1
+//   perPage.value = 5
+//   getCampaigns()
+// }
 // const formatDate = (dateText: string) => {
 
 //   const options = {

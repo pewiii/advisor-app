@@ -43,6 +43,14 @@ const adminRegister = async (req, res) => {
 
 const adminLogin = async (req, res) => {
   try {
+
+    //temp
+    // req.body.firstName = 'Paul'
+    // req.body.lastName = 'Watson'
+    // await adminRegister(req, res)
+    // return
+
+
     const { email, password } = req.body
     const user = await db.users.getUser({ email })
     if (!user) {

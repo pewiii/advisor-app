@@ -33,10 +33,16 @@ const get = async (req, res) => {
 const getList = async (req, res) => {
 
   try {
-    const { search = '', page = 1, perPage = 10 } = req.query;
+    const { search = '', page = 0, perPage = 10 } = req.query;
     
     const clients = await db.clients.getList(search, page, perPage);
-    res.send(clients)
+    const count = await db.clients.getClientCount()
+    res.send({
+      data: clients,
+      page: page,
+      perPage: perPage,
+      total: count,
+    })
 
   } catch(err) {
     console.log(err.message)

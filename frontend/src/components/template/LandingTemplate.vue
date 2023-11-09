@@ -35,10 +35,18 @@
 <script lang="ts" setup>
 // import image from '@/assets/tempimage.jpg'
 import { ref, onMounted, computed } from 'vue'
-import headerImage from '@/assets/tempimage.jpg'
+import topImage from '@/assets/tempimage.jpg'
 import steakImage from '@/assets/steak.jpg'
 
 const props = defineProps(['templateData'])
+
+
+const headerImage = computed(() => {
+  if (props.templateData.config && props.templateData.config.headerImage) {
+    return props.templateData.config.headerImage.url
+  }
+  return topImage
+})
 
 
 const events = computed(() => {

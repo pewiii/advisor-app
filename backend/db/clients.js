@@ -21,10 +21,13 @@ const updateClient = (clientId, data) => {
   return models.Client.findOneAndUpdate({ _id: clientId }, data)
 }
 
+const getClientCount = () => {
+  return models.Client.find().count()
+}
 
 const getList = async (search, page, perPage) => {
   const limit = parseInt(perPage, 10);
-  const skip = (page - 1) * limit;
+  const skip = page * limit;
   
   const query = {};
   
@@ -198,5 +201,6 @@ export default {
   deleteClient,
   getList,
   getFullClient,
-  updateClient
+  updateClient,
+  getClientCount
 }

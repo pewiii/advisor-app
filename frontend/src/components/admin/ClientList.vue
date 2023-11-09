@@ -1,5 +1,5 @@
 <template>
-    <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
+    <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" tableStyle="min-width: 50rem" :loading="loading">
       <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
           <div>
@@ -42,6 +42,16 @@
           <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
         </template>
       </pvColumn>
+
+      <template #footer>
+        <div class="h-10 flex justify-between items-center">
+          <div>
+            Total Clients: {{ totalRecords }}
+          </div>
+          <pvPaginator ref="clientPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+        </div>
+      </template>
+
     </pvDataTable>
     <!-- <table class="w-full">
       <thead class="bg-gray-200 border-t-1 border-b-1 border-gray-300">
@@ -120,8 +130,10 @@ const selectedClient = computed({
 // const showEmailMenu = ref(false)
 const loading = ref(false)
 const clients = ref([])
-const page = ref(1)
+const page = ref(0)
 const perPage = ref(5)
+const totalRecords = ref(0)
+const clientPaginator = ref(null as any)
 // const selectedClient = computed({
 //   get() {
 
@@ -136,7 +148,8 @@ const getClients = async () => {
     loading.value = true
     const res = await auth.api.get(
       `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
-    clients.value = res.data
+    clients.value = res.data.data
+    totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
   }
@@ -145,9 +158,24 @@ const getClients = async () => {
 
 watch(() => props.search, getClients)
 
-const refresh = () => {
-  page.value = 1
-  perPage.value = 5
+const refresh = (e: any) => {
+  if (clientPaginator.value) {
+    console.log(clientPaginator.value)
+    if (clientPaginator.value.page !== 0) {
+      clientPaginator.value.changePageToFirst(e)
+    } else {
+      getClients()
+    }
+  }
+  // page.value = 1
+  // perPage.value = 5
+  // getClients()
+}
+
+const handlePage = (pagination: any) => {
+  console.log(pagination)
+  perPage.value = pagination.rows
+  page.value = pagination.page
   getClients()
 }
 

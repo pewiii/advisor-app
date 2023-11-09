@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" :loading="loading">
+  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" tableStyle="min-width: 50rem" :loading="loading">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -42,6 +42,14 @@
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditTemplate(data)">edit</div>
       </template>
     </pvColumn>
+    <template #footer>
+      <div class="h-10 flex justify-between items-center">
+        <div>
+          Total Templates: {{ totalRecords }}
+        </div>
+        <pvPaginator ref="templatePaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+      </div>
+    </template>
   </pvDataTable>
     <!-- <table class="w-full bg-green-300">
       <thead class="bg-gray-200 border-t-1 border-b-1 border-gray-300">
@@ -91,10 +99,12 @@
   const props = defineProps(['modelValue', 'addEditTemplate', 'search'])
   const emit = defineEmits(['update:modelValue'])
   
+  const templatePaginator = ref(null as any)
   const templates = ref([])
   const loading = ref(false)
-  const page = ref(1)
+  const page = ref(0)
   const perPage = ref(5)
+  const totalRecords = ref(0)
 
 
   const selectedTemplate = computed({
@@ -114,7 +124,9 @@
         `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
 
       console.log(res)
-      templates.value = res.data
+      templates.value = res.data.data
+      totalRecords.value = res.data.total
+      console.log(totalRecords.value)
     } catch(err: any) {
       console.log(err.message)
     }
@@ -126,11 +138,33 @@
   onMounted(getTemplates)
   
   
-  const refresh = () => {
-    page.value = 1
-    perPage.value = 5
+  // const refresh = () => {
+  //   page.value = 1
+  //   perPage.value = 5
+  //   getTemplates()
+  // }
+
+  const refresh = (e: any) => {
+  if (templatePaginator.value) {
+    console.log(templatePaginator.value)
+    if (templatePaginator.value.page !== 0) {
+      templatePaginator.value.changePageToFirst(e)
+    } else {
+      getTemplates()
+    }
+  }
+  // page.value = 1
+  // perPage.value = 5
+  // getClients()
+}
+
+  const handlePage = (pagination: any) => {
+    console.log(pagination)
+    perPage.value = pagination.rows
+    page.value = pagination.page
     getTemplates()
   }
+
   // const formatDate = (dateText: string) => {
   
   //   const options = {

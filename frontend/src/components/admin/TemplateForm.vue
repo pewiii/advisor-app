@@ -38,7 +38,7 @@
               <pvButton label="Close" @click="close" />
             </template> -->
           <!-- </Modal> -->
-          <ImageSelect v-model="template.headerImage"/>
+          <ImageSelect v-model="template.config.headerImage"/>
         </div>
       </div>
     </div>

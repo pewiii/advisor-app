@@ -5,10 +5,10 @@ import db from '../db/index.js'
 import {
   S3Client,
   PutObjectCommand,
-  CreateBucketCommand,
+  // CreateBucketCommand,
   DeleteObjectCommand,
-  DeleteBucketCommand,
-  paginateListObjectsV2,
+  // DeleteBucketCommand,
+  // paginateListObjectsV2,
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 
@@ -24,7 +24,7 @@ const s3Client = new S3Client({
 })
 
 
-const mediaUpload = async (req, res) => {
+const imageUpload = async (req, res) => {
 
   const file = req.file
 
@@ -33,18 +33,21 @@ const mediaUpload = async (req, res) => {
   }
 
   try {
-    console.log("HERE")
+    const key = Date.now() + file.originalname
 
     const putCommand = new PutObjectCommand({
       Bucket:'advisorapp',
       Body: file.buffer,
       // ContentType:'content-type',
-      Key: Date.now() + file.originalname
+      Key: key,
     });
   
     const result = await s3Client.send(putCommand);
-    console.log(result)
-    res.send(result)
+
+    const image = await db.images.createImage({ url: `https://advisorapp.s3.amazonaws.com/${key}`, key })
+
+    // console.log(result)
+    res.send(image)
   } catch(err) {
     console.log(err)
     res.status(500).send({ message: 'Server error' })
@@ -52,7 +55,36 @@ const mediaUpload = async (req, res) => {
   
 }
 
+const getImageList = async (req, res) => {
+  try {
+    const images = await db.images.getList()
+    res.send(images)
+  } catch(err) {
+    res.status(500).send({ message: 'Server error' })
+  }
+}
 
+
+const imageDelete = async (req, res) => {
+  try {
+    const image = req.body
+
+    console.log(image)
+
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket:'advisorapp',
+      Key: image.key
+    })
+
+    await s3Client.send(deleteCommand)
+    await db.images.deleteImage(image._id)
+
+    res.sendStatus(201)
+  } catch(err) {
+    console.log(err.message)
+    res.status(500).send({ message: 'Server error' })
+  }
+}
 
 
 
@@ -75,9 +107,6 @@ const csvDelete = async (req, res) => {
   }
 }
 
-const mediaDelete = async (req, res) => {
-  res.sendStatus(201)
-}
 
 
 const csvUpload = async (req, res) => {
@@ -162,6 +191,7 @@ const csvUpload = async (req, res) => {
 export default {
   csvUpload,
   csvDelete,
-  mediaUpload,
-  mediaDelete
+  imageUpload,
+  imageDelete,
+  getImageList
 }

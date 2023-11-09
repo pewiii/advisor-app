@@ -16,12 +16,16 @@ const update = async (objectId, data) => {
   // }
 }
 
+const getCampaignCount = () => {
+  return models.Campaign.find().count()
+}
+
 const getList = async (search, page, perPage) => {
   try {
     const currentDate = new Date();
 
     const limit = parseInt(perPage, 10);
-    const skip = (page - 1) * limit;
+    const skip = page * limit;
 
     const query = {}; // Define an empty query object
 
@@ -111,4 +115,5 @@ export default {
   update,
   getList,
   getById,
+  getCampaignCount,
 }

@@ -36,9 +36,9 @@ app.post('/login', auth.login)
 app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
 app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
 
-app.post('/uploads/media/add', auth.verifyToken, upload.single('file'), api.uploads.mediaUpload)
-app.post('/uploads/media/delete', auth.verifyToken, upload.single('file'), api.uploads.mediaDelete)
-
+app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.uploads.imageUpload)
+app.post('/uploads/image/delete', auth.verifyToken, api.uploads.imageDelete)
+app.get('/images', auth.verifyToken, api.uploads.getImageList)
 
 app.post('/admin/login', auth.adminLogin)
 

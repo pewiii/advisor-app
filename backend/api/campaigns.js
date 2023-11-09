@@ -70,9 +70,10 @@ const get = async (req, res) => {
 const getList = async (req, res) => {
 
   try {
-    const { search = '', page = 1, perPage = 10 } = req.query;
+    const { search = '', page = 0, perPage = 10 } = req.query;
     
     const campaigns = await db.campaigns.getList(search, page, perPage);
+    const count = await db.campaigns.getCampaignCount()
     // campaigns.forEach(campaign => {
     //   campaign.events.forEach(event => {
     //     if (event.eventDate && event.timezone) {
@@ -82,7 +83,15 @@ const getList = async (req, res) => {
     //     }
     //   })
     // })
-    res.send(campaigns)
+
+    res.send({
+      data: campaigns,
+      page: page,
+      perPage: perPage,
+      total: count,
+    })
+
+    // res.send(campaigns)
 
   } catch(err) {
     console.log(err)

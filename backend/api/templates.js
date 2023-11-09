@@ -10,7 +10,15 @@ const getList = async (req, res) => {
   try {
     const { search = '', page = 1, perPage = 10 } = req.query;
     const templates = await db.templates.getList(search, page, perPage);
-    res.send(templates)
+    const count = await db.templates.getTemplateCount()
+
+    res.send({
+      data: templates,
+      page: page,
+      perPage: perPage,
+      total: count,
+    })
+    // res.send(templates)
   } catch(err) {
     console.log(err)
     console.log(err.message)

@@ -13,10 +13,14 @@ const getTemplateById = (clientId) => {
   return models.Client.findById(clientId)
 }
 
+const getTemplateCount = () => {
+  return models.Template.find().count()
+}
+
 const getList = async (search, page, perPage) => {
   
   const limit = parseInt(perPage, 10);
-  const skip = (page - 1) * limit;
+  const skip = page * limit;
 
   const query = {};
   if (search && search.title) {
@@ -37,4 +41,5 @@ export default {
   createTemplate,
   deleteTemplate,
   getTemplateById,
+  getTemplateCount
 }

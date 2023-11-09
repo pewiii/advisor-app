@@ -233,8 +233,12 @@ const templateSchema = new mongoose.Schema({
   },
 }, { timestamps: true })
 
-const mediaSchema = new mongoose.Schema({
+const imageSchema = new mongoose.Schema({
   url: {
+    type: String,
+    required: true
+  },
+  key: {
     type: String,
     required: true
   }
@@ -247,7 +251,7 @@ const Record = mongoose.model('Record', recordSchema)
 const Respondent = mongoose.model('Respondent', respondentSchema)
 const Template = mongoose.model('Template', templateSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)
-const Media = mongoose.model('Media', mediaSchema)
+const Image = mongoose.model('Image', imageSchema)
 
 export default {
   User,
@@ -256,5 +260,5 @@ export default {
   Respondent,
   Template,
   Campaign,
-  Media
+  Image
 }
