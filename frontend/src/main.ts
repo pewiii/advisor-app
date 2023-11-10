@@ -25,6 +25,8 @@ import ColorPicker from 'primevue/colorpicker'
 import Slider from 'primevue/slider'
 import InputNumber from 'primevue/inputnumber'
 import TextArea from 'primevue/textarea';
+import RadioButton from 'primevue/radiobutton'
+import Checkbox from 'primevue/checkbox'
 // import Row from 'primevue/row'
 
 import App from './App.vue'
@@ -55,6 +57,8 @@ app.component('pvColorPicker', ColorPicker)
 app.component('pvSlider', Slider)
 app.component('pvInputNumber', InputNumber)
 app.component('pvTextArea', TextArea)
+app.component('pvRadioButton', RadioButton)
+app.component('pvCheckbox', Checkbox)
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })
 for (const path in modules) {

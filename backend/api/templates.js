@@ -9,9 +9,9 @@ import db from '../db/index.js'
 const getList = async (req, res) => {
   try {
     const { search = '', page = 1, perPage = 10 } = req.query;
-    const templates = await db.templates.getList(search, page, perPage);
-    const count = await db.templates.getTemplateCount()
 
+    const templates = await db.templates.getList(search, page, perPage);
+    const count = await db.templates.getTemplateCount(search)
     res.send({
       data: templates,
       page: page,

@@ -73,7 +73,7 @@ const getList = async (req, res) => {
     const { search = '', page = 0, perPage = 10 } = req.query;
     
     const campaigns = await db.campaigns.getList(search, page, perPage);
-    const count = await db.campaigns.getCampaignCount()
+    const count = await db.campaigns.getCampaignCount(search)
     // campaigns.forEach(campaign => {
     //   campaign.events.forEach(event => {
     //     if (event.eventDate && event.timezone) {

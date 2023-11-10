@@ -140,25 +140,22 @@
             <div v-else class="inline text-red-600">
               <span class="material-icons font-bold translate-y-1">close</span>
             </div>
-            <Modal :userType="'admin'" v-if="!client.usablePassword">
+            <Modal v-if="!client.usablePassword" :header="'Password Setup Link'" :size="'medium'"> 
               <template v-slot:trigger="{open}">
                 <span @click="open" class="ml-2 text-primary font-semibold cursor-pointer hover:text-opacity-75">{{ client.emailSentAt ? 'Resend?' : 'Send?' }}</span>
               </template>
-              <template v-slot:header>Email Link</template>
               <template v-slot:content>
-                <div v-if="emailLoading" class="h-16 flex justify-center"><div class="loader"></div></div>
-                <div v-else-if="emailSuccess">Email sent successfully</div>
-                <div v-else>Send {{ client.fullName }} a password setup link?</div>
-              </template>
-              <template v-slot:footer="{close}">
-                <div v-if="!emailSuccess" class="flex justify-end gap-4">
-                  <div class="admin-btn btn-sm !bg-slate-800" @click="close">Cancel</div>
-                  <div class="admin-btn btn-sm" @click="emailClient">
-                    Send
-                  </div>
+                <div v-if="emailLoading" class="flex justify-center">
+                  <VueLoader />
                 </div>
-                <div v-else class="flex justify-end gap-4">
-                  <div class="admin-btn btn-sm" @click="close">Close</div>
+                <div v-else-if="emailSuccess">Email sent successfully</div>
+                <div v-else>
+                  <div>
+                    Send {{ client.fullName }} a password setup email?
+                  </div>
+                  <div class="flex justify-end mt-4">
+                    <pvButton label="Send" size="small" @click="emailClient"/>
+                  </div>
                 </div>
               </template>
             </Modal>
@@ -167,13 +164,14 @@
             <span>
               Active Campaigns
             </span>
-            <span class="material-icons text-green-600 font-bold translate-y-1">check</span>
+            <span v-if="client.status === 'active'" class="material-icons text-green-600 font-bold translate-y-1">check</span>
+            <span v-else class="material-icons font-bold translate-y-1 text-red-600">close</span>
           </div>
         </div>
       </div>
       <div class="flex justify-center mt-16 gap-4">
         <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
-        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient(client)" raised />
+        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised />
       </div>
     </form>
 </template>
@@ -188,10 +186,11 @@ import Modal from '@/components/common/Modal.vue'
 import { useAuthStore } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
 import { format } from 'date-fns'
+import VueLoader from '@/components/common/VueLoader.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'submitClient', 'cancel'])
+const props = defineProps(['modelValue', 'cancel'])
 
 const emit = defineEmits(['update:modelValue'])
 

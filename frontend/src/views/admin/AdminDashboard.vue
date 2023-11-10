@@ -11,25 +11,26 @@
       </div>
 
       <div class="bg-white p-6">
-        <TemplateForm v-if="editTemplate" v-model="editTemplate" />
-        <TemplateList v-else v-model="selectedTemplate" :addEditTemplate="addEditTemplate" :search="search"/>
+        <CampaignForm v-if="editCampaign" v-model:campaign="editCampaign" v-model:selectedTemplate="selectedTemplate" :selectedClient="selectedClient"  />
+        <CampaignList v-else v-model="selectedCampaign" :addEditCampaign="addEditCampaign" :search="search"/>
       </div>
+
+
     </div>
     
 
     <div class="flex-1 flex flex-col gap-6">
 
-
       <div class="bg-white p-6">
-        <CampaignForm v-if="editCampaign" v-model:campaign="editCampaign" v-model:selectedTemplate="selectedTemplate" :selectedClient="selectedClient"  />
-        <CampaignList v-else :addEditCampaign="addEditCampaign" :search="search"/>
+        <TemplateForm v-if="editTemplate" v-model="editTemplate" />
+        <TemplateList v-else v-model="selectedTemplate" :addEditTemplate="addEditTemplate" :search="search"/>
       </div>
 
       <div class="bg-white">
         <!-- <div>Preview</div> -->
         <!-- <TemplateForm v-if="editTemplate" v-model="editTemplate" />
         <TemplateList v-else :addEditTemplate="addEditTemplate" /> -->
-        <TemplatePreview :selectedTemplate="previewTemplate"/>
+        <TemplatePreview :selectedTemplate="previewTemplate" :selectedCampaign="selectedCampaign"/>
       </div>
 
 
@@ -79,6 +80,7 @@ const selectedClient = ref(null)
 const editClient = ref(null as any)
 const editTemplate = ref(null as any)
 const selectedTemplate = ref(null)
+const selectedCampaign = ref(null)
 
 const previewTemplate = computed(() => {
   if (editTemplate.value) {

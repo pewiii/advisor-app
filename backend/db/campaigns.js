@@ -16,8 +16,41 @@ const update = async (objectId, data) => {
   // }
 }
 
-const getCampaignCount = () => {
-  return models.Campaign.find().count()
+// const getCampaignCount = () => {
+//   return models.Campaign.find().count()
+// }
+
+const getCampaignCount = async (search) => {
+
+  const query = {};
+
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      // Add other fields you want to search for in campaigns
+      { 'client.firstName': { $regex: search, $options: 'i' } },
+      { 'client.lastName': { $regex: search, $options: 'i' } },
+      { 'client.fullName': { $regex: search, $options: 'i' } },
+      { 'client.company': { $regex: search, $options: 'i' } },
+      { 'client.phone': { $regex: search, $options: 'i' } },
+      { 'client.email': { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  const campaigns = await models.Campaign.aggregate([
+    {
+      $lookup: {
+        from: 'clients',
+        localField: 'client',
+        foreignField: '_id',
+        as: 'client',
+      },
+    },
+    {
+      $match: query, // Apply the search query
+    },
+  ])
+  return campaigns.length
 }
 
 const getList = async (search, page, perPage) => {

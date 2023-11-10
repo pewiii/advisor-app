@@ -11,7 +11,9 @@
         </div>
           </div>
     </template>
-    <template #loading><div class="loader"></div></template>
+    <template #loading>
+      <VueLoader />
+    </template>
     <pvColumn field="title" header="Title"></pvColumn>
     <!-- <pvColumn field="client" header="Client">
       <template #body="{ data }">
@@ -93,6 +95,7 @@
   import { nextTick, onMounted, computed, ref, watch } from 'vue'
   import { format } from 'date-fns'
   import { useAuthStore } from '@/stores/auth'
+  import VueLoader from '@/components/common/VueLoader.vue'
   
   const auth = useAuthStore()
   
@@ -161,7 +164,6 @@
 
   const refresh = (e: any) => {
   if (templatePaginator.value) {
-    console.log(templatePaginator.value)
     if (templatePaginator.value.page !== 0) {
       templatePaginator.value.changePageToFirst(e)
     } else {
@@ -174,7 +176,6 @@
 }
 
   const handlePage = (pagination: any) => {
-    console.log(pagination)
     perPage.value = pagination.rows
     page.value = pagination.page
     getTemplates()

@@ -129,40 +129,110 @@ const csvUpload = async (req, res) => {
         headerSkipped = true
         return
       }
-      let homeOwner = data['Homeowner'] || data['homeowner']
-      homeOwner = homeOwner !== 'N/A'
-  
-      let netWorth = data['Net Worth'] || data['net worth']
-      netWorth = netWorth === 'N/A' ? null : netWorth
-  
-      let political = data['Political'] || data['political']
-      political = political === 'N/A' ? null : political
-  
-      let race = data['Race'] || data['race']
-      race = race === 'N/A' ? null : race
-  
-      let vetInHouse = data['Veteran in Household'] || data['veteran in household'] || data['Veteran In Household']
-      vetInHouse = vetInHouse !== 'N/A'
-  
+
+
+      const keys = Object.keys(data)
+
       const record = {
-        firstName: data['First Name'],
-        lastName: data['Last Name'],
-        company: data['Company'],
-        address1: data['Address Line 1'],
-        address2: data['Address Line 2'],
-        city: data['City'],
-        state: data['State'],
-        zip: data['Zip'] || data['Zip Code'],
-        age: data['Age'] || data['age'],
-        homeOwner,
-        netWorth,
-        political,
-        race,
-        vetInHouse,
-        wealthRating: data['Wealth Rating'] || data['wealth rating'],
-        offerCode: data['Offer Code'] || data['offer code'],
         campaign
       }
+
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+        const lowKey = key.toLowerCase()
+        const item = data[key] === 'N/A' ? null : data[key]
+
+        switch(lowKey) {
+          case 'homeowner':
+            record.homeOwner = Boolean(item)
+            break
+          case 'net worth':
+            record.netWorth = item
+            break
+          case 'political':
+            record.political = item
+            break
+          case 'race':
+            record.race = item
+            break
+          case 'veteran in household':
+            record.vetInHouse = Boolean(item)
+            break
+          case 'first name':
+            record.firstName = item
+            break
+          case 'last name':
+            record.lastName = item
+            break
+          case 'company':
+            record.company = item
+            break
+          case 'address line 1':
+            record.address1 = item
+            break
+          case 'address line 2':
+            record.address2 = item
+            break
+          case 'city':
+            record.city = item
+            break
+          case 'state':
+            record.state = item
+            break
+          case 'zip':
+            record.zip = item
+            break
+          case 'zip code':
+            record.zip = item
+            break
+          case 'age':
+            record.age = item
+            break
+          case 'wealth rating':
+            record.wealthRating = item
+            break
+          case 'offer code':
+            record.offerCode = item
+            break
+        }
+
+      }
+
+      // let homeOwner = data['Homeowner'] || data['homeowner']
+      // homeOwner = homeOwner !== 'N/A'
+  
+      // let netWorth = data['Net Worth'] || data['net worth']
+      // netWorth = netWorth === 'N/A' ? null : netWorth
+  
+      // let political = data['Political'] || data['political']
+      // political = political === 'N/A' ? null : political
+  
+      // let race = data['Race'] || data['race']
+      // race = race === 'N/A' ? null : race
+  
+      // let vetInHouse = data['Veteran in Household'] || data['veteran in household'] || data['Veteran In Household']
+      // vetInHouse = vetInHouse !== 'N/A'
+  
+      // const record = {
+      //   firstName: data['First Name'],
+      //   lastName: data['Last Name'],
+      //   company: data['Company'],
+      //   address1: data['Address Line 1'],
+      //   address2: data['Address Line 2'],
+      //   city: data['City'],
+      //   state: data['State'],
+      //   zip: data['Zip'] || data['Zip Code'],
+      //   age: data['Age'] || data['age'],
+      //   homeOwner,
+      //   netWorth,
+      //   political,
+      //   race,
+      //   vetInHouse,
+      //   wealthRating: data['Wealth Rating'] || data['wealth rating'],
+      //   offerCode: data['Offer Code'] || data['offer code'],
+      //   campaign
+      // }
 
       records.push(record)
     }
@@ -175,7 +245,7 @@ const csvUpload = async (req, res) => {
       .on('end', async () => {
         try {
           await db.records.createMany(records)
-          const resultCampaign = await db.campaigns.update(campaign, { fileName: req.file.originalname })
+          const resultCampaign = await db.campaigns.update(campaign, { fileName: req.file.originalname, fileRecords: records.length })
           res.status(201).send(resultCampaign)
         } catch (err) {
           console.log(err.message)

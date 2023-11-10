@@ -40,7 +40,7 @@ const passwordSetup = async (req, res) => {
     } else {
       client.resetToken = auth.generateResetToken()
       client.resetTokenExpiration = new Date(Date.now() + 3600000 * 24);
-      await client.save()
+      // await client.save()
       //send email
       await sgMail.send({
         to: client.email,
@@ -48,7 +48,6 @@ const passwordSetup = async (req, res) => {
         template_id: 'd-80c7eb1df75a48e1ac013e55a41ad929',
         dynamic_template_data: {
           username: client.firstName,
-          //temp link
           resetLink: `${FRONTEND_URL}/setup/${client._id}/${client.resetToken}`
         }
       })

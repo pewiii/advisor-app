@@ -21,22 +21,45 @@ const updateClient = (clientId, data) => {
   return models.Client.findOneAndUpdate({ _id: clientId }, data)
 }
 
-const getClientCount = () => {
-  return models.Client.find().count()
+const getClientCount = async (search) => {
+
+  const query = {};
+
+  if (search) {
+    query.$or = [
+      { 'firstName': { $regex: search, $options: 'i' } },
+      { 'lastName': { $regex: search, $options: 'i' } },
+      { 'fullName': { $regex: search, $options: 'i' } },
+      { 'company': { $regex: search, $options: 'i' } },
+      { 'campaigns.title': { $regex: search, $options: 'i' } },
+    ];
+  }
+  const clients = await models.Client.aggregate([
+    {
+      $lookup: {
+        from: 'campaigns',
+        localField: '_id',
+        foreignField: 'client',
+        as: 'campaigns',
+      },
+    },
+    {
+      $match: query,
+    }]).exec()
+    return clients.length
 }
 
 const getList = async (search, page, perPage) => {
   const limit = parseInt(perPage, 10);
   const skip = page * limit;
-  
   const query = {};
-  
   if (search) {
     query.$or = [
       { 'firstName': { $regex: search, $options: 'i' } },
       { 'lastName': { $regex: search, $options: 'i' } },
+      { 'fullName': { $regex: search, $options: 'i' } },
       { 'company': { $regex: search, $options: 'i' } },
-      // ... (other fields)
+      { 'campaigns.title': { $regex: search, $options: 'i' } },
     ];
   }
   
@@ -69,7 +92,6 @@ const getList = async (search, page, perPage) => {
         },
         firstName: 1,
         lastName: 1,
-        // ... (other fields)
         phone: 1,
         email: 1,
         address: 1,
@@ -118,81 +140,6 @@ const getList = async (search, page, perPage) => {
 
   return clients;
 };
-
-
-
-
-// const getList = async (search, page, perPage) => {
-
-//   const skip = (page - 1) * perPage; // Calculate the number of documents to skip
-//   const limit = parseInt(perPage, 10); // Ensure perPage is an integer
-
-//   const query = {}; // Define an empty query object
-
-//   if (search) {
-//     // If a search term is provided, add it to the query to filter results
-//     query.$or = [
-//       { 'firstName': { $regex: search, $options: 'i' } },
-//       { 'lastName': { $regex: search, $options: 'i' } },
-//       { 'fullName': { $regex: search, $options: 'i' } },
-//       { 'company': { $regex: search, $options: 'i' } },
-//       { 'phone': { $regex: search, $options: 'i' } },
-//       { 'email': { $regex: search, $options: 'i' } },
-//       { 'address.address1': { $regex: search, $options: 'i' } }, // Include address field
-//       { 'address.address2': { $regex: search, $options: 'i' } }, // Include address field
-//       { 'address.city': { $regex: search, $options: 'i' } }, // Include address field
-//       { 'address.state': { $regex: search, $options: 'i' } }, // Include address field
-//       { 'address.zip': { $regex: search, $options: 'i' } }, // Include address field
-//     ];
-//   }
-
-//   const clients = await models.Client.aggregate([
-//     {
-//       $lookup: {
-//         from: 'campaigns',
-//         localField: '_id',
-//         foreignField: 'client',
-//         as: 'campaigns',
-//       },
-//     },
-//     {
-//       $match: query,
-//     },
-//     {
-//       $skip: skip,
-//     },
-//     {
-//       $limit: limit,
-//     },
-//     {
-//       $project: {
-//         usablePassword: {
-//           $cond: {
-//             if: { $eq: ['$password', null] },
-//             then: false,
-//             else: true,
-//           },
-//         },
-//         // Include other fields you want to keep
-//         firstName: 1,
-//         lastName: 1,
-//         fullName: 1,
-//         phone: 1,
-//         email: 1,
-//         company: 1,
-//         address: 1, // Include the entire address field
-//         campaignCount: { $size: '$campaigns' }, // Count of campaigns
-//         emailSentAt: 1,
-//         createdAt: 1,
-//         updatedAt: 1,
-//       },
-//     },
-//   ]).exec();
-
-//   return clients;
-// };
-
-
 
 
 export default {

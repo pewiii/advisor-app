@@ -135,17 +135,19 @@ const respondentSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    maxlength: 2,
     required: true
   },
-  zipCode: {
+  zip: {
     type: String,
     required: true
   },
-  email: String,
-  phone: {
-    type: String,
-    required: true
+  extraInfo: {
+    type: Object
+  },
+  event: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Event'
   },
   campaign: {
     type: mongoose.Schema.Types.ObjectId,
@@ -154,6 +156,47 @@ const respondentSchema = new mongoose.Schema({
   }
   // other info
 }, { timestamps: true })
+
+
+const eventSchema = new mongoose.Schema({
+  locationName: {
+    type: String,
+    required: true
+  },
+  address1: {
+    type: String,
+    required: true
+  },
+  address2: {
+    type: String,
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  zip: {
+    type: String,
+    required: true
+  },
+  eventDate: {
+    type: Date
+  },
+  timezone: {
+    type: String
+  }
+})
+
+const questionSchema = new mongoose.Schema({
+  text: String,
+  answerType: String,
+  placeholder: String,
+  label: String,
+  options: [String]  
+})
 
 
 const campaignSchema = new mongoose.Schema({
@@ -170,58 +213,21 @@ const campaignSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Template'
   },
-  questions: [
-    {
-      text: String,
-      answerType: String,
-      placeholder: String,
-      options: [String]
-    }
-  ],
+  questions: [questionSchema],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   fileName: String,
-  events: [
-    {
-      locationName: {
-        type: String,
-        required: true
-      },
-      address1: {
-        type: String,
-        required: true
-      },
-      address2: {
-        type: String,
-      },
-      city: {
-        type: String,
-        required: true
-      },
-      state: {
-        type: String,
-        required: true
-      },
-      zip: {
-        type: String,
-        required: true
-      },
-      eventDate: {
-        type: Date
-      },
-      timezone: {
-        type: String
-      }
-    }
-  ]
+  fileRecords: Number,
+  events: [eventSchema]
 }, { timestamps: true })
 
 const templateSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   config: {
     type: Object,
@@ -252,6 +258,8 @@ const Respondent = mongoose.model('Respondent', respondentSchema)
 const Template = mongoose.model('Template', templateSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)
 const Image = mongoose.model('Image', imageSchema)
+const Event = mongoose.model('Event', eventSchema)
+const Question = mongoose.model('Question', questionSchema)
 
 export default {
   User,

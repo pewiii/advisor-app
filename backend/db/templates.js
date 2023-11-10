@@ -26,8 +26,8 @@ const getList = async (search, page, perPage) => {
   const skip = page * limit;
 
   const query = {};
-  if (search && search.title) {
-    query.title = new RegExp(search.title, 'i');
+  if (search) {
+    query.title = new RegExp(search, 'i');
   }
 
   const templates = await models.Template.aggregate([

@@ -2,9 +2,12 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { notify } from "@kyvg/vue3-notification"
+import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
   const API_URL = import.meta.env.VITE_APP_API_URL
+
+  const router = useRouter()
 
   const api = ref(null as any)
 
@@ -29,7 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
     }, (error: any) => {
       if (error && error.response) {
         if (error.response.status === 401) {
-          reset()
+          logout()
+          router.go(0)
         } else if (error.response.data && error.response.data.message) {
           notify({
             title: 'Error',

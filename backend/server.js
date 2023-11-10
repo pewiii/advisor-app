@@ -68,6 +68,7 @@ app.get('/templates', auth.verifyToken, api.templates.getList)
 
 
 app.post('/offer-code', api.offers.handleOfferCode)
+app.post('/rsvp', api.offers.rsvp)
 
 app.listen(API_PORT, () => {
   console.log(`Listening on port ${API_PORT}`)

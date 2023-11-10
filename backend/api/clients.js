@@ -36,7 +36,7 @@ const getList = async (req, res) => {
     const { search = '', page = 0, perPage = 10 } = req.query;
     
     const clients = await db.clients.getList(search, page, perPage);
-    const count = await db.clients.getClientCount()
+    const count = await db.clients.getClientCount(search)
     res.send({
       data: clients,
       page: page,

@@ -47,6 +47,7 @@ const emptyQuestion = {
   text: '',
   answerType: 'text',
   options: [],
+  label: '',
   placeholder: ''
 }
 
@@ -54,18 +55,21 @@ const emptyTemplate = {
   title: '',
   config: {
     headerImage: null,
-    headerPanelBgColor: 'fff',
-    headerPanelTextColor: '000',
+    headerPanelBgColor: '#fefefebd',
+    headerPanelTextColor: '#000',
     headerPanelText: 'Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas. Habitasse platea dictumst vestibulum rhoncus est pellentesque. Est placerat in egestas erat imperdiet sed. Lacus viverra vitae congue eu. Sit amet risus nullam eget felis eget nunc. At augue eget arcu dictum varius duis at consectetur. Velit dignissim sodales ut eu. Senectus et netus et malesuada fames ac turpis egestas. Viverra nam libero justo laoreet sit.',
-    headingSectionBgColor: 'fff',
-    headingSectionTextColor: '000',
+    headingSectionBgColor: '#fefefe',
+    headingSectionTextColor: '#000',
     headingSectionHeading: 'Heading Heading Heading',
     headingSectionText: 'Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas. Habitasse platea dictumst vestibulum rhoncus est pellentesque. Est placerat in egestas erat imperdiet sed. Lacus viverra vitae congue eu. Sit amet risus nullam eget felis eget nunc. At augue eget arcu dictum varius duis at consectetur. Velit dignissim sodales ut eu. Senectus et netus et malesuada fames ac turpis egestas. Viverra nam libero justo laoreet sit.',
     infoImage: null,
-    infoPanelBgColor: 'fff',
-    infoPanelTextColor: '000',
+    infoPanelBgColor: '#fefefebd',
+    infoPanelTextColor: '#000',
     infoPanelHeading: 'Info',
-    infoPanelText: 'Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas.'
+    infoPanelText: 'Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas.',
+    submitBtnColor: '#2176aeff',
+    submitBtnTextColor: '#fff',
+    submitBtnText: 'Submit',
   },
 }
 

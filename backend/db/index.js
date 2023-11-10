@@ -4,6 +4,7 @@ import campaigns from './campaigns.js'
 import records from './records.js'
 import templates from './templates.js'
 import images from './images.js'
+import respondents from './respondents.js'
 
 
 // import models from './models.js'
@@ -27,4 +28,5 @@ export default {
   records,
   templates,
   images,
+  respondents,
 }
