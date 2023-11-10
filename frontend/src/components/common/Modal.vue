@@ -1,7 +1,7 @@
 <template>
   <slot name="trigger" :open="open"></slot>
 
-  <pvDialog v-model:visible="showModal" :header="header" :style="{ width: '50rem' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+  <pvDialog v-model:visible="showModal" :header="header" :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
 
     <slot name="content"></slot>
     <!-- <p class="m-0">
@@ -16,15 +16,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const props = defineProps(['header'])
+const props = defineProps(['header', 'size'])
 
 const showModal = ref(false)
 
 const open = () => {
   showModal.value = true
 }
+
+const width = computed(() => {
+  const sizes = {
+    small: '20rem',
+    medium: '30rem',
+    large: '50rem'
+  } as any
+
+  return sizes[props.size] || sizes.large
+
+})
 
 // const close = () => {
 //   showModal.value = false

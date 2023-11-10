@@ -1,12 +1,12 @@
 <template>
   <div class="relative w-full max-h-screen overflow-hidden">
     <div class="absolute z-10 flex w-full h-full items-center justify-center">
-      <div class="bg-white p-8 bg-opacity-80 ml-64 max-w-2xl">
+      <div class="bg-white p-8 ml-64 max-w-2xl" :style="{ 'background-color': `${templateData.config.headerPanelBgColor}`, 'color': `${templateData.config.headerPanelTextColor}` }">
         <div class="font-bold text-2xl capitalize">
           Hello {{ templateData.person.firstName.toLowerCase() }}
         </div>
         <div class="text-xl mt-4">
-          Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas. Habitasse platea dictumst vestibulum rhoncus est pellentesque. Est placerat in egestas erat imperdiet sed. Lacus viverra vitae congue eu. Sit amet risus nullam eget felis eget nunc. At augue eget arcu dictum varius duis at consectetur. Velit dignissim sodales ut eu. Senectus et netus et malesuada fames ac turpis egestas. Viverra nam libero justo laoreet sit.
+          {{ templateData.config.headerPanelText }}
         </div>
       </div>
       <div v-if="arrowDown" class="absolute z-20 bottom-0 mb-8 text-white">
@@ -15,28 +15,28 @@
     </div>
     <img :src="headerImage" class="bg-cover w-full"/>
   </div>
-  <div class="p-20 flex flex-col justify-center items-center">
+  <div class="p-20 flex flex-col justify-center items-center" :style="{ 'background-color': `${templateData.config.headingSectionBgColor}`, 'color': `${templateData.config.headingSectionTextColor}` }">
     <div class="text-center max-w-7xl">
-      <div class="text-3xl font-semibold">Heading Heading Heading</div>
-      <div class="mt-6">Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas. Habitasse platea dictumst vestibulum rhoncus est pellentesque. Est placerat in egestas erat imperdiet sed. Lacus viverra vitae congue eu. Sit amet risus nullam eget felis eget nunc. At augue eget arcu dictum varius duis at consectetur. Velit dignissim sodales ut eu. Senectus et netus et malesuada fames ac turpis egestas. Viverra nam libero justo laoreet sit.</div>
+      <div class="text-3xl font-semibold">{{ templateData.config.headingSectionHeading }}</div>
+      <div class="mt-6">{{ templateData.config.headingSectionText }}</div>
     </div>
   </div>
   <div class="relative flex items-center">
-    <div class="absolute bg-white ml-40 max-w-3xl p-6">
-      <div class="font-bold text-4xl">Info</div>
+    <div class="absolute bg-white ml-40 max-w-3xl p-6" :style="{ 'background-color': `${templateData.config.infoPanelBgColor}`, 'color': `${templateData.config.infoPanelTextColor}` }">
+      <div class="font-bold text-4xl">{{ templateData.config.infoPanelHeading }}</div>
       <div>
-        Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas.
+        {{ templateData.config.infoPanelText }}
       </div>
     </div>
-    <img :src="steakImage" class="bg-cover w-full" />
+    <img :src="infoImage" class="bg-cover w-full" />
   </div>
 </template>
 
 <script lang="ts" setup>
 // import image from '@/assets/tempimage.jpg'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import topImage from '@/assets/tempimage.jpg'
-import steakImage from '@/assets/steak.jpg'
+import bottomImage from '@/assets/steak.jpg'
 
 const props = defineProps(['templateData'])
 
@@ -47,6 +47,17 @@ const headerImage = computed(() => {
   }
   return topImage
 })
+
+const infoImage = computed(() => {
+  if (props.templateData.config && props.templateData.config.infoImage) {
+    return props.templateData.config.infoImage.url
+  }
+  return bottomImage
+})
+
+watch(() => props.templateData, () => {
+  console.log(props.templateData)
+}, { deep: true })
 
 
 const events = computed(() => {
@@ -62,6 +73,13 @@ const config = computed(() => {
 })
 
 const arrowDown = ref(false)
+
+const getOpacity = (number:number) => {
+  number = number / 1500
+  const _opacity = Math.round(Math.min(Math.max(number, 0), 1) * 255);
+  let opacityHex = _opacity.toString(16).toUpperCase()
+  return opacityHex
+}
 
 onMounted(() => {
   let interval = null

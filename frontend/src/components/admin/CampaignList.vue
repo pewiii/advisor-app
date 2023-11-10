@@ -37,7 +37,7 @@
   </pvColumn>
   <pvColumn field="actions" header="Actions">
     <template #body="{ data }">
-      <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div>
+      <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
       <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditCampaign(data)">edit</div>
     </template>
   </pvColumn>
@@ -128,7 +128,6 @@ onMounted(getCampaigns)
 
 const refresh = (e: any) => {
   if (campaignPaginator.value) {
-    console.log(campaignPaginator.value)
     if (campaignPaginator.value.page !== 0) {
       campaignPaginator.value.changePageToFirst(e)
     } else {
@@ -141,7 +140,6 @@ const refresh = (e: any) => {
 }
 
 const handlePage = (pagination: any) => {
-  console.log(pagination)
   perPage.value = pagination.rows
   page.value = pagination.page
   getCampaigns()

@@ -37,15 +37,19 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  const data = req.body
-  console.log(data)
-
-  res.sendStatus(201)
+  try {
+    const data = req.body
+    const template = await db.templates.updateTemplate(data._id, data)
+    res.status(201).send(template)
+  } catch(err) {
+    console.log(err.message)
+    res.status(400).send({ message: err.message })
+  }
 }
 
 export default {
   getList,
   create,
   update,
-  
+
 }

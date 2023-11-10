@@ -24,16 +24,18 @@
           Client (Select from client list)
         </label>
         <div class="pl-2">
-          <pvInputText id="campaign-client" :value="campaign.client ? `${campaign.client.fullName}${campaign.client.company ? ` - ${campaign.client.company}` : ''}` : ''" placeholder="Campaign Client" disabled class="w-full h-9 disabled:bg-white !text-gray-900 client-input"/>
+          <span>{{ campaign.client ? `${campaign.client.fullName}${campaign.client.company ? ` - ${campaign.client.company}` : ''}` : '' }}</span>
+          <!-- <pvInputText id="campaign-client" :value="campaign.client ? `${campaign.client.fullName}${campaign.client.company ? ` - ${campaign.client.company}` : ''}` : ''" placeholder="Campaign Client" disabled class="w-full h-9 disabled:bg-white !text-gray-900 client-input"/> -->
         </div>
       </div>
 
+
       <div class="md:pl-4">
-        <label for="campaign-template" class="">
-          Template
+        <label for="campaign-client" class="">
+          Template (Select from template list)
         </label>
         <div class="pl-2">
-          <pvInputText id="campaign-template" v-model="campaign.landingTemplate" placeholder="Landing Template" class="w-full h-9"/>
+          <span>{{ campaign.template ? campaign.template.title : '' }}</span>
         </div>
       </div>
       
@@ -425,7 +427,7 @@
     </div>
 
     <div class="flex justify-center mt-16 gap-4">
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="campaign = null" raised />
+      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
       <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitCampaign" raised />
       <!-- <div class="admin-btn !bg-slate-800" @click="cancel">Cancel</div>
       <button class="admin-btn" @click.prevent="submitCampaign">Submit</button> -->
@@ -436,7 +438,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { useCampaignStore } from '@/stores/campaign';
 import { notify } from "@kyvg/vue3-notification"
 import { useRouter } from 'vue-router';
 import router from '@/router';
@@ -451,20 +452,45 @@ import moment from 'moment-timezone'
 // const fileLoading = ref(false)
 const loading = ref(false)
 
-const props = defineProps(['modelValue', 'selectedClient', 'submitCampaign', 'cancel'])
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps(['campaign', 'selectedClient', 'submitCampaign', 'selectedTemplate'])
+const emit = defineEmits(['update:campaign', 'update:selectedTemplate'])
 
 const client = computed(() => {
   return props.selectedClient
 })
 
+// const template = computed(() => {
+//   return props.selectedTemplate
+// })
+
+const template = computed({
+  get() {
+    return props.selectedTemplate
+  },
+  set(template) {
+    emit('update:selectedTemplate', template)
+  }
+})
+
+
 const campaign = computed({
   get() {
-    return props.modelValue
+    return props.campaign
   },
   set(campaign) {
-    emit('update:modelValue', campaign)
+    emit('update:campaign', campaign)
   }
+})
+
+const cancel = () => {
+  campaign.value = null
+  template.value = null
+}
+
+onMounted(() => {
+  if (!template.value && campaign.value.template) {
+    template.value = campaign.value.template
+  } 
 })
 
 const events = computed(() => campaign.value.events)
@@ -490,14 +516,7 @@ const submitCampaign = async () => {
     const data = JSON.parse(JSON.stringify(campaign.value))
     data.user = auth.user._id
     data.client = data.client._id
-
-    //temp
-    delete data.landingTemplate
-
-    // data.events.forEach((campaignEvent: any) => {
-    //   campaignEvent.date = campaignEvent.date.split('T')[0]
-    //   console.log(campaignEvent.date)
-    // })
+    data.template = data.template._id
 
     console.log(data)
 
@@ -514,6 +533,7 @@ const submitCampaign = async () => {
       type: 'success'
     })
     // getCampaigns()
+    template.value = null
   } catch(err: any) {
     console.log(err)
   }
@@ -526,6 +546,10 @@ const submitCampaign = async () => {
 
 watch(client, () => {
   campaign.value.client = client.value
+})
+
+watch(template, () => {
+  campaign.value.template = template.value
 })
 
 const timezones = [

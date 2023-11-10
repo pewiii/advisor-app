@@ -166,9 +166,9 @@ const campaignSchema = new mongoose.Schema({
     required: true,
     ref: 'Client'
   },
-  landingTemplate: {
+  template: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'LandingTemplate'
+    ref: 'Template'
   },
   questions: [
     {

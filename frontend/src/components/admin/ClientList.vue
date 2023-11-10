@@ -38,7 +38,7 @@
       </pvColumn> -->
       <pvColumn field="actions" header="Actions">
         <template #body="{ data }">
-          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div>
+          <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
           <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
         </template>
       </pvColumn>

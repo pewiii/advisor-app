@@ -30,15 +30,15 @@
     </pvColumn>
     <pvColumn field="status" header="Status">
       <template #body="{ data }">
-        Status
-        <!-- <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
+        <!-- Status -->
+        <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
-        </div> -->
+        </div>
       </template>
     </pvColumn>
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div>
+        <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditTemplate(data)">edit</div>
       </template>
     </pvColumn>
@@ -111,10 +111,27 @@
     get() {
       return props.modelValue
     },
-    set(selectedTemplate) {
-      emit('update:modelValue', selectedTemplate)
+    set(template) {
+      if (props.modelValue === template) {
+        emit('update:modelValue', null)
+      } else {
+        emit('update:modelValue', template)
+      }
     }
   })
+
+  const selectedClient = computed({
+  get() {
+    return props.modelValue
+  },
+  set(client: any) {
+    if (props.modelValue === client) {
+      emit('update:modelValue', null)
+    } else {
+      emit('update:modelValue', client)
+    }
+  }
+})
 
   
   const getTemplates = async () => {
@@ -123,10 +140,8 @@
       const res = await auth.api.get(
         `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
 
-      console.log(res)
       templates.value = res.data.data
       totalRecords.value = res.data.total
-      console.log(totalRecords.value)
     } catch(err: any) {
       console.log(err.message)
     }

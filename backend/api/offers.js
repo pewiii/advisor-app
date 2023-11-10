@@ -12,24 +12,36 @@ const handleOfferCode = async (req, res) => {
     }
 
 
+
     if (record && campaign) {
+
+
       res.send({
-        // template: {
-          //   stuff: null
-          // },
+        config: campaign.template.config,
         person: {
           firstName: record.firstName,
-          _id: record._id,
+          _id: record._id
         },
-        campaign: {
-          _id: campaign._id,
-          questions: campaign.questions,
-          events: campaign.events,
-          template: {
-            stuff: null
-          },
-        }
+        questions: campaign.questions,
+        events: campaign.events,
       })
+
+
+      // res.send({
+      //   // template: {
+      //     //   stuff: null
+      //     // },
+      //   person: {
+      //     firstName: record.firstName,
+      //     _id: record._id,
+      //   },
+      //   campaign: {
+      //     _id: campaign._id,
+      //     questions: campaign.questions,
+      //     events: campaign.events,
+      //     template: campaign.template
+      //   }
+      // })
     } else {
       res.sendStatus(404)
     }

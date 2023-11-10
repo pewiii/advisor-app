@@ -52,6 +52,14 @@ const getList = async (search, page, perPage) => {
         },
       },
       {
+        $lookup: {
+          from: 'templates',
+          localField: 'template',
+          foreignField: '_id',
+          as: 'template',
+        },
+      },
+      {
         $addFields: {
           status: {
             $cond: {
@@ -96,6 +104,7 @@ const getList = async (search, page, perPage) => {
     for (const campaign of campaigns) {
       const respondentCount = await models.Respondent.countDocuments({ campaign: campaign._id });
       campaign.client = campaign.client[0]; // Unwrap the client from the array
+      campaign.template = campaign.template[0]
       campaign.respondents = respondentCount;
       campaignsWithRespondentCount.push(campaign);
     }
@@ -106,9 +115,18 @@ const getList = async (search, page, perPage) => {
   }
 };
 
+// const getById = (id) => {
+//   return models.Campaign.findById(id)
+//   .populate('template')
+//   .exec()
+// }
+
 const getById = (id) => {
   return models.Campaign.findById(id)
+    .populate('template')
+    .exec();
 }
+
 
 export default {
   create,

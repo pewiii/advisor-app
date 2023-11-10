@@ -21,6 +21,10 @@ import Dialog from 'primevue/dialog'
 import Galleria from 'primevue/galleria'
 import FileUpload from 'primevue/fileupload';
 import Paginator from 'primevue/paginator'
+import ColorPicker from 'primevue/colorpicker'
+import Slider from 'primevue/slider'
+import InputNumber from 'primevue/inputnumber'
+import TextArea from 'primevue/textarea';
 // import Row from 'primevue/row'
 
 import App from './App.vue'
@@ -47,6 +51,10 @@ app.component('pvDialog', Dialog)
 app.component('pvGalleria', Galleria)
 app.component('pvFileUpload', FileUpload)
 app.component('pvPaginator', Paginator)
+app.component('pvColorPicker', ColorPicker)
+app.component('pvSlider', Slider)
+app.component('pvInputNumber', InputNumber)
+app.component('pvTextArea', TextArea)
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })
 for (const path in modules) {

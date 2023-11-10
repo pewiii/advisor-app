@@ -21,7 +21,7 @@
 
 
       <div class="bg-white p-6">
-        <CampaignForm v-if="editCampaign" v-model="editCampaign" :selectedClient="selectedClient" />
+        <CampaignForm v-if="editCampaign" v-model:campaign="editCampaign" v-model:selectedTemplate="selectedTemplate" :selectedClient="selectedClient"  />
         <CampaignList v-else :addEditCampaign="addEditCampaign" :search="search"/>
       </div>
 

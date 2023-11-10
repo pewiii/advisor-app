@@ -47,6 +47,7 @@ const submitCode = async () => {
 
     const { data } = await auth.api.post('/offer-code', { offerCode: offerCode.value })
     templateData.value = data
+    console.log(templateData.value)
 
   } catch(err: any) {
     console.log(err)
