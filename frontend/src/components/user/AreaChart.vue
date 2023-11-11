@@ -12,9 +12,10 @@ import { onMounted } from 'vue';
 
 onMounted(() => {
   
-  Highcharts.chart('area-chart', {
+  Highcharts.chart({
       chart: {
           type: 'area',
+          renderTo: 'area-chart'
           // height: 350
       },
       title: {

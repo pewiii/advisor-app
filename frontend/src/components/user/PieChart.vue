@@ -28,14 +28,15 @@ import { onMounted } from 'vue';
 
 onMounted(() => {
   // Build the chart
-  Highcharts.chart('pie-chart', {
+  Highcharts.chart({
       chart: {
           plotBackgroundColor: null,
           plotBorderWidth: null,
           plotShadow: false,
           type: 'pie',
           height: 350,
-          width: 350
+          width: 350,
+          renderTo: 'pie-chart',
       },
       title: {
         text: 'Net Worth',
