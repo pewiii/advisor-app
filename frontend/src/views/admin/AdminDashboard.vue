@@ -65,7 +65,7 @@
                 <pvRadioButton v-model="currentList" inputId="template-list" name="pizza" value="templates" />
                 <label for="template-list" class="ml-2">Templates</label>
               </div>
-              <div class="flex align-items-center">
+              <div class="flex align-items-center" v-if="auth.user.isAdmin">
                 <pvRadioButton v-model="currentList" inputId="user-list" name="pizza" value="users" />
                 <label for="user-list" class="ml-2">Users</label>
               </div>              
@@ -90,7 +90,7 @@
               <TemplateList v-model="selectedTemplate" :addEditTemplate="addEditTemplate" :search="search"/>
             </div>
 
-            <div v-if="currentList === 'users'" class="align-top">
+            <div v-if="currentList === 'users' && auth.user.isAdmin" class="align-top">
               <UserList :search="search" v-model="selectedClient" :addEditUser="addEditUser"/>
             </div>
           </div>
@@ -98,69 +98,28 @@
       </div>
     </div>
 
-    <div class="w-full flex flex-col gap-6" v-if="editClient || editCampaign || editTemplate || previewTemplate">
-      <div class="bg-white p-6" v-if="editClient || editCampaign || editTemplate">
+    <div class="w-full flex flex-col gap-6" v-if="editClient || editCampaign || editTemplate || editUser || previewTemplate">
+      <div class="bg-white p-6" v-if="editClient || editCampaign || editTemplate || editUser">
         <div>
           <div v-if="editClient">
             <ClientForm v-model="editClient" />
           </div>
-          
           <div v-if="editCampaign">
             <CampaignForm v-model:campaign="editCampaign" v-model:selectedTemplate="selectedTemplate" :selectedClient="selectedClient" :cancel="cancelEditCampaign"  />
           </div>
-          
           <div v-if="editTemplate">
             <TemplateForm v-model="editTemplate" :cancel="cancelEditTemplate"/>
           </div>
+          <div v-if="editUser && auth.user.isAdmin">
+            <UserForm v-model="editUser" />
+          </div>
         </div>
       </div>
-
       <div v-if="previewTemplate">
         <TemplatePreview :selectedTemplate="previewTemplate" :previewCampaign="previewCampaign"/>
       </div>
     </div>
-    
   </div>
-
-  
-  <!-- <div class="gap-6 lg:p-8 flex flex-col lg:flex-row flex-wrap"> -->
-    
-    <!-- <div class="flex-1 flex flex-col gap-6 lg:max-w-"> -->
-      <!-- <div class="bg-white p-6 inline-block" v-if="showClients">
-        <ClientForm v-if="editClient" v-model="editClient" />
-        <ClientList v-else :search="search" v-model="selectedClient" :newCampaign="addEditCampaign" :addEditClient="addEditClient"/>
-      </div> -->
-
-      <!-- <div class="bg-white p-6 inline-block" v-if="showCampaigns">
-        <CampaignForm v-if="editCampaign" v-model:campaign="editCampaign" v-model:selectedTemplate="selectedTemplate" :selectedClient="selectedClient" :cancel="cancelEditCampaign"  />
-        <CampaignList v-else v-model="selectedCampaign" :addEditCampaign="addEditCampaign" :search="search"/>
-      </div> -->
-    <!-- </div> -->
-    
-
-    <!-- <div class="flex-1 flex flex-col gap-6"> -->
-      <!-- <div class="bg-white p-6 inline-block" v-if="showTemplates">
-        <TemplateForm v-if="editTemplate" v-model="editTemplate" :cancel="cancelEditTemplate"/>
-        <TemplateList v-else v-model="selectedTemplate" :addEditTemplate="addEditTemplate" :search="search"/>
-      </div>
-      <div class="bg-white inline-block" v-if="previewTemplate && showTemplates">
-        <TemplatePreview :selectedTemplate="previewTemplate" :selectedCampaign="selectedCampaign"/>
-      </div> -->
-    <!-- </div> -->
-  <!-- </div> -->
-    
-    <!-- <div class="gap-6 flex overflow-hidden flex-col lg:flex-row flex-wrap px-8">
-
-      <div class="panel flex-1 bg-white p-6">
-        Something Else
-
-      </div>
-      
-  
-    </div> -->
-
-
-
 </template>
 
 <script lang="ts" setup>
@@ -175,11 +134,13 @@ import UserList from '@/components/admin/UserList.vue'
 import TemplateList from '@/components/admin/TemplateList.vue'
 import TemplateForm from '@/components/admin/TemplateForm.vue'
 import TemplatePreview from '@/components/admin/TemplatePreview.vue'
+import UserForm from '@/components/admin/UserForm.vue'
 // import Modal from '@/components/common/Modal.vue'
 import objects from '@/objects'
+import { useAuthStore } from '@/stores/auth'
 // import { notify } from '@kyvg/vue3-notification';
 
-// const auth = useAuthStore()
+const auth = useAuthStore()
 
 const search = ref('')
 
@@ -203,7 +164,7 @@ const reset = () => {
   selectedTemplate.value = null
   selectedCampaign.value = null
 }
-
+console.log(auth.user)
 // const showCampaigns = ref(false)
 // const showClients = ref(false)
 // const showTemplates = ref(false)
@@ -286,6 +247,7 @@ const addEditUser = (user?: any) => {
   }
   reset()
   editUser.value = user
+  console.log(editUser.value)
   // editCampaign.value = null
   // editTemplate.vlaue = null
   // editClient.value = null

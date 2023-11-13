@@ -20,6 +20,22 @@ const getList = async (req, res) => {
   }
 }
 
+// const create = async (req, res) => {
+  
+//   res.send(201)
+// }
+
+const update = async (req, res) => {
+  res.send(201)
+}
+
+const destroy = async (req, res) => {
+  res.send(201)
+}
+
 export default {
   getList,
+  // create,
+  update,
+  destroy,
 }

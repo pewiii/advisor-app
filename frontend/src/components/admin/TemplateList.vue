@@ -42,6 +42,18 @@
       <template #body="{ data }">
         <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditTemplate(data)">edit</div>
+        <Modal :header="'Delete Template'" v-if="auth.user.isAdmin">
+          <template v-slot:trigger="{ open }">
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+          </template>
+          <template v-slot:content>
+            <div>Are you sure you want to delete this template?</div>
+            <div class="text-red-600">{{ data.title }}</div>
+            <div class="flex justify-end mt-4">
+              <pvButton label="Delete" severity="danger" @click="deleteTemplate"/>
+            </div>
+          </template>
+        </Modal>
       </template>
     </pvColumn>
     <template #footer>
@@ -101,6 +113,7 @@
   import { format } from 'date-fns'
   import { useAuthStore } from '@/stores/auth'
   import VueLoader from '@/components/common/VueLoader.vue'
+  import Modal from '@/components/common/Modal.vue'
   
   const auth = useAuthStore()
   
@@ -184,6 +197,10 @@
     perPage.value = pagination.rows
     page.value = pagination.page
     getTemplates()
+  }
+
+  const deleteTemplate = async (template: any) => {
+
   }
 
   // const formatDate = (dateText: string) => {

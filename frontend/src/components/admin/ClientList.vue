@@ -36,6 +36,18 @@
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
+        <Modal :header="'Delete Client'" v-if="auth.user.isAdmin">
+          <template v-slot:trigger="{ open }">
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+          </template>
+          <template v-slot:content>
+            <div>Are you sure you want to delete this client?</div>
+            <div class="text-red-600">{{ data.fullName }}</div>
+            <div class="flex justify-end mt-4">
+              <pvButton label="Delete" severity="danger" @click="deleteClient"/>
+            </div>
+          </template>
+        </Modal>
       </template>
     </pvColumn>
 
@@ -60,6 +72,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { format } from 'date-fns'
 import { useAuthStore } from '@/stores/auth';
 import VueLoader from '@/components/common/VueLoader.vue'
+import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
@@ -136,6 +149,10 @@ const handlePage = (pagination: any) => {
 //     selectedClient.value = client
 //   }
 // }
+
+const deleteClient = async (client: any) => {
+
+} 
 
 onMounted(getClients)
 

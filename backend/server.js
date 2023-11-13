@@ -53,7 +53,10 @@ app.get('/clients', auth.verifyToken, api.clients.getList)
 app.get('/clients/:clientId', auth.verifyToken, api.clients.get)
 app.post('/clients/setup', auth.verifyToken, comm.email.passwordSetup)
 
-app.get('/users', auth.verifyToken, api.users.getList)
+app.get('/users', auth.verifyToken, auth.requireAdmin, api.users.getList)
+app.post('/users/add', auth.verifyToken, auth.requireAdmin, auth.adminRegister)
+app.post('/users/update', auth.verifyToken, auth.requireAdmin, auth.adminUpdate)
+app.post('/users/delete', auth.verifyToken, auth.requireAdmin, api.users.destroy)
 
 app.post('/campaigns/add', auth.verifyToken, upload.single('file'), api.campaigns.create)
 app.post('/campaigns/update', auth.verifyToken, upload.single('file'), api.campaigns.update)

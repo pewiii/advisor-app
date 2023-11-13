@@ -5,6 +5,10 @@ const createUser = (data) => {
   return user.save()
 }
 
+const updateUser = (userId, data) => {
+  return models.User.findOneAndUpdate({ _id: userId }, data)
+}
+
 const getUser = (query) => {
   return models.User.findOne(query)
 }
@@ -21,7 +25,7 @@ const getUserCount = async (search) => {
       { 'email': { $regex: search, $options: 'i' } },
     ];
   }
-  const clients = await models.Client.aggregate([
+  const clients = await models.User.aggregate([
     // {
     //   $lookup: {
     //     from: 'campaigns',
@@ -86,6 +90,7 @@ const getList = async (search, page, perPage) => {
         emailSentAt: 1,
         createdAt: 1,
         updatedAt: 1,
+        password: 1
         // campaignCount: { $size: '$campaigns' },
         // status: {
         //   $cond: {
@@ -132,4 +137,5 @@ export default {
   getUser,
   getList,
   getUserCount,
+  updateUser,
 }

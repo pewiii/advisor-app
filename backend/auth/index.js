@@ -9,6 +9,7 @@ const generateToken = (user) => {
   const payload = {
     userId: user._id,
     username: user.email,
+    isAdmin: user.isAdmin
     // Add any other user-specific data
   };
 
@@ -26,6 +27,14 @@ const hashPassword = (password) => {
   
 }
 
+const requireAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next()
+    return
+  }
+  res.sendStatus(401)
+}
+
 const adminRegister = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -41,6 +50,22 @@ const adminRegister = async (req, res) => {
   }
 }
 
+const adminUpdate = async (req, res) => {
+  try {
+    const { email, password } = req.body
+    if (!password) {
+      throw ({ message: 'Password required' })
+    }
+    const hashedPassword = await hashPassword(password)
+    const user = await db.users.updateUser(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
+    // const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
+    res.status(201).send(user)
+  } catch(err) {
+    console.log(err.message)
+    res.sendStatus(400, { message: err.message })
+  }
+}
+
 const adminLogin = async (req, res) => {
   try {
 
@@ -49,7 +74,6 @@ const adminLogin = async (req, res) => {
     // req.body.lastName = 'Watson'
     // await adminRegister(req, res)
     // return
-
 
     const { email, password } = req.body
     const user = await db.users.getUser({ email })
@@ -69,7 +93,7 @@ const adminLogin = async (req, res) => {
         lastName: user.lastName,
         _id: user._id,
         userType: 'admin',
-        superUser: user.isAdmin
+        isAdmin: user.isAdmin
       } 
     })
   } catch(err) {
@@ -140,5 +164,7 @@ export default {
   login,
   verifyToken,
   hashPassword,
-  generateResetToken
+  generateResetToken,
+  requireAdmin,
+  adminUpdate
 }

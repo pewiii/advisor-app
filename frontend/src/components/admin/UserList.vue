@@ -36,6 +36,18 @@
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditUser(data)">edit</div>
+        <Modal :header="'Delete User'" v-if="auth.user.isAdmin">
+          <template v-slot:trigger="{ open }">
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+          </template>
+          <template v-slot:content>
+            <div>Are you sure you want to delete this user?</div>
+            <div class="text-red-600">{{ data.fullName }}</div>
+            <div class="flex justify-end mt-4">
+              <pvButton label="Delete" severity="danger" @click="deleteUser"/>
+            </div>
+          </template>
+        </Modal>
       </template>
     </pvColumn>
 
@@ -60,11 +72,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { format } from 'date-fns'
 import { useAuthStore } from '@/stores/auth';
 import VueLoader from '@/components/common/VueLoader.vue'
+import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
 const props = defineProps(['modelValue', 'search', 'addEditUser'])
-const emit = defineEmits(['update:modelValue'])
+// const emit = defineEmits(['update:modelValue'])
 
 
 // const showEmailMenu = ref(false)
@@ -125,6 +138,10 @@ const handlePage = (pagination: any) => {
 //     selectedClient.value = client
 //   }
 // }
+
+const deleteUser = async (user: any) => {
+
+}
 
 onMounted(getUsers)
 

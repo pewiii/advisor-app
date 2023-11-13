@@ -40,6 +40,18 @@
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditCampaign(data)">edit</div>
+        <Modal :header="'Delete Campaign'" v-if="auth.user.isAdmin">
+          <template v-slot:trigger="{ open }">
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+          </template>
+          <template v-slot:content>
+            <div>Are you sure you want to delete this campaign?</div>
+            <div class="text-red-600">{{ data.title }}</div>
+            <div class="flex justify-end mt-4">
+              <pvButton label="Delete" severity="danger" @click="deleteCampaign"/>
+            </div>
+          </template>
+        </Modal>
       </template>
     </pvColumn>
     <template #footer>
@@ -64,6 +76,7 @@ import { onMounted, ref, watch, computed } from 'vue'
 import { format } from 'date-fns'
 import { useAuthStore } from '@/stores/auth'
 import VueLoader from '@/components/common/VueLoader.vue'
+import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
@@ -131,6 +144,10 @@ const handlePage = (pagination: any) => {
   perPage.value = pagination.rows
   page.value = pagination.page
   getCampaigns()
+}
+
+const deleteCampaign = async (campaign: any) => {
+
 }
 
 

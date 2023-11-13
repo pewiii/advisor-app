@@ -28,9 +28,9 @@
     <div class="mt-6">
       <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
         <div class="text-lg">
-          Contact Info
+          Login
         </div>
-        <div class="material-icons md-30">phone</div>
+        <div class="material-icons md-30">key</div>
       </div>
       <div class="md:pl-4">
         <label for="user-email" class="">
@@ -40,9 +40,34 @@
           <pvInputText id="user-email" v-model="user.email" placeholder="Email Address" class="w-full h-9"/>
         </div>
       </div>
+      <div class="md:pl-4">
+        <label for="user-password" class="">
+          Password
+        </label>
+        <div class="pl-2">
+          <pvInputText id="user-password" v-model="user.password" placeholder="Password" class="w-full h-9"/>
+        </div>
+      </div>
     </div>
 
-    <div class="mt-8" v-if="user._id">
+    <div class="mt-6">
+      <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+        <div class="text-lg">
+          Permission
+        </div>
+        <div class="material-icons md-30">key</div>
+      </div>
+      <div class="md:pl-4 flex">
+        <label for="user-email" class="">
+          Admin
+        </label>
+        <div class="pl-2 -translate-y-1">
+          <pvCheckbox id="user-email" v-model="user.isAdmin" binary class="h-9"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="mt-8" v-if="user._id">
       <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
         <div class="text-lg">
           Status
@@ -50,9 +75,10 @@
         <div class="material-icons md-30">key</div>
       </div>
       <div class="md:pl-4 flex gap-x-4 justify-between flex-wrap">
+        
 
       </div>
-    </div>
+    </div> -->
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
       <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="user = null" raised />
       <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitUser" raised />
