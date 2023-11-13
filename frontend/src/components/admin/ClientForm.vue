@@ -169,7 +169,7 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center mt-16 gap-4">
+      <div class="flex justify-center mt-16 gap-4 flex-wrap">
         <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
         <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised />
       </div>

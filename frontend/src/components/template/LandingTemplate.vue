@@ -1,6 +1,6 @@
 <template>
   <div class="relative w-full max-h-screen overflow-hidden lg:min-h-screen lg:flex items-center justify-center" :style="{'background-image': `url(${headerImage})`, 'background-size': 'cover', 'background-position': 'center', 'background-attachment': 'fixed' }">
-    <div class="z-10 flex w-full h-full lg:max-w-2xl ">
+    <div class="flex w-full h-full lg:max-w-2xl ">
       <div class="bg-white p-8" :style="{ 'background-color': `${templateData.config.headerPanelBgColor}`, 'color': `${templateData.config.headerPanelTextColor}` }">
         <div class="font-bold text-2xl capitalize">
           Hello {{ person.firstName.toLowerCase() }}
@@ -51,7 +51,7 @@
               </label>
             </div>        
           </div>
-          <div v-if="questions && answers.length" class="mt-4">
+          <div v-if="questions.length" class="mt-4">
             <div class="font-semibold text-lg">Question<span v-if="questions.length > 1">s</span></div>
             <div class="flex flex-col gap-4">
               <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="bg-white bg-opacity-20 p-4 flex gap-4 flex-wrap">
@@ -177,8 +177,11 @@ const submit = async () => {
 const arrowDown = ref(false)
 
 
-onMounted(() => {
+watch(events, () => {
   selectedEvent.value = events.value[0]
+}, { immediate: true, deep: true })
+
+watch(questions, () => {
   answers.value = questions.value.map((question: any) => {
     let answer = '' as any
     if (question.answerType === 'checkbox') {
@@ -199,6 +202,10 @@ onMounted(() => {
       answer
     }
   })
+}, { immediate: true, deep: true})
+
+
+// onMounted(() => {
   // let interval = null
   // const timeout = setTimeout(() => {
     
@@ -216,6 +223,6 @@ onMounted(() => {
   //   }
   //   arrowDown.value = false
   // })
-})
+// })
 
 </script>

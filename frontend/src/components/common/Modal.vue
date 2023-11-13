@@ -1,7 +1,7 @@
 <template>
   <slot name="trigger" :open="open"></slot>
 
-  <pvDialog v-model:visible="showModal" :header="header" :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+  <pvDialog v-model:visible="showModal" :header="header" :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" maximizable :keepInViewPort="false" :autoZIndex="false" :appendTo="windowArea">
 
     <slot name="content"></slot>
     <!-- <p class="m-0">
@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 
-const props = defineProps(['header', 'size'])
+const props = defineProps(['header', 'size' ,'windowArea'])
 
 const showModal = ref(false)
 

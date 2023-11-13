@@ -19,14 +19,18 @@ import Calendar from 'primevue/calendar'
 import Dropdown from 'primevue/dropdown'
 import Dialog from 'primevue/dialog'
 import Galleria from 'primevue/galleria'
-import FileUpload from 'primevue/fileupload';
+import FileUpload from 'primevue/fileupload'
 import Paginator from 'primevue/paginator'
 import ColorPicker from 'primevue/colorpicker'
 import Slider from 'primevue/slider'
 import InputNumber from 'primevue/inputnumber'
-import TextArea from 'primevue/textarea';
+import TextArea from 'primevue/textarea'
 import RadioButton from 'primevue/radiobutton'
 import Checkbox from 'primevue/checkbox'
+import InlineMessage from 'primevue/inlinemessage'
+import Tooltip from 'primevue/tooltip'
+
+
 // import Row from 'primevue/row'
 
 import App from './App.vue'
@@ -39,8 +43,9 @@ app.use(router)
 app.use(Notifications)
 // app.use(PrimeVue)
 
-app.directive('ripple', Ripple);
-app.use(PrimeVue, { ripple: true });
+app.directive('ripple', Ripple)
+app.directive('tooltip', Tooltip)
+app.use(PrimeVue, { ripple: true })
 
 app.component('pvDataTable', DataTable)
 // app.component('pvRow', Row)
@@ -59,6 +64,8 @@ app.component('pvInputNumber', InputNumber)
 app.component('pvTextArea', TextArea)
 app.component('pvRadioButton', RadioButton)
 app.component('pvCheckbox', Checkbox)
+app.component('pvInlineMessage', InlineMessage)
+
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })
 for (const path in modules) {

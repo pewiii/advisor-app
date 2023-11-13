@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" tableStyle="min-width: 50rem" :loading="loading">
+  <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" :loading="loading">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -15,22 +15,22 @@
       <VueLoader />
     </template>
     <pvColumn field="title" header="Title"></pvColumn>
-    <pvColumn field="client" header="Client">
+    <pvColumn field="client" header="Client"  class="">
       <template #body="{ data }">
         {{ data.client.fullName }}
       </template>
     </pvColumn>
-    <pvColumn field="createdAt" header="Created">
+    <pvColumn field="createdAt" header="Created" class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="updatedAt" header="Updated">
+    <pvColumn field="updatedAt" header="Updated" class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status">
+    <pvColumn field="status" header="Status" class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
@@ -43,11 +43,16 @@
       </template>
     </pvColumn>
     <template #footer>
-      <div class="h-10 flex justify-between items-center">
-        <div>
+      <div class="h-10 flex justify-around md:justify-between items-center" >
+        <div class="hidden md:block">
           Total Campaigns: {{ totalRecords }}
         </div>
-        <pvPaginator ref="campaignPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+        <div class="">
+          <pvPaginator ref="campaignPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+        </div>
+        <!-- <div class="md:hidden">
+          <pvPaginator ref="campaignPaginator" :rows="perPage" :totalRecords="totalRecords" template="PrevPageLink CurrentPageReport NextPageLink" @page="handlePage" />
+        </div> -->
       </div>
     </template>
   </pvDataTable>
@@ -72,7 +77,6 @@ const selectedCampaign = computed({
     return props.modelValue
   },
   set(campaign: any) {
-    console.log("HERE")
     if (props.modelValue === campaign) {
       emit('update:modelValue', null)
     } else {

@@ -1,9 +1,12 @@
 <template>
   <div class="p-4 flex justify-between bg-primary">
-    <div class="text-white">
+    <div class="text-white hidden sm:block">
       Logo
     </div>
-    <div class="flex gap-4">
+    <div class="flex gap-4 w-full justify-end">
+      <div>
+        <slot></slot>
+      </div>
       <div>
         <input type="text" placeholder="Search" class="h-8 ml-4 bg-gray-200 px-2 md:w-96" v-model="search" />
       </div>

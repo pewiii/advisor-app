@@ -3,6 +3,7 @@ import campaigns from './campaigns.js'
 import templates from './templates.js'
 import uploads from './uploads.js'
 import offers from './offers.js'
+import users from './users.js'
 
 
 
@@ -11,5 +12,6 @@ export default {
   campaigns,
   uploads,
   offers,
-  templates
+  templates,
+  users
 }

@@ -13,14 +13,16 @@ const emptyClient = {
   }
 }
 
+const emptyUser = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  isAdmin: false,
+}
+
 const emptyCampaign = {
   title: '',
-  client: {
-    firstName: '',
-    lastName: '',
-    fullName: '',
-    _id: '',
-  },
+  client: null,
   template: '',
   // extraQuestions: [],
   user: '',
@@ -73,10 +75,43 @@ const emptyTemplate = {
   },
 }
 
+const timezones = [
+  {
+    name: "Eastern Time (ET) - UTC-5", value: "America/New_York"
+  },
+  {
+    name: "Central Time (CT) - UTC-6", value: "America/Chicago"
+  },
+  {
+    name: "Mountain Time (MT) - UTC-7", value: "America/Denver"
+  },
+  {
+    name: "Pacific Time (PT) - UTC-8", value: "America/Los_Angeles"
+  },
+  {
+    name: "Alaska Time (AKT) - UTC-9", value: "America/Anchorage"
+  },
+  {
+    name: "Hawaii Time (HST) - UTC-10", value: "Pacific/Honolulu"
+  }
+]
+
+const questionTypes = [
+  { name: 'Text', value: 'text'},
+  { name: 'Number', value: 'number'},
+  { name: 'Dropdown', value: 'select'},
+  { name: 'Checkbox', value: 'checkbox'},
+  // { name: 'Date Picker', value: 'date'},
+  // { name: 'Time Picker', value: 'time'},
+]
+
 export default {
   emptyClient,
   emptyCampaign,
   emptyEvent,
   emptyQuestion,
   emptyTemplate,
+  timezones,
+  questionTypes,
+  emptyUser,
 }

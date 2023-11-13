@@ -269,7 +269,7 @@
       </div>
     </div>
     <div class="flex justify-center mt-16 gap-4">
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="template = null" raised />
+      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
       <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitTemplate()" raised />
     </div>
   </form>

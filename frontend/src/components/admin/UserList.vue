@@ -1,13 +1,13 @@
 <template>
-  <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" :loading="loading">
+  <pvDataTable :value="users" :loading="loading">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
-          <span class="text-xl font-bold">Clients</span>
+          <span class="text-xl font-bold">Users</span>
         </div>
         <div class="flex gap-4">
           <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditClient()"><span class="material-icons">add</span></pvButton>
+          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditUser()"><span class="material-icons">add</span></pvButton>
         </div>
           </div>
     </template>
@@ -15,15 +15,15 @@
       <VueLoader />
     </template>
     <pvColumn field="fullName" header="Name"></pvColumn>
-    <pvColumn field="company" header="Company"></pvColumn>
+    <pvColumn field="email" header="Email"></pvColumn>
     <pvColumn field="createdAt" header="Created" class="hidden lg:table-cell">
       <template #body="{ data }">
-        {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
+        {{ data.createdAt && format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
     <pvColumn field="updatedAt" header="Updated" class="hidden lg:table-cell">
       <template #body="{ data }">
-        {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
+        {{ data.updatedAt && format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
     <pvColumn field="status" header="Status" class="hidden sm:table-cell">
@@ -35,17 +35,17 @@
     </pvColumn>
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
+        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditUser(data)">edit</div>
       </template>
     </pvColumn>
 
     <template #footer>
       <div class="h-10 flex justify-around md:justify-between items-center" >
         <div class="hidden md:block">
-          Total Clients: {{ totalRecords }}
+          Total Users: {{ totalRecords }}
         </div>
         <div class="">
-          <pvPaginator ref="clientPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+          <pvPaginator ref="userPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
         </div>
         <!-- <div class="md:hidden">
           <pvPaginator ref="campaignPaginator" :rows="perPage" :totalRecords="totalRecords" template="PrevPageLink CurrentPageReport NextPageLink" @page="handlePage" />
@@ -63,29 +63,17 @@ import VueLoader from '@/components/common/VueLoader.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'search', 'addEditClient'])
+const props = defineProps(['modelValue', 'search', 'addEditUser'])
 const emit = defineEmits(['update:modelValue'])
 
-const selectedClient = computed({
-  get() {
-    return props.modelValue
-  },
-  set(client: any) {
-    if (props.modelValue === client) {
-      emit('update:modelValue', null)
-    } else {
-      emit('update:modelValue', client)
-    }
-  }
-})
 
 // const showEmailMenu = ref(false)
 const loading = ref(false)
-const clients = ref([])
+const users = ref([])
 const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
-const clientPaginator = ref(null as any)
+const userPaginator = ref(null as any)
 // const selectedClient = computed({
 //   get() {
 
@@ -95,12 +83,13 @@ const clientPaginator = ref(null as any)
 //   }
 // })
 
-const getClients = async () => {
+const getUsers = async () => {
   try {
     loading.value = true
     const res = await auth.api.get(
-      `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
-    clients.value = res.data.data
+      `/users?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+    users.value = res.data.data
+    console.log(users.value)
     totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
@@ -108,14 +97,14 @@ const getClients = async () => {
   loading.value = false
 }
 
-watch(() => props.search, getClients)
+watch(() => props.search, getUsers)
 
 const refresh = (e: any) => {
-  if (clientPaginator.value) {
-    if (clientPaginator.value.page !== 0) {
-      clientPaginator.value.changePageToFirst(e)
+  if (userPaginator.value) {
+    if (userPaginator.value.page !== 0) {
+      userPaginator.value.changePageToFirst(e)
     } else {
-      getClients()
+      getUsers()
     }
   }
   // page.value = 1
@@ -126,7 +115,7 @@ const refresh = (e: any) => {
 const handlePage = (pagination: any) => {
   perPage.value = pagination.rows
   page.value = pagination.page
-  getClients()
+  getUsers()
 }
 
 // const selectClient = (client: any) => {
@@ -137,20 +126,9 @@ const handlePage = (pagination: any) => {
 //   }
 // }
 
-onMounted(getClients)
+onMounted(getUsers)
 
 </script>
 
 <style scoped>
-thead {
-  @apply py-4 font-semibold text-gray-700
-}
-
-tbody {
-  @apply text-gray-600
-}
-
-td {
-  @apply py-2 px-4
-}
 </style>

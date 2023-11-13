@@ -53,6 +53,8 @@ app.get('/clients', auth.verifyToken, api.clients.getList)
 app.get('/clients/:clientId', auth.verifyToken, api.clients.get)
 app.post('/clients/setup', auth.verifyToken, comm.email.passwordSetup)
 
+app.get('/users', auth.verifyToken, api.users.getList)
+
 app.post('/campaigns/add', auth.verifyToken, upload.single('file'), api.campaigns.create)
 app.post('/campaigns/update', auth.verifyToken, upload.single('file'), api.campaigns.update)
 app.get('/campaigns', auth.verifyToken, api.campaigns.getList)

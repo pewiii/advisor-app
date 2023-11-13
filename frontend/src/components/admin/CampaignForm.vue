@@ -1,5 +1,5 @@
 <template>
-  <form class="relative">
+  <form class="">
     <div>
       <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
         <div class="text-lg">
@@ -9,7 +9,8 @@
       </div>
       <div class="md:pl-4">
         <label for="campaign-title" class="">
-          Title
+            Title
+            <FieldError :error="formErrors.title"></FieldError>
         </label>
         <div class="pl-2">
           <pvInputText id="campaign-title" v-model="campaign.title" placeholder="Campaign Title" class="w-full h-9"/>
@@ -18,17 +19,19 @@
       <div class="md:pl-4">
         <label for="campaign-client" class="">
           Client (Select from client list)
+          <FieldError :error="formErrors.client"></FieldError>
         </label>
         <div class="pl-2">
-          <span>{{ campaign.client ? `${campaign.client.fullName}${campaign.client.company ? ` - ${campaign.client.company}` : ''}` : '' }}</span>
+          <pvInputText id="campaign-client" :value="clientDisplay" placeholder="Campaign Client" class="h-9 w-full" @change="(e: any) => e.target.value = clientDisplay" />
         </div>
       </div>
       <div class="md:pl-4">
-        <label for="campaign-client" class="">
+        <label for="campaign-template" class="">
           Template (Select from template list)
         </label>
         <div class="pl-2">
-          <span>{{ campaign.template ? campaign.template.title : '' }}</span>
+          <pvInputText id="campaign-template" :value="templateDisplay" placeholder="Campaign Template" class="h-9 w-full" @change="(e: any) => e.target.value = templateDisplay" />
+          <!-- <span>{{ campaign.template ? campaign.template.title : '' }}</span>/ -->
         </div>
       </div>
     </div>
@@ -94,6 +97,7 @@
             <div class="md:pl-4">
               <label :for="`event-${idx}-name`" class="">
                 Location Name
+                <FieldError :error="formErrors.events[idx].locationName"></FieldError>
               </label>
               <div class="pl-2">
                 <pvInputText :id="`event-${idx}-name`" v-model="event.locationName" placeholder="Event Location" class="w-full h-9"/>
@@ -102,6 +106,7 @@
             <div class="md:pl-4">
               <label :for="`event-${idx}-name`" class="">
                 Address 1
+                <FieldError :error="formErrors.events[idx].address1"></FieldError>
               </label>
               <div class="pl-2">
                 <pvInputText :id="`event-${idx}-address1`" v-model="event.address1" placeholder="Event Primary Address" class="w-full h-9"/>
@@ -119,6 +124,7 @@
               <div class="md:pl-4 w-full">
                 <label :for="`event-${idx}-city`" class="">
                   City
+                  <FieldError :error="formErrors.events[idx].city"></FieldError>
                 </label>
                 <div class="pl-2">
                   <pvInputText :id="`event-${idx}-city`" v-model="event.city" placeholder="Event City" class="w-full h-9"/>
@@ -127,6 +133,7 @@
               <div class="md:pl-4">
                 <label :for="`event-${idx}-state`" class="">
                   State
+                  <FieldError :error="formErrors.events[idx].state"></FieldError>
                 </label>
                 <div class="pl-2">
                   <pvInputText :id="`event-${idx}-state`" v-model="event.state" placeholder="Event State" class="w-full h-9"/>
@@ -135,6 +142,7 @@
               <div class="md:pl-4">
                 <label :for="`event-${idx}-zip`" class="">
                   Zip Code
+                  <FieldError :error="formErrors.events[idx].zip"></FieldError>
                 </label>
                 <div class="pl-2">
                   <pvInputText :id="`event-${idx}-zip`" v-model="event.zip" placeholder="Event Zip Code" class="w-full h-9"/>
@@ -145,6 +153,7 @@
               <div class="md:pl-4">
                 <label :for="`event-${idx}-date`" class="">
                   Date
+                  <FieldError :error="formErrors.events[idx].date"></FieldError>
                 </label>
                 <div class="pl-2">
                   <input :id="`event-${idx}-date`" type="date" v-model="event.date" placeholder="Event Date" class="h-9 w-full rounded-md border-1 border-gray-500 pl-4 pr-2 outline-primary" />
@@ -153,6 +162,7 @@
               <div class="md:pl-4">
                 <label :for="`event-${idx}-time`" class="">
                   Time
+                  <FieldError :error="formErrors.events[idx].time"></FieldError>
                 </label>
                 <div class="pl-2">
                   <input :id="`event-${idx}-time`" type="time" v-model="event.time" placeholder="Event Date" class="h-9 w-full rounded-md border-1 border-gray-500 pl-4 pr-2 outline-primary" />
@@ -161,9 +171,10 @@
               <div class="md:pl-4 flex-1">
                 <label :for="`event-${idx}-time`" class="">
                   Timezone
+                  <FieldError :error="formErrors.events[idx].timezone"></FieldError>
                 </label>
                 <div class="pl-2">
-                  <pvDropdown v-model="event.timezone" :options="timezones" optionLabel="name" optionValue="value" class="w-full h-9"/>
+                  <pvDropdown v-model="event.timezone" :options="objects.timezones" optionLabel="name" optionValue="value" class="w-full h-9"/>
                 </div>
               </div>
             </div>
@@ -207,6 +218,7 @@
           <div class="md:pl-4">
             <label :for="`question-${idx}-text`" class="">
               Question
+              <FieldError :error="formErrors.questions[idx].text" />
             </label>
             <div class="pl-2">
               <pvInputText :id="`question-${idx}-text`" v-model="campaign.questions[idx].text" placeholder="Question Text" size="small" class="w-full h-9"/>
@@ -216,14 +228,16 @@
             <div class="md:pl-4 flex-1">
               <label :for="`question-${idx}-answertype`" class="">
                 Answer Type
+                <FieldError :error="formErrors.questions[idx].answerType" />
               </label>
               <div class="pl-2">
-                <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
+                <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="objects.questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
               </div>
             </div>
             <div class="md:pl-4 flex-1">
               <label :for="`question-${idx}-placeholder`" class="">
                 Label
+                <FieldError :error="formErrors.questions[idx].label" />
               </label>
               <div class="pl-2">
                 <pvInputText :id="`question-${idx}-label`" v-model="campaign.questions[idx].label" placeholder="Label" size="small" class="w-full h-9"/>
@@ -260,9 +274,9 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-center mt-16 gap-4">
+    <div class="flex justify-center mt-16 gap-4 flex-wrap">
       <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitCampaign" raised />
+      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitCampaign" raised :disabled="formErrors.hasErrors"/>
     </div>
   </form>
 </template>
@@ -271,38 +285,35 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { notify } from "@kyvg/vue3-notification"
-import { useRouter } from 'vue-router';
-import router from '@/router';
-import { storeToRefs } from 'pinia';
 import objects from '@/objects'
 import moment from 'moment-timezone'
-// import { parse, addMinutes } from 'date-fns'
-// import { format, utcToZonedTime, toDate } from 'date-fns-tz';
-// import 'date-time-format-timezone'
+import FieldError from '@/components/common/FieldError.vue'
 
 
-// const fileLoading = ref(false)
 const loading = ref(false)
 
-const props = defineProps(['campaign', 'selectedClient', 'selectedTemplate'])
-const emit = defineEmits(['update:campaign', 'update:selectedTemplate'])
+const props = defineProps(['campaign', 'selectedClient', 'selectedTemplate', 'cancel'])
+const emit = defineEmits(['update:campaign'])
 
-const client = computed(() => {
-  return props.selectedClient
-})
+const auth = useAuthStore()
+const fileUpload = ref(null as any)
+const expandedEvents = ref([] as any[])
+const expandedQuestions = ref([] as any[])
 
-// const template = computed(() => {
-//   return props.selectedTemplate
+// const cancel = () => {
+//   campaign.value = null
+//   // template.value = null
+// }
+
+
+// const template = computed({
+//   get() {
+//     return props.selectedTemplate
+//   },
+//   set(template) {
+//     emit('update:selectedTemplate', template)
+//   }
 // })
-
-const template = computed({
-  get() {
-    return props.selectedTemplate
-  },
-  set(template) {
-    emit('update:selectedTemplate', template)
-  }
-})
 
 
 const campaign = computed({
@@ -314,19 +325,80 @@ const campaign = computed({
   }
 })
 
-const cancel = () => {
-  campaign.value = null
-  template.value = null
-}
-
-onMounted(() => {
-  if (campaign.value.template) {
-    template.value = campaign.value.template
-  } 
+// validation
+const formErrors = computed(() => {
+  const required = (field: string) => `${field} is required`
+  let errors = {
+    ...campaign.value.title ? {} : { title: required('Title') },
+    ...campaign.value.client ? {} : { client: required('Client') },
+  } as any
+  const events = campaign.value.events.map((event: any) => {
+    return {
+      ...event.locationName ? {} : { locationName: required('Location Name') },
+      ...event.address1 ? {} : { address1: required('Address 1') },
+      ...event.city ? {} : { city: required('City') },
+      ...event.state ? {} : { state: required('State') },
+      ...event.zip ? {} : { zip: required('Zip Code') },
+      ...event.date ? {} : { date: required('Date') },
+      ...event.time ? {} : { time: required('Time') },
+      ...event.timezone ? {} : { timezone: required('Timezone')}
+    }
+  })
+  const labels = [] as string[]
+  const questions = campaign.value.questions.map((question: any) => {
+    const result = {
+      ...question.text ? {} : { text: required('Question')},
+      ...question.answerType ? {} : { answerType: required('Answer type')},
+      ...question.label ? {} : { label: required('Label')},
+      // ...labels.includes(question.label) ? { label: 'Label must be unique' } : {}
+    }
+    if (labels.includes(question.label)) {
+      result.label = 'Label must be unique'
+    }
+    labels.push(question.label)
+    return result
+  })
+  const hasEventErrors = events.some((event: any) => Object.keys(event).length)
+  const hasQuestionErrors = questions.some((question: any) => Object.keys(question).length)
+  errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors || hasQuestionErrors
+  errors.events = events
+  errors.questions = questions
+  return errors
 })
 
-const events = computed(() => campaign.value.events)
+// onMounted(() => {
+//   if (campaign.value.template) {
+//     template.value = campaign.value.template
+//   } 
+// })
 
+onMounted(() => {
+  if (props.selectedTemplate && !campaign.value.template) {
+    campaign.value.template = props.selectedTemplate
+  }
+})
+
+
+const clientDisplay = computed(() => {
+  let result = ''
+  if (campaign.value.client) {
+    result += campaign.value.client.fullName
+    if (campaign.value.client.company) {
+      result += ` - ${campaign.value.client.company}`
+    }
+  }
+  return result
+})
+
+const templateDisplay = computed(() => {
+  return campaign.value.template ? campaign.value.template.title : ''
+})
+
+// const clientDisplay = computed(() => {
+// })
+
+
+const events = computed(() => campaign.value.events)
 watch(events, () => {
   events.value.forEach((event: any) => {
     if (event.eventDate && event.timezone && !(event.date || event.time)) {
@@ -343,18 +415,15 @@ watch(events, () => {
 
 const submitCampaign = async () => {
   try {
-    // loadingCampaigns.value = true
     loading.value = true
     const data = JSON.parse(JSON.stringify(campaign.value))
     data.user = auth.user._id
     if (data.client) {
       data.client = data.client._id
     }
-
     if (data.template) {
       data.template = data.template._id
     }
-
     const info = {
       path: data._id ? '/campaigns/update' : '/campaigns/add',
       title: data._id ? 'Updated' : 'Created',
@@ -367,8 +436,7 @@ const submitCampaign = async () => {
       text: info.text,
       type: 'success'
     })
-    // getCampaigns()
-    template.value = null
+    // template.value = null
   } catch(err: any) {
     console.log(err)
   }
@@ -376,49 +444,14 @@ const submitCampaign = async () => {
 }
 
 
-
-
-
-watch(client, () => {
-  campaign.value.client = client.value
+watch(() => props.selectedClient, () => {
+  campaign.value.client = props.selectedClient
+})
+watch(() => props.selectedTemplate, () => {
+  campaign.value.template = props.selectedTemplate
 })
 
-watch(template, () => {
-  campaign.value.template = template.value
-})
 
-const timezones = [
-  {
-    name: "Eastern Time (ET) - UTC-5", value: "America/New_York"
-  },
-  {
-    name: "Central Time (CT) - UTC-6", value: "America/Chicago"
-  },
-  {
-    name: "Mountain Time (MT) - UTC-7", value: "America/Denver"
-  },
-  {
-    name: "Pacific Time (PT) - UTC-8", value: "America/Los_Angeles"
-  },
-  {
-    name: "Alaska Time (AKT) - UTC-9", value: "America/Anchorage"
-  },
-  {
-    name: "Hawaii Time (HST) - UTC-10", value: "Pacific/Honolulu"
-  }
-]
-
-// const { campaign } = storeToRefs(useCampaignStore())
-
-const auth = useAuthStore()
-
-const fileUpload = ref(null as any)
-
-// const showEvents = ref(true)
-// const showQuestions = ref(true)
-
-const expandedEvents = ref([] as any[])
-const expandedQuestions = ref([] as any[])
 
 const expandEvent = (event: any) => {
   if (expandedEvents.value.includes(event)) {
@@ -427,6 +460,14 @@ const expandEvent = (event: any) => {
     expandedEvents.value.push(event)
   }  
 }
+const addEvent = () => {
+  campaign.value.events.push({ ...objects.emptyEvent })
+}
+const removeEvent = (event: any) => {
+  campaign.value.events = campaign.value.events.filter((campaignEvent: any) => campaignEvent !== event)
+}
+
+
 
 const expandQuestion = (question: any) => {
   if (expandedQuestions.value.includes(question)) {
@@ -435,33 +476,12 @@ const expandQuestion = (question: any) => {
     expandedQuestions.value.push(question)
   }
 }
-
-const questionTypes = [
-  { name: 'Text', value: 'text'},
-  { name: 'Number', value: 'number'},
-  { name: 'Dropdown', value: 'select'},
-  { name: 'Checkbox', value: 'checkbox'},
-  { name: 'Date Picker', value: 'date'},
-  { name: 'Time Picker', value: 'time'},
-]
-
-
-const addEvent = () => {
-  campaign.value.events.push({ ...objects.emptyEvent })
-}
-
-const removeEvent = (event: any) => {
-  campaign.value.events = campaign.value.events.filter((campaignEvent: any) => campaignEvent !== event)
-}
-
 const addQuestion = () => {
   campaign.value.questions.push({ ...objects.emptyQuestion })
 }
-
 const removeQuestion = (question: any) => {
   campaign.value.questions = campaign.value.questions.filter((campaignQuestion: any) => campaignQuestion !== question)
 }
-
 const removeOption = (options: string[], idx: number) => {
   if (idx >= 0 && idx < options.length) {
     options.splice(idx, 1)
@@ -469,14 +489,15 @@ const removeOption = (options: string[], idx: number) => {
     console.error('Invalid index. Index must be within the range of the array.')
   }
   return options
-};
+}
+
+
 
 const chooseFiles = () => {
   if (fileUpload.value) {
     fileUpload.value.click()
   }
 }
-
 const uploadFile = async (file: any) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -488,7 +509,6 @@ const uploadFile = async (file: any) => {
   })
   campaign.value = res.data
 }
-
 const handleFileChange = async (e: Event) => {
   loading.value = true
   try {
@@ -506,7 +526,6 @@ const handleFileChange = async (e: Event) => {
   }
   loading.value = false
 }
-
 const removeFile = async () => {
   loading.value = true
   try {
@@ -525,19 +544,11 @@ const removeFile = async () => {
   }
   loading.value = false
 }
+
 </script>
 
 <style >
-  /* input {
-    @apply px-4 bg-gray-100 hover:bg-white
-  }
-  select {
-    @apply bg-gray-100
-  } */
-
   .campaign-dropdown span {
     padding-top: .3rem !important;
   }
-
-
 </style>
