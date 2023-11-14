@@ -18,16 +18,17 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, 'uploads'); // Specify the upload directory
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, Date.now() + '-' + file.originalname);
-//   }
-// });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads'); // Specify the upload directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
-const storage = multer.memoryStorage()
+// const storage = multer.memoryStorage()
+
 const upload = multer({ storage: storage })
 
 // const upload = multer({ storage: storage });
@@ -77,4 +78,4 @@ app.post('/rsvp', api.offers.rsvp)
 
 app.listen(API_PORT, () => {
   console.log(`Listening on port ${API_PORT}`)
-})  
+})

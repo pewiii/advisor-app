@@ -8,28 +8,41 @@
       Error setting up your account. Please contact us for support.
     </div>
     <form v-else-if="client" class="bg-white p-10 shadow-lg rounded-lg">
-      <div class="mb-8 text-lg text-center">
-        <p class="font-bold">Welcome {{ client.firstName }},</p>
-        <p>Please create a password for your account.</p>
+      <div v-if="success">
+        <div class="mb-8 text-lg text-center">
+          <p class="font-bold">Success</p>
+          <p>Password created Successfully</p>
+        </div>
+        <div class="mt-8 text-end">
+          <RouterLink :to="{ name: 'login' }">
+            <button class="w-full btn">Login</button>
+          </RouterLink>
+        </div>
       </div>
-      <label class="flex border-b-2 mb-6">
-        <div>
-          <span class="material-icons text-gray-500 md-36">lock</span>
+      <div v-else>
+        <div class="mb-8 text-lg text-center">
+          <p class="font-bold">Welcome {{ client.firstName }},</p>
+          <p>Please create a password for your account.</p>
         </div>
-        <div class="pl-2">
-          <input v-model="password" type="password" placeholder="Password" class="w-full h-10 text-xl"/>
+        <label class="flex border-b-2 mb-6">
+          <div>
+            <span class="material-icons text-gray-500 md-36">lock</span>
+          </div>
+          <div class="pl-2">
+            <input v-model="password" type="password" placeholder="Password" class="w-full h-10 text-xl"/>
+          </div>
+        </label>
+        <label class="flex border-b-2 items-end">
+          <div>
+            <span class="material-icons text-gray-500 md-36">lock</span>
+          </div>
+          <div class="pl-2">
+            <input v-model="passwordMatch" type="password" placeholder="Reenter Password" class="w-full h-10 text-xl"/>
+          </div>
+        </label>
+        <div class="mt-8 text-end">
+          <button class="w-full btn" @click.prevent="submit">Submit</button>
         </div>
-      </label>
-      <label class="flex border-b-2 items-end">
-        <div>
-          <span class="material-icons text-gray-500 md-36">lock</span>
-        </div>
-        <div class="pl-2">
-          <input v-model="passwordMatch" type="password" placeholder="Reenter Password" class="w-full h-10 text-xl"/>
-        </div>
-      </label>
-      <div class="mt-8 text-end">
-        <button class="w-full btn" @click.prevent="submit">Submit</button>
       </div>
     </form>
   </div>

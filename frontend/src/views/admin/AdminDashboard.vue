@@ -1,7 +1,7 @@
 <template>
 
   <NavBar v-model="search">
-    <!-- <div class="flex gap-4">      
+    <!-- <div class="flex gap-4">
       <Modal :header="'Campaigns'" :windowArea="windowArea">
         <template v-slot:trigger="{ open }">
           <pvButton @click="open" raised label="Campaigns" severity="secondary"/>
@@ -68,7 +68,7 @@
               <div class="flex align-items-center" v-if="auth.user.isAdmin">
                 <pvRadioButton v-model="currentList" inputId="user-list" name="pizza" value="users" />
                 <label for="user-list" class="ml-2 cursor-pointer">Users</label>
-              </div>              
+              </div>
             </div>
 
             <div class="">
@@ -78,14 +78,14 @@
 
           </div>
           <div>
-            <div v-if="currentList === 'clients'" class="align-top">
+            <div v-if="currentList === 'clients'" class="">
               <ClientList :search="search" v-model="selectedClient" :newCampaign="addEditCampaign" :addEditClient="addEditClient"/>
             </div>
-    
+
             <div v-if="currentList === 'campaigns'" class="">
               <CampaignList v-model="selectedCampaign" :addEditCampaign="addEditCampaign" :search="search"/>
             </div>
-    
+
             <div v-if="currentList === 'templates'">
               <TemplateList v-model="selectedTemplate" :addEditTemplate="addEditTemplate" :search="search"/>
             </div>
@@ -165,17 +165,10 @@ const reset = () => {
   selectedCampaign.value = null
 }
 console.log(auth.user)
-// const showCampaigns = ref(false)
-// const showClients = ref(false)
-// const showTemplates = ref(false)
+
 const currentList = ref('campaigns')
 
 const previewTemplate = computed(() => {
-  // if (selectedTemplate.value) {
-  //   return selectedTemplate.value
-  // } else {
-  //   return editTemplate.value
-  // }
   if (editTemplate.value) {
     return editTemplate.value
   } else {
@@ -183,14 +176,7 @@ const previewTemplate = computed(() => {
       return selectedTemplate.value
     }
   }
-  // if (editTemplate.value) {
-  //   return editTemplate.value
-  // } else if (editCampaign.value) {
-  //   return editCampaign.value.template
-  //   // return selectedTemplate.value
-  // } else {
-  //   return selectedTemplate.value
-  // }
+  return null
 })
 
 const previewCampaign = computed(() => {

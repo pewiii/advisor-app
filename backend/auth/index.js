@@ -24,7 +24,7 @@ const generateToken = (user) => {
 const hashPassword = (password) => {
   const saltRounds = 10
   return bcrypt.hash(password, saltRounds)
-  
+
 }
 
 const requireAdmin = (req, res, next) => {
@@ -42,7 +42,7 @@ const adminRegister = async (req, res) => {
       throw ({ message: 'Password required' })
     }
     const hashedPassword = await hashPassword(password)
-    const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
+    const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
     res.status(201).send(user)
   } catch(err) {
     console.log(err.message)
@@ -57,7 +57,7 @@ const adminUpdate = async (req, res) => {
       throw ({ message: 'Password required' })
     }
     const hashedPassword = await hashPassword(password)
-    const user = await db.users.updateUser(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
+    const user = await db.users.updateUser(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
     // const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
     res.status(201).send(user)
   } catch(err) {
@@ -72,6 +72,7 @@ const adminLogin = async (req, res) => {
     //temp
     // req.body.firstName = 'Paul'
     // req.body.lastName = 'Watson'
+    // req.body.isAdmin = true
     // await adminRegister(req, res)
     // return
 
@@ -86,8 +87,8 @@ const adminLogin = async (req, res) => {
       return res.sendStatus(401)
     }
     const token = generateToken(user)
-    res.send({ 
-      token, 
+    res.send({
+      token,
       user: {
         email: user.email,
         firstName: user.firstName,
@@ -95,7 +96,7 @@ const adminLogin = async (req, res) => {
         _id: user._id,
         userType: 'admin',
         isAdmin: user.isAdmin
-      } 
+      }
     })
   } catch(err) {
     console.log(err.message)

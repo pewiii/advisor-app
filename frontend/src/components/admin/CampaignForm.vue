@@ -369,7 +369,7 @@ const formErrors = computed(() => {
 // onMounted(() => {
 //   if (campaign.value.template) {
 //     template.value = campaign.value.template
-//   } 
+//   }
 // })
 
 onMounted(() => {
@@ -423,6 +423,8 @@ const submitCampaign = async () => {
     }
     if (data.template) {
       data.template = data.template._id
+    } else {
+      delete data.template
     }
     const info = {
       path: data._id ? '/campaigns/update' : '/campaigns/add',
@@ -458,7 +460,7 @@ const expandEvent = (event: any) => {
     expandedEvents.value = expandedEvents.value.filter(expandedEvent => expandedEvent !== event)
   } else {
     expandedEvents.value.push(event)
-  }  
+  }
 }
 const addEvent = () => {
   campaign.value.events.push({ ...objects.emptyEvent })
