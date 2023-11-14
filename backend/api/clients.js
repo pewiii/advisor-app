@@ -54,9 +54,11 @@ const destroy = async (req, res) => {
   try {
     const { clientId } = req.body
     await db.clients.deleteClient(clientId)
-    res.sendStatus(200)
+    // await db.campaigns.deleteMany({ client: clientId })
+    res.sendStatus(201)
   } catch(err) {
-    res.status(400).send({ message: 'Error deleting client' })
+    console.log(err)
+    res.status(400).send({ message: err.message })
   }
 }
 

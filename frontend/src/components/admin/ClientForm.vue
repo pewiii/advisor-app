@@ -10,6 +10,7 @@
         <div class="md:pl-4">
           <label for="client-first" class="">
             First Name
+            <FieldError :error="formErrors.firstName"></FieldError>
           </label>
           <div class="pl-2">
             <pvInputText id="client-first" v-model="client.firstName" placeholder="First Name" class="w-full h-9"/>
@@ -18,6 +19,7 @@
         <div class="md:pl-4">
           <label for="client-last" class="">
             Last Name
+            <FieldError :error="formErrors.lastName"></FieldError>
           </label>
           <div class="pl-2">
             <pvInputText id="client-last" v-model="client.lastName" placeholder="Last Name" class="w-full h-9"/>
@@ -34,6 +36,7 @@
         <div class="md:pl-4">
           <label for="client-company" class="">
             Company Name
+            <FieldError :error="formErrors.company"></FieldError>
           </label>
           <div class="pl-2">
             <pvInputText id="client-company" v-model="client.company" placeholder="Company Name" class="w-full h-9"/>
@@ -58,6 +61,7 @@
         <div class="md:pl-4">
           <label for="client-email" class="">
             Email
+            <FieldError :error="formErrors.email"></FieldError>
           </label>
           <div class="pl-2">
             <pvInputText id="client-email" v-model="client.email" placeholder="Email Address" class="w-full h-9"/>
@@ -171,22 +175,19 @@
       </div>
       <div class="flex justify-center mt-16 gap-4 flex-wrap">
         <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
-        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised />
+        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised :disabled="formErrors.hasErrors" />
       </div>
     </form>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-// import { useAuthStore } from '@/stores/auth'
-// import { notify } from "@kyvg/vue3-notification"
-// import { useRouter } from 'vue-router';
-// import router from '@/router';
+import { ref, computed, watch } from 'vue'
 import Modal from '@/components/common/Modal.vue'
 import { useAuthStore } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
 import { format } from 'date-fns'
 import VueLoader from '@/components/common/VueLoader.vue'
+import FieldError from '@/components/common/FieldError.vue'
 
 const auth = useAuthStore()
 
@@ -202,6 +203,28 @@ const client = computed({
     emit('update:modelValue', client)
   }
 })
+
+// validation
+const formErrors = ref({} as any)
+watch(client, () => {
+  const required = (field: string) => `${field} is required`;
+  const isValidEmail = (email: string) => {
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  let errors = {
+    ...client.value.firstName ? {} : { firstName: required('First Name') },
+    ...client.value.lastName ? {} : { lastName: required('Last Name') },
+    ...client.value.company ? {} : { company: required('Company') },
+    ...client.value.email ? {} : { email: required('Email') }
+  } as any;
+  if (client.value.email && !isValidEmail(client.value.email)) {
+    errors.email = 'Invalid email'
+  }
+  errors.hasErrors = Boolean(Object.keys(errors).length);
+  formErrors.value = errors
+}, { deep: true, immediate: true })
 
 const emailSuccess = ref(false)
 const emailLoading = ref(false)
@@ -226,14 +249,12 @@ const emailClient = async () => {
 const submitClient = async () => {
   try {
     const data = JSON.parse(JSON.stringify(client.value))
-    // delete data.campaigns
     const info = {
       path: data._id ? '/clients/update' : '/clients/add',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Client updated successfully' : 'Client created successfully'
     }
-    const res = await auth.api.post(info.path, data)
-    // console.log(res)
+    await auth.api.post(info.path, data)
     notify({
       title: info.title,
       text: info.text,
@@ -245,42 +266,6 @@ const submitClient = async () => {
     console.log(err.message)
   }
 }
-
-const deleteClient = async () => {
-  try {
-    await auth.api.post('/clients/delete', { clientId: client.value._id })
-    props.cancel()
-    // getClients()
-    // editClient.value = null
-  } catch(err: any) {
-    console.log(err.message)
-  }
-}
-
-// const formatDate = (isoDateString: string) => {
-//   const date = new Date(isoDateString)
-
-//   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
-//   const formattedDate = date.toLocaleString(undefined, options);
-//   return formattedDate
-// }
-
-// const auth = useAuthStore()
-
-// const client = ref({
-//   firstName: '',
-//   lastName: '',
-//   company: '',
-//   phone: '',
-//   email: '',
-//   address1: '',
-//   address2: '',
-//   city: '',
-//   state: '',
-//   zip: ''
-// })
-
-
 
 </script>
 

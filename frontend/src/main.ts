@@ -29,6 +29,7 @@ import RadioButton from 'primevue/radiobutton'
 import Checkbox from 'primevue/checkbox'
 import InlineMessage from 'primevue/inlinemessage'
 import Tooltip from 'primevue/tooltip'
+import Sidebar from 'primevue/sidebar'
 
 
 // import Row from 'primevue/row'
@@ -65,6 +66,7 @@ app.component('pvTextArea', TextArea)
 app.component('pvRadioButton', RadioButton)
 app.component('pvCheckbox', Checkbox)
 app.component('pvInlineMessage', InlineMessage)
+app.component('pvSidebar', Sidebar)
 
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })

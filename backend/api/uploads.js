@@ -23,6 +23,50 @@ const s3Client = new S3Client({
   }
 })
 
+// const imageUpload = async (req, res) => {
+//   const file = req.file;
+
+//   if (!file) {
+//     res.status(400).send({ message: 'No file uploaded' });
+//     return;
+//   }
+
+//   try {
+//     const key = Date.now() + file.originalname;
+//     const filePath = path.join(__dirname, 'uploads', key); // Adjust the path as needed
+
+//     // Move the file from the temporary location to the uploads folder
+//     fs.renameSync(file.path, filePath);
+
+//     const putCommand = new PutObjectCommand({
+//       Bucket: 'advisorapp',
+//       Body: fs.createReadStream(filePath),
+//       Key: key,
+//     });
+
+//     const result = await s3Client.send(putCommand);
+
+//     // Delete the file from disk after successful upload to S3
+//     fs.unlinkSync(filePath);
+
+//     const image = await db.images.createImage({
+//       url: `https://advisorapp.s3.amazonaws.com/${key}`,
+//       key,
+//     });
+
+//     res.send(image);
+//   } catch (err) {
+//     console.error(err);
+
+//     // If an error occurs, delete the file from disk before sending the error response
+//     if (fs.existsSync(filePath)) {
+//       fs.unlinkSync(filePath);
+//     }
+
+//     res.status(500).send({ message: 'Server error' });
+//   }
+// };
+
 
 const imageUpload = async (req, res) => {
 
@@ -33,11 +77,17 @@ const imageUpload = async (req, res) => {
   }
 
   try {
-    const key = Date.now() + file.originalname
+    // const key = Date.now() + file.originalname
+    // const key = Date.now() + file.originalname.replace(/\s+/g, '_');
+    const sanitizedFileName = file.originalname
+      .replace(/\s+/g, '_') // Replace spaces with underscores
+      .replace(/[^a-zA-Z0-9_.-]/g, ''); // Remove or replace special characters except for alphanumerics, underscores, dots, and hyphens
+    const key = Date.now() + sanitizedFileName;
 
     const putCommand = new PutObjectCommand({
       Bucket: 'advisorapp',
-      Body: file.buffer,
+      Body: fs.createReadStream(req.file.path),
+      // Body: file.buffer,
       // ContentType:'content-type',
       Key: key,
     });
@@ -48,6 +98,7 @@ const imageUpload = async (req, res) => {
 
     // console.log(result)
     res.send(image)
+    fs.unlinkSync(req.file.path);
   } catch (err) {
     console.log(err)
     res.status(500).send({ message: 'Server error' })

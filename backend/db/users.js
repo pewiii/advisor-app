@@ -14,30 +14,30 @@ const getUser = (query) => {
 }
 
 const getUserCount = async (search) => {
+  return models.User.countDocuments()
+  // const query = {};
 
-  const query = {};
-
-  if (search) {
-    query.$or = [
-      { 'firstName': { $regex: search, $options: 'i' } },
-      { 'lastName': { $regex: search, $options: 'i' } },
-      { 'fullName': { $regex: search, $options: 'i' } },
-      { 'email': { $regex: search, $options: 'i' } },
-    ];
-  }
-  const clients = await models.User.aggregate([
-    // {
-    //   $lookup: {
-    //     from: 'campaigns',
-    //     localField: '_id',
-    //     foreignField: 'user',
-    //     as: 'campaigns',
-    //   },
-    // },
-    {
-      $match: query,
-    }]).exec()
-    return clients.length
+  // if (search) {
+  //   query.$or = [
+  //     { 'firstName': { $regex: search, $options: 'i' } },
+  //     { 'lastName': { $regex: search, $options: 'i' } },
+  //     { 'fullName': { $regex: search, $options: 'i' } },
+  //     { 'email': { $regex: search, $options: 'i' } },
+  //   ];
+  // }
+  // const clients = await models.User.aggregate([
+  //   // {
+  //   //   $lookup: {
+  //   //     from: 'campaigns',
+  //   //     localField: '_id',
+  //   //     foreignField: 'user',
+  //   //     as: 'campaigns',
+  //   //   },
+  //   // },
+  //   {
+  //     $match: query,
+  //   }]).exec()
+  //   return clients.length
 }
 
 const getList = async (search, page, perPage) => {
@@ -54,14 +54,14 @@ const getList = async (search, page, perPage) => {
   }
   
   const clients = await models.User.aggregate([
-    // {
-    //   $lookup: {
-    //     from: 'campaigns',
-    //     localField: '_id',
-    //     foreignField: 'user',
-    //     as: 'campaigns',
-    //   },
-    // },
+    {
+      $lookup: {
+        from: 'campaigns',
+        localField: '_id',
+        foreignField: 'user',
+        as: 'campaigns',
+      },
+    },
     {
       $match: query,
     },
@@ -90,41 +90,41 @@ const getList = async (search, page, perPage) => {
         emailSentAt: 1,
         createdAt: 1,
         updatedAt: 1,
-        password: 1
-        // campaignCount: { $size: '$campaigns' },
-        // status: {
-        //   $cond: {
-        //     if: {
-        //       $gt: [
-        //         {
-        //           $size: {
-        //             $filter: {
-        //               input: '$campaigns',
-        //               as: 'campaign',
-        //               cond: {
-        //                 $gt: [
-        //                   {
-        //                     $size: {
-        //                       $filter: {
-        //                         input: '$$campaign.events',
-        //                         as: 'event',
-        //                         cond: { $gt: [new Date(),'$event.eventDate'] },
-        //                       },
-        //                     },
-        //                   },
-        //                   0,
-        //                 ],
-        //               },
-        //             },
-        //           },
-        //         },
-        //         0,
-        //       ],
-        //     },
-        //     then: 'active',
-        //     else: 'inactive',
-        //   },
-        // },
+        password: 1,
+        campaignCount: { $size: '$campaigns' },
+        status: {
+          $cond: {
+            if: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: '$campaigns',
+                      as: 'campaign',
+                      cond: {
+                        $gt: [
+                          {
+                            $size: {
+                              $filter: {
+                                input: '$$campaign.events',
+                                as: 'event',
+                                cond: { $gt: [new Date(),'$event.eventDate'] },
+                              },
+                            },
+                          },
+                          0,
+                        ],
+                      },
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+            then: 'active',
+            else: 'inactive',
+          },
+        },
       },
     },
   ]).exec();
@@ -132,10 +132,15 @@ const getList = async (search, page, perPage) => {
   return clients;
 };
 
+const deleteUser = (userId) => {
+  return models.User.findByIdAndDelete(userId);
+}
+
 export default {
   createUser,
   getUser,
   getList,
   getUserCount,
   updateUser,
+  deleteUser,
 }

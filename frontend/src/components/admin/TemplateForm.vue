@@ -10,6 +10,7 @@
       <div class="md:pl-4">
         <label for="template-title" class="">
           Unique Title
+          <FieldError :error="formErrors.title"></FieldError>
         </label>
         <div class="pl-2">
           <pvInputText id="template-title" v-model="template.title" placeholder="Template Title" class="w-full h-9"/>
@@ -59,7 +60,6 @@
               <template v-slot:trigger="{open}">
                 <pvButton label="Choose" outlined raised @click="open"/>
               </template>
-              <!-- <template v-slot:header>Header Panel Text Color</template> -->
               <template v-slot:content>
                 <ColorPicker :color="template.config.headerPanelBgColor" @color-change="(color: any) => template.config.headerPanelBgColor = color.colors.hex" class=""/>
               </template>
@@ -95,7 +95,6 @@
               <template v-slot:trigger="{open}">
                 <pvButton label="Choose" outlined raised @click="open"/>
               </template>
-              <!-- <template v-slot:header>Header Panel Text Color</template> -->
               <template v-slot:content>
                 <ColorPicker :color="template.config.headingSectionBgColor" @color-change="(color: any) => template.config.headingSectionBgColor = color.colors.hex" class=""/>
               </template>
@@ -261,7 +260,6 @@
               </template>
               <template v-slot:content>
                 <pvInputText v-model="template.config.submitBtnText" />
-                <!-- <pvTextArea v-model="template.config.infoPanelText" class="w-full"/> -->
               </template>
             </Modal>
           </div>
@@ -270,18 +268,19 @@
     </div>
     <div class="flex justify-center mt-16 gap-4">
       <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitTemplate()" raised />
+      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitTemplate()" raised :disabled="formErrors.hasErrors" />
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import Modal from '@/components/common/Modal.vue'
 import { useAuthStore } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
 import ImageSelect from '@/components/admin/ImageSelect.vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
+import FieldError from '@/components/common/FieldError.vue'
 
 const auth = useAuthStore()
 
@@ -298,6 +297,18 @@ const template = computed({
   }
 })
 
+
+// validation
+const formErrors = ref({} as any)
+watch(template, () => {
+  const required = (field: string) => `${field} is required`;
+  let errors = {
+    ...template.value.title ? {} : { title: required('Title') }
+  } as any;
+  errors.hasErrors = Boolean(Object.keys(errors).length)
+  formErrors.value = errors
+}, { deep: true, immediate: true })
+
 const submitTemplate = async () => {
   try {
     const data = JSON.parse(JSON.stringify(template.value))
@@ -308,9 +319,7 @@ const submitTemplate = async () => {
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Template updated successfully' : 'Template created successfully'
     }
-
-    const res = await auth.api.post(info.path, data)
-
+    await auth.api.post(info.path, data)
     notify({
       title: info.title,
       text: info.text,
@@ -322,37 +331,6 @@ const submitTemplate = async () => {
     console.log(err.message)
   }
 }
-
-// const submitClient = async () => {
-//   try {
-//     const data = JSON.parse(JSON.stringify(client.value))
-//     const info = {
-//       path: data._id ? '/clients/update' : '/clients/add',
-//       title: data._id ? 'Updated' : 'Created',
-//       text: data._id ? 'Client updated successfully' : 'Client created successfully'
-//     }
-//     const res = await auth.api.post(info.path, data)
-//     notify({
-//       title: info.title,
-//       text: info.text,
-//       type: 'success'
-//     })
-//     client.value = null
-//   } catch(err: any) {
-//     console.log(err.message)
-//   }
-// }
-
-// const deleteClient = async () => {
-//   try {
-//     await auth.api.post('/clients/delete', { clientId: client.value._id })
-//     props.cancel()
-//     // getClients()
-//     // editClient.value = null
-//   } catch(err: any) {
-//     console.log(err.message)
-//   }
-// }
 
 </script>
 

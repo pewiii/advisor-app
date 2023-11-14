@@ -15,11 +15,6 @@
       <VueLoader />
     </template>
     <pvColumn field="title" header="Title"></pvColumn>
-    <!-- <pvColumn field="client" header="Client">
-      <template #body="{ data }">
-        {{ data.client.fullName }}
-      </template>
-    </pvColumn> -->
     <pvColumn field="createdAt" header="Created">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
@@ -46,11 +41,16 @@
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
           </template>
-          <template v-slot:content>
-            <div>Are you sure you want to delete this template?</div>
-            <div class="text-red-600">{{ data.title }}</div>
-            <div class="flex justify-end mt-4">
-              <pvButton label="Delete" severity="danger" @click="deleteTemplate"/>
+          <template v-slot:content="{ close }">
+            <div v-if="!deleteLoading">
+              <div>Are you sure you want to delete this template?</div>
+              <div class="text-red-600">{{ data.title }}</div>
+              <div class="flex justify-end mt-4">
+                <pvButton label="Delete" severity="danger" @click="deleteTemplate(data, close)"/>
+              </div>
+            </div>
+            <div v-else class="flex justify-center">
+              <VueLoader />
             </div>
           </template>
         </Modal>
@@ -70,117 +70,61 @@
       </div>
     </template>
   </pvDataTable>
-    <!-- <table class="w-full bg-green-300">
-      <thead class="bg-gray-200 border-t-1 border-b-1 border-gray-300">
-        <tr class="w-full">
-          <td>Title</td>
-          <td>Client</td>
-          <td>Created</td>
-          <td>Updated</td>
-          <td>Status</td>
-          <td>Actions</td>
-        </tr>
-      </thead>
-      <tbody class="bg-red-500 overflow-scroll">
-        <tr class="hover:bg-white border-b-1 border-gray-300" v-for="campaign in campaigns" :key="campaign._id">
-          <td class="">
-            <div class="!text-gray-800 font-semibold">{{ campaign.title }}</div>
-          </td>
-          <td>
-            <div class="font-normal">{{ campaign.client.fullName || `${campaign.client.firstName} ${campaign.client.lastName}` }}</div>
-          </td>
-          <td class="font-normal">
-            <div class="">{{ campaign.createdAt && formatDate(campaign.createdAt) }}</div>
-          </td>
-          <td class="font-normal">
-            <div class="">{{ campaign.updatedAt && formatDate(campaign.updatedAt) }}</div>
-          </td>
-          <td>
-            <span class="font-semibold">{{ campaign.status }}</span>
-          </td>
-          <td class="flex gap-2">
-            <div class="cursor-pointer material-icons md-30 hover:text-sky-600">visibility</div>
-            <div class="cursor-pointer material-icons md-30 hover:text-sky-600" @click="editCampaign(campaign)">edit</div>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
-  </template>
+</template>
   
   
-  <script lang="ts" setup>
-  import { nextTick, onMounted, computed, ref, watch } from 'vue'
-  import { format } from 'date-fns'
-  import { useAuthStore } from '@/stores/auth'
-  import VueLoader from '@/components/common/VueLoader.vue'
-  import Modal from '@/components/common/Modal.vue'
-  
-  const auth = useAuthStore()
-  
-  const props = defineProps(['modelValue', 'addEditTemplate', 'search'])
-  const emit = defineEmits(['update:modelValue'])
-  
-  const templatePaginator = ref(null as any)
-  const templates = ref([])
-  const loading = ref(false)
-  const page = ref(0)
-  const perPage = ref(5)
-  const totalRecords = ref(0)
+<script lang="ts" setup>
+import { onMounted, computed, ref, watch } from 'vue'
+import { format } from 'date-fns'
+import { useAuthStore } from '@/stores/auth'
+import VueLoader from '@/components/common/VueLoader.vue'
+import Modal from '@/components/common/Modal.vue'
 
+const auth = useAuthStore()
 
-  const selectedTemplate = computed({
-    get() {
-      return props.modelValue
-    },
-    set(template) {
-      if (props.modelValue === template) {
-        emit('update:modelValue', null)
-      } else {
-        emit('update:modelValue', template)
-      }
-    }
-  })
+const props = defineProps(['modelValue', 'addEditTemplate', 'search'])
+const emit = defineEmits(['update:modelValue'])
 
-  const selectedClient = computed({
+const templatePaginator = ref(null as any)
+const templates = ref([])
+const loading = ref(false)
+const page = ref(0)
+const perPage = ref(5)
+const totalRecords = ref(0)
+const deleteLoading = ref(false)
+
+const selectedTemplate = computed({
   get() {
     return props.modelValue
   },
-  set(client: any) {
-    if (props.modelValue === client) {
+  set(template) {
+    if (props.modelValue === template) {
       emit('update:modelValue', null)
     } else {
-      emit('update:modelValue', client)
+      emit('update:modelValue', template)
     }
   }
 })
-
   
-  const getTemplates = async () => {
-    loading.value = true
-    try {
-      const res = await auth.api.get(
-        `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+const getTemplates = async () => {
+  loading.value = true
+  try {
+    const res = await auth.api.get(
+      `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
 
-      templates.value = res.data.data
-      totalRecords.value = res.data.total
-    } catch(err: any) {
-      console.log(err.message)
-    }
-    loading.value = false
+    templates.value = res.data.data
+    totalRecords.value = res.data.total
+  } catch(err: any) {
+    console.log(err.message)
   }
+  loading.value = false
+}
   
-  watch(() => props.search, getTemplates)
-  
-  onMounted(getTemplates)
-  
-  
-  // const refresh = () => {
-  //   page.value = 1
-  //   perPage.value = 5
-  //   getTemplates()
-  // }
+watch(() => props.search, getTemplates)
 
-  const refresh = (e: any) => {
+onMounted(getTemplates)
+
+const refresh = (e: any) => {
   if (templatePaginator.value) {
     if (templatePaginator.value.page !== 0) {
       templatePaginator.value.changePageToFirst(e)
@@ -188,39 +132,28 @@
       getTemplates()
     }
   }
-  // page.value = 1
-  // perPage.value = 5
-  // getClients()
 }
 
-  const handlePage = (pagination: any) => {
-    perPage.value = pagination.rows
-    page.value = pagination.page
-    getTemplates()
+const handlePage = (pagination: any) => {
+  perPage.value = pagination.rows
+  page.value = pagination.page
+  getTemplates()
+}
+
+const deleteTemplate = async (template: any, closeModal: any) => {
+  deleteLoading.value = true
+  try {
+    await auth.api.post(`/templates/delete`, { templateId: template._id })
+    templates.value = templates.value.filter(t => t !== template)
+    totalRecords.value = totalRecords.value - 1
+  } catch(err: any) {
+    console.log(err.message)
   }
+  closeModal()
+  deleteLoading.value = false
+}
 
-  const deleteTemplate = async (template: any) => {
-
-  }
-
-  // const formatDate = (dateText: string) => {
-  
-  //   const options = {
-  //     year: 'numeric',
-  //     month: 'short',
-  //     day: 'numeric',
-  //     hour: 'numeric',
-  //     minute: '2-digit',
-  //     hour12: true,
-  //   } as Intl.DateTimeFormatOptions
-  
-  //   const date = new Date(dateText)
-  
-  //   return date.toLocaleString('en-US', options);
-  
-  // }
-  
-  </script>
+</script>
   
   
   <style scoped>

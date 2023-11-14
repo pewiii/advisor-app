@@ -164,7 +164,6 @@ const reset = () => {
   selectedTemplate.value = null
   selectedCampaign.value = null
 }
-console.log(auth.user)
 
 const currentList = ref('campaigns')
 

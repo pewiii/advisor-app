@@ -100,7 +100,15 @@ const getList = async (req, res) => {
 }
 
 const destroy = async (req, res) => {
-
+  try {
+    const { campaignId } = req.body
+    console.log(campaignId)
+    await db.campaigns.deleteOne({ _id: campaignId })
+    await db.records.deleteMany(campaignId)
+    res.sendStatus(201)
+  } catch(err) {
+    res.status(400).send({ message: err.message })
+  }
 }
 
 

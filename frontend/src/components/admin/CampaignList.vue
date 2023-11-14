@@ -44,12 +44,22 @@
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
           </template>
-          <template v-slot:content>
-            <div>Are you sure you want to delete this campaign?</div>
-            <div class="text-red-600">{{ data.title }}</div>
-            <div class="flex justify-end mt-4">
-              <pvButton label="Delete" severity="danger" @click="deleteCampaign"/>
+          <template v-slot:content="{ close }">
+            <!-- <div v-if="!deleteSuccess"> -->
+            <div v-if="!deleteLoading">
+              <div>Are you sure you want to delete this campaign?</div>
+              <div class="text-red-600">{{ data.title }}</div>
+              <div class="flex justify-end mt-4">
+                <pvButton label="Delete" severity="danger" @click="deleteCampaign(data, close)"/>
+              </div>
             </div>
+            <div v-else class="flex justify-center">
+              <VueLoader />
+            </div>
+            <!-- </div> -->
+            <!-- <div v-else>
+              <div>Campaign deleted successfully.</div>
+            </div> -->
           </template>
         </Modal>
       </template>
@@ -105,6 +115,8 @@ const loading = ref(false)
 const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
+const deleteLoading = ref(false)
+// const deleteSuccess = ref(false)
 
 // const search = computed(() => props.search)
 
@@ -146,8 +158,23 @@ const handlePage = (pagination: any) => {
   getCampaigns()
 }
 
-const deleteCampaign = async (campaign: any) => {
+// const openDelete = (open: any) => {
+//   deleteSuccess.value = false
+//   open()
+// }
 
+const deleteCampaign = async (campaign: any, closeModal: any) => {
+  deleteLoading.value = true
+  try {
+    await auth.api.post(`/campaigns/delete`, { campaignId: campaign._id })
+    campaigns.value = campaigns.value.filter(c => c !== campaign)
+    totalRecords.value = totalRecords.value - 1
+    // deleteSuccess.value = true
+  } catch(err: any) {
+    console.log(err.message)
+  }
+  closeModal()
+  deleteLoading.value = false
 }
 
 

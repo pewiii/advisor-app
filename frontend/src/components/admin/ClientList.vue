@@ -40,11 +40,18 @@
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
           </template>
-          <template v-slot:content>
-            <div>Are you sure you want to delete this client?</div>
-            <div class="text-red-600">{{ data.fullName }}</div>
-            <div class="flex justify-end mt-4">
-              <pvButton label="Delete" severity="danger" @click="deleteClient"/>
+          <template v-slot:content="{ close }">
+            <!-- <div>{{ data }}</div> -->
+            <div v-if="!deleteLoading">
+              <div>Are you sure you want to delete this client?</div>
+              <div class="text-red-600">{{ data.fullName }}</div>
+              <div>This client has {{ data.campaignCount }} campaign{{ data.campaignCount === 1 ? '' : 's' }} that will be deleted also.</div>
+              <div class="flex justify-end mt-4">
+                <pvButton label="Delete" severity="danger" @click="deleteClient(data, close)"/>
+              </div>
+            </div>
+            <div v-else class="flex justify-center">
+              <VueLoader />
             </div>
           </template>
         </Modal>
@@ -59,9 +66,6 @@
         <div class="">
           <pvPaginator ref="clientPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
         </div>
-        <!-- <div class="md:hidden">
-          <pvPaginator ref="campaignPaginator" :rows="perPage" :totalRecords="totalRecords" template="PrevPageLink CurrentPageReport NextPageLink" @page="handlePage" />
-        </div> -->
       </div>
     </template>
   </pvDataTable>
@@ -92,21 +96,13 @@ const selectedClient = computed({
   }
 })
 
-// const showEmailMenu = ref(false)
 const loading = ref(false)
 const clients = ref([])
 const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
 const clientPaginator = ref(null as any)
-// const selectedClient = computed({
-//   get() {
-
-//   },
-//   set() {
-
-//   }
-// })
+const deleteLoading = ref(false)
 
 const getClients = async () => {
   try {
@@ -131,9 +127,6 @@ const refresh = (e: any) => {
       getClients()
     }
   }
-  // page.value = 1
-  // perPage.value = 5
-  // getClients()
 }
 
 const handlePage = (pagination: any) => {
@@ -142,16 +135,17 @@ const handlePage = (pagination: any) => {
   getClients()
 }
 
-// const selectClient = (client: any) => {
-//   if (selectedClient.value === client) {
-//     selectedClient.value = null
-//   } else {
-//     selectedClient.value = client
-//   }
-// }
-
-const deleteClient = async (client: any) => {
-
+const deleteClient = async (client: any, closeModal: any) => {
+  deleteLoading.value = true
+  try {
+    await auth.api.post(`/clients/delete`, { clientId: client._id })
+    clients.value = clients.value.filter(c => c !== client)
+    totalRecords.value = totalRecords.value - 1
+  } catch(err: any) {
+    console.log(err.message)
+  }
+  closeModal()
+  deleteLoading.value = false
 } 
 
 onMounted(getClients)

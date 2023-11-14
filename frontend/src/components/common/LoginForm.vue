@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <div>
-      Login
-    </div> -->
     <form class="bg-white p-10 shadow-lg rounded-lg">
       <label class="flex border-b-2 mb-6">
         <div>
@@ -24,19 +21,13 @@
         <button class="w-full" :class="userType === 'admin' ? 'admin-btn' : 'btn'" @click.prevent="login({ email, password })">Submit</button>
       </div>
     </form>
-    <div>
-
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-// import { useAuthStore } from '@/stores/auth';
 import { ref } from 'vue';
 
-// const auth = useAuthStore()
-
-const props = defineProps({
+defineProps({
   login: {
     type: Function,
     required: true

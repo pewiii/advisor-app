@@ -47,9 +47,25 @@ const update = async (req, res) => {
   }
 }
 
+// const destroy = async (req, res) => {
+
+// }
+
+const destroy = async (req, res) => {
+  try {
+    const { templateId } = req.body
+    await db.templates.deleteTemplate(templateId)
+    await db.campaigns.updateMany({ template: templateId }, { template: null })
+    res.sendStatus(201)
+  } catch(err) {
+    console.log(err)
+    res.status(400).send({ message: err.message })
+  }
+}
+
 export default {
   getList,
   create,
   update,
-
+  destroy,
 }

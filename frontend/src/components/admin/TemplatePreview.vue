@@ -1,14 +1,11 @@
 <template>
-  <!-- <div>
-    Template Preview
-  </div> -->
   <div>
     <LandingTemplate v-if="selectedTemplate" :templateData="templateData"/>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import LandingTemplate from '@/components/template/LandingTemplate.vue'
 
 const props = defineProps(['selectedTemplate', 'previewCampaign'])
@@ -45,28 +42,5 @@ watch(() => props.previewCampaign, () => {
 watch(templateData, () => {
   console.log(templateData.value)
 }, { deep: true })
-
-
-// const templateData = computed(() => {
-//   const data = {
-//     campaign: {},
-//     events: [],
-//     questions: [],
-//     config: props.selectedTemplate.config,
-//     person: {
-//       firstName: 'First'
-//     }
-//   }
-//   console.log(props.selectedCampaign.questions)
-//   if (props.selectedCampaign) {
-//     console.log(props.selectedCampaign)
-//     data.events = props.selectedCampaign.events
-//     data.questions = props.selectedCampaign.questions
-//   }
-
-//   return data
-// })
-
-
 
 </script>

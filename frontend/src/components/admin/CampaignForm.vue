@@ -31,7 +31,6 @@
         </label>
         <div class="pl-2">
           <pvInputText id="campaign-template" :value="templateDisplay" placeholder="Campaign Template" class="h-9 w-full" @change="(e: any) => e.target.value = templateDisplay" />
-          <!-- <span>{{ campaign.template ? campaign.template.title : '' }}</span>/ -->
         </div>
       </div>
     </div>
@@ -300,22 +299,6 @@ const fileUpload = ref(null as any)
 const expandedEvents = ref([] as any[])
 const expandedQuestions = ref([] as any[])
 
-// const cancel = () => {
-//   campaign.value = null
-//   // template.value = null
-// }
-
-
-// const template = computed({
-//   get() {
-//     return props.selectedTemplate
-//   },
-//   set(template) {
-//     emit('update:selectedTemplate', template)
-//   }
-// })
-
-
 const campaign = computed({
   get() {
     return props.campaign
@@ -326,7 +309,8 @@ const campaign = computed({
 })
 
 // validation
-const formErrors = computed(() => {
+const formErrors = ref({} as any)
+watch(campaign, () => {
   const required = (field: string) => `${field} is required`
   let errors = {
     ...campaign.value.title ? {} : { title: required('Title') },
@@ -363,14 +347,8 @@ const formErrors = computed(() => {
   errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors || hasQuestionErrors
   errors.events = events
   errors.questions = questions
-  return errors
-})
-
-// onMounted(() => {
-//   if (campaign.value.template) {
-//     template.value = campaign.value.template
-//   }
-// })
+  formErrors.value = errors
+}, { deep: true, immediate: true })
 
 onMounted(() => {
   if (props.selectedTemplate && !campaign.value.template) {
@@ -394,15 +372,10 @@ const templateDisplay = computed(() => {
   return campaign.value.template ? campaign.value.template.title : ''
 })
 
-// const clientDisplay = computed(() => {
-// })
-
-
 const events = computed(() => campaign.value.events)
 watch(events, () => {
   events.value.forEach((event: any) => {
     if (event.eventDate && event.timezone && !(event.date || event.time)) {
-      // const localEventTime = moment.tz(event.eventDate, 'YYYY-MM-DD HH:mm:ss', event.timezone)
       const localEventTime = moment.utc(event.eventDate).tz(event.timezone);
       const localDate = localEventTime.format('YYYY-MM-DD');
       const localTime = localEventTime.format('HH:mm:ss');

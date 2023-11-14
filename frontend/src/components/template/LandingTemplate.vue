@@ -98,6 +98,7 @@ const component = {
 
 const headerImage = computed(() => {
   if (props.templateData.config && props.templateData.config.headerImage) {
+    console.log(props.templateData.config.headerImage.url)
     return props.templateData.config.headerImage.url
   }
   return topImage

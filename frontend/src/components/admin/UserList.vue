@@ -40,11 +40,11 @@
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
           </template>
-          <template v-slot:content>
+          <template v-slot:content="{ close }">
             <div>Are you sure you want to delete this user?</div>
             <div class="text-red-600">{{ data.fullName }}</div>
             <div class="flex justify-end mt-4">
-              <pvButton label="Delete" severity="danger" @click="deleteUser"/>
+              <pvButton label="Delete" severity="danger" @click="deleteUser(data, close)"/>
             </div>
           </template>
         </Modal>
@@ -59,16 +59,13 @@
         <div class="">
           <pvPaginator ref="userPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
         </div>
-        <!-- <div class="md:hidden">
-          <pvPaginator ref="campaignPaginator" :rows="perPage" :totalRecords="totalRecords" template="PrevPageLink CurrentPageReport NextPageLink" @page="handlePage" />
-        </div> -->
       </div>
     </template>
   </pvDataTable>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { format } from 'date-fns'
 import { useAuthStore } from '@/stores/auth';
 import VueLoader from '@/components/common/VueLoader.vue'
@@ -77,24 +74,14 @@ import Modal from '@/components/common/Modal.vue'
 const auth = useAuthStore()
 
 const props = defineProps(['modelValue', 'search', 'addEditUser'])
-// const emit = defineEmits(['update:modelValue'])
 
-
-// const showEmailMenu = ref(false)
 const loading = ref(false)
 const users = ref([])
 const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
 const userPaginator = ref(null as any)
-// const selectedClient = computed({
-//   get() {
-
-//   },
-//   set() {
-
-//   }
-// })
+const deleteLoading = ref(false)
 
 const getUsers = async () => {
   try {
@@ -102,7 +89,6 @@ const getUsers = async () => {
     const res = await auth.api.get(
       `/users?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
     users.value = res.data.data
-    console.log(users.value)
     totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
@@ -120,9 +106,6 @@ const refresh = (e: any) => {
       getUsers()
     }
   }
-  // page.value = 1
-  // perPage.value = 5
-  // getClients()
 }
 
 const handlePage = (pagination: any) => {
@@ -131,16 +114,17 @@ const handlePage = (pagination: any) => {
   getUsers()
 }
 
-// const selectClient = (client: any) => {
-//   if (selectedClient.value === client) {
-//     selectedClient.value = null
-//   } else {
-//     selectedClient.value = client
-//   }
-// }
-
-const deleteUser = async (user: any) => {
-
+const deleteUser = async (user: any, closeModal: any) => {
+  deleteLoading.value = true
+  try {
+    await auth.api.post(`/users/delete`, { userId: user._id })
+    users.value = users.value.filter(c => c !== user)
+    totalRecords.value = totalRecords.value - 1
+  } catch(err: any) {
+    console.log(err.message)
+  }
+  closeModal()
+  deleteLoading.value = false
 }
 
 onMounted(getUsers)

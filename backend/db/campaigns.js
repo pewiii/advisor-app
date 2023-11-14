@@ -21,36 +21,37 @@ const update = async (objectId, data) => {
 // }
 
 const getCampaignCount = async (search) => {
+  return models.Campaign.countDocuments()
 
-  const query = {};
+  // const query = {};
 
-  if (search) {
-    query.$or = [
-      { title: { $regex: search, $options: 'i' } },
-      // Add other fields you want to search for in campaigns
-      { 'client.firstName': { $regex: search, $options: 'i' } },
-      { 'client.lastName': { $regex: search, $options: 'i' } },
-      { 'client.fullName': { $regex: search, $options: 'i' } },
-      { 'client.company': { $regex: search, $options: 'i' } },
-      { 'client.phone': { $regex: search, $options: 'i' } },
-      { 'client.email': { $regex: search, $options: 'i' } },
-    ];
-  }
+  // if (search) {
+  //   query.$or = [
+  //     { title: { $regex: search, $options: 'i' } },
+  //     // Add other fields you want to search for in campaigns
+  //     { 'client.firstName': { $regex: search, $options: 'i' } },
+  //     { 'client.lastName': { $regex: search, $options: 'i' } },
+  //     { 'client.fullName': { $regex: search, $options: 'i' } },
+  //     { 'client.company': { $regex: search, $options: 'i' } },
+  //     { 'client.phone': { $regex: search, $options: 'i' } },
+  //     { 'client.email': { $regex: search, $options: 'i' } },
+  //   ];
+  // }
 
-  const campaigns = await models.Campaign.aggregate([
-    {
-      $lookup: {
-        from: 'clients',
-        localField: 'client',
-        foreignField: '_id',
-        as: 'client',
-      },
-    },
-    {
-      $match: query, // Apply the search query
-    },
-  ])
-  return campaigns.length
+  // const campaigns = await models.Campaign.aggregate([
+  //   {
+  //     $lookup: {
+  //       from: 'clients',
+  //       localField: 'client',
+  //       foreignField: '_id',
+  //       as: 'client',
+  //     },
+  //   },
+  //   {
+  //     $match: query, // Apply the search query
+  //   },
+  // ])
+  // return campaigns.length
 }
 
 const getList = async (search, page, perPage) => {
@@ -160,6 +161,22 @@ const getById = (id) => {
     .exec();
 }
 
+const deleteMany = (criteria) => {
+  return models.Campaign.deleteMany(criteria);
+}
+
+const deleteOne = (criteria) => {
+  return models.Campaign.deleteOne(criteria);
+}
+
+
+const updateMany = (criteria, data) => {
+  return models.Campaign.updateMany(criteria, data)
+}
+
+const getMany = (criteria) => {
+  return models.Campaign.find(criteria)
+}
 
 export default {
   create,
@@ -167,4 +184,8 @@ export default {
   getList,
   getById,
   getCampaignCount,
+  deleteMany,
+  deleteOne,
+  updateMany,
+  getMany
 }

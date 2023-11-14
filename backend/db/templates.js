@@ -18,7 +18,8 @@ const getTemplateById = (clientId) => {
 }
 
 const getTemplateCount = () => {
-  return models.Template.find().count()
+  // return models.Template.find().count()
+  return models.Template.countDocuments()
 }
 
 const getList = async (search, page, perPage) => {
@@ -83,7 +84,6 @@ const getList = async (search, page, perPage) => {
 // }
 
 
-
 export default {
   getList,
   createTemplate,
@@ -91,4 +91,5 @@ export default {
   getTemplateById,
   getTemplateCount,
   updateTemplate,
+  // updateMany
 }

@@ -10,14 +10,28 @@
       <div>
         <input type="text" placeholder="Search" class="h-8 ml-4 bg-gray-200 px-2 md:w-96" v-model="search" />
       </div>
-      <div class="relative" @mouseleave="showMenu = false">
+      <div class="">
         <div
         @click="showMenu = true"
         class="w-8 h-8 rounded-full border-2 border-gray-200 flex justify-center items-center cursor-pointer"
           >
           <span class="material-icons text-gray-200 md-24">person</span>
         </div>
-        <div class="top-0 right-0 absolute bg-white text-slate-500 w-56 h-96 rounded-lg z-10" v-if="showMenu">
+        <pvSidebar v-model:visible="showMenu" position="right">
+          <div
+          class="w-8 h-8 rounded-full border-2 border-primary flex justify-center items-center"
+          >
+            <span class="material-icons text-primary md-24">person</span>
+          </div>
+          <h2>Right Sidebar</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <div class="">
+            <div class="text-center py-4 px-4 cursor-pointer" @click="logout">
+              <span class="material-icons md-18 translate-y-1">logout</span> Logout
+            </div>
+          </div>
+        </pvSidebar>
+        <!-- <div class="top-0 right-0 absolute bg-white text-slate-500 w-56 h-96 rounded-lg z-10" v-if="showMenu">
           <div class="flex gap-4">
             <div class="whitespace-nowrap px-4 py-2">
               User Name
@@ -29,7 +43,7 @@
               <span class="material-icons md-18 translate-y-1">logout</span> Logout
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -58,9 +72,9 @@ const auth = useAuthStore()
 
 const showMenu = ref(false)
 
-const isAdmin = computed(() => {
-  return auth.user && auth.user.userType === 'admin'
-})
+// const isAdmin = computed(() => {
+//   return auth.user && auth.user.userType === 'admin'
+// })
 
 const logout = () => {
   auth.logout()

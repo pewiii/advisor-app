@@ -5,43 +5,25 @@
     </template>
     <template v-slot:content>
 
-
-      <!-- <pvGalleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images" :responsiveOptions="responsiveOptions" :numVisible="7"
+      <pvGalleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images" :responsiveOptions="responsiveOptions" :numVisible="7"
         containerStyle="max-width: 850px" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
+        <template #header>
+          <div class="flex justify-center mb-4 gap-8">
+            <pvButton label="Delete Image" severity="danger" @click="deleteImage"/>
+            <pvButton label="Use Image" @click="useImage"/>
+          </div>
+        </template>
         <template #item="slotProps">
             <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="width: 100%; display: block" />
         </template>
-        <template #thumbnail="slotProps">
-            <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="display: block" />
-        </template>
-      </pvGalleria> -->
-
-        <pvGalleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images" :responsiveOptions="responsiveOptions" :numVisible="7"
-            containerStyle="max-width: 850px" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
-            <template #header>
-              <div class="flex justify-center mb-4 gap-8">
-                <pvButton label="Delete Image" severity="danger" @click="deleteImage"/>
-                <pvButton label="Use Image" @click="useImage"/>
-              </div>
-            </template>
-            <template #item="slotProps">
-                <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="width: 100%; display: block" />
-            </template>
-            <!-- <template #thumbnail="slotProps">
-                <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="display: block" />
-            </template> -->
-        </pvGalleria>
+      </pvGalleria>
 
 
-        <div v-if="images" class="flex flex-wrap gap-4">
-            <div v-for="(image, index) of images" :key="index" class="w-48 h-48">
-                <img :src="image.url" :alt="image.alt" @click="imageClick(index)" class="cursor-pointer" />
-            </div>
-        </div>
-
-
-
-
+      <div v-if="images" class="flex flex-wrap gap-4">
+          <div v-for="(image, index) of images" :key="index" class="w-48 h-48">
+              <img :src="image.url" :alt="image.alt" @click="imageClick(index)" class="cursor-pointer" />
+          </div>
+      </div>
 
       <div class="">
         <div>
@@ -49,27 +31,23 @@
           <input id="choose_file" ref="imageUpload" @change="handleFileChange" type="file" accept="image/*" hidden>
           <pvButton v-ripple class="p-ripple whitespace-nowrap" @click="chooseFiles()" raised label="Add Image" icon="pi pi-file" iconPos="right" outlined size="small" text/>
         </div>
-
       </div>
-
-
     </template>
-    <!-- <template v-slot:content>
-      <div>
-        Image select content
-      </div>
-    </template> -->
   </Modal>
 
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed } from 'vue';
 import Modal from '@/components/common/Modal.vue'
 import { useAuthStore } from '@/stores/auth';
+import { useImageStore } from '@/stores/images';
 import { notify } from '@kyvg/vue3-notification';
+import { storeToRefs } from 'pinia';
 
 const auth = useAuthStore()
+const imageStore = useImageStore()
+const { images } = storeToRefs(imageStore)
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -111,31 +89,16 @@ const selectedImage = computed({
   }
 })
 
-const images = ref([] as any[])
-
-const getImages = async () => {
-  try {
-    const res = await auth.api.get('/images')
-    images.value = res.data
-  } catch(err: any) {
-    console.log(err.message)
-  }
-}
-
 const useImage = () => {
   const image = images.value[activeIndex.value]
   selectedImage.value = image
   displayCustom.value = false
 }
 
-const deleteImage = async () => {
-  try {
-    const image = images.value[activeIndex.value]
-    await auth.api.post('/uploads/image/delete', image)
-    images.value = images.value.filter(i => i !== image)
-  } catch(err) {
-    console.log(err)
-  }
+const deleteImage = () => {
+  const image = images.value[activeIndex.value]
+  displayCustom.value = false
+  imageStore.deleteImage(image)
 }
 
 const uploadFile = async (file: any) => {
@@ -152,7 +115,6 @@ const uploadFile = async (file: any) => {
     console.log(err)
   }
 }
-
 
 const chooseFiles = () => {
   if (imageUpload.value) {
@@ -177,8 +139,6 @@ const handleFileChange = async (e: Event) => {
   }
   loading.value = false
 }
-
-onMounted(getImages)
 
 
 </script>

@@ -29,8 +29,19 @@ const update = async (req, res) => {
   res.send(201)
 }
 
+// const destroy = async (req, res) => {
+//   res.send(201)
+// }
+
 const destroy = async (req, res) => {
-  res.send(201)
+  try {
+    const { userId } = req.body
+    await db.users.deleteUser(userId)
+    await db.campaigns.updateMany({ user: userId }, { user: req.user.userId })
+    res.sendStatus(200)
+  } catch(err) {
+    res.status(400).send({ message: 'Error deleting user' })
+  }
 }
 
 export default {
