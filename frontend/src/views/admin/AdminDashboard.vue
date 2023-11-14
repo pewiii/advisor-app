@@ -55,19 +55,19 @@
             <div class="flex gap-4">
               <div class="flex align-items-center">
                 <pvRadioButton v-model="currentList" inputId="campaign-list" name="pizza" value="campaigns" />
-                <label for="campaign-list" class="ml-2">Campaigns</label>
+                <label for="campaign-list" class="ml-2 cursor-pointer">Campaigns</label>
               </div>
               <div class="flex align-items-center">
                 <pvRadioButton v-model="currentList" inputId="client-list" name="pizza" value="clients" />
-                <label for="client-list" class="ml-2">Clients</label>
+                <label for="client-list" class="ml-2 cursor-pointer">Clients</label>
               </div>
               <div class="flex align-items-center">
                 <pvRadioButton v-model="currentList" inputId="template-list" name="pizza" value="templates" />
-                <label for="template-list" class="ml-2">Templates</label>
+                <label for="template-list" class="ml-2 cursor-pointer">Templates</label>
               </div>
               <div class="flex align-items-center" v-if="auth.user.isAdmin">
                 <pvRadioButton v-model="currentList" inputId="user-list" name="pizza" value="users" />
-                <label for="user-list" class="ml-2">Users</label>
+                <label for="user-list" class="ml-2 cursor-pointer">Users</label>
               </div>              
             </div>
 
@@ -179,7 +179,9 @@ const previewTemplate = computed(() => {
   if (editTemplate.value) {
     return editTemplate.value
   } else {
-    return selectedTemplate.value
+    if (editCampaign.value) {
+      return selectedTemplate.value
+    }
   }
   // if (editTemplate.value) {
   //   return editTemplate.value

@@ -76,7 +76,8 @@ const adminLogin = async (req, res) => {
     // return
 
     const { email, password } = req.body
-    const user = await db.users.getUser({ email })
+    const emailRegex = new RegExp(email, 'i');
+    const user = await db.users.getUser({ email: emailRegex })
     if (!user) {
       return res.sendStatus(401)
     }
@@ -109,7 +110,8 @@ const register = (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body
-    const client = await db.clients.getFullClient({ email })
+    const emailRegex = new RegExp(email, 'i');
+    const client = await db.clients.getFullClient({ email: emailRegex })
     if (!client) {
       return res.sendStatus(401)
     }
