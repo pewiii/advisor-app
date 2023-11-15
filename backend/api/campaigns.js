@@ -105,6 +105,7 @@ const destroy = async (req, res) => {
     console.log(campaignId)
     await db.campaigns.deleteOne({ _id: campaignId })
     await db.records.deleteMany(campaignId)
+    await db.respondents.deleteMany({ campaign: campaignId })
     res.sendStatus(201)
   } catch(err) {
     res.status(400).send({ message: err.message })
