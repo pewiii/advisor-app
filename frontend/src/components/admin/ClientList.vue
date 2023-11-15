@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" :loading="loading">
+  <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -14,19 +14,19 @@
     <template #loading>
       <VueLoader />
     </template>
-    <pvColumn field="fullName" header="Name"></pvColumn>
-    <pvColumn field="company" header="Company"></pvColumn>
-    <pvColumn field="createdAt" header="Created" class="hidden lg:table-cell">
+    <pvColumn field="fullName" header="Name" sortable></pvColumn>
+    <pvColumn field="company" header="Company" sortable></pvColumn>
+    <pvColumn field="createdAt" header="Created" sortable class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="updatedAt" header="Updated" class="hidden lg:table-cell">
+    <pvColumn field="updatedAt" header="Updated" sortable class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" class="hidden sm:table-cell">
+    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
@@ -103,12 +103,22 @@ const perPage = ref(5)
 const totalRecords = ref(0)
 const clientPaginator = ref(null as any)
 const deleteLoading = ref(false)
+const sortField = ref('updatedAt')
+const sortOrder = ref(-1)
+
+
+const sort = (e: any) => {
+  // console.log(e)
+  sortField.value = e.sortField
+  sortOrder.value = e.sortOrder
+  getClients()
+}
 
 const getClients = async () => {
   try {
     loading.value = true
     const res = await auth.api.get(
-      `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+      `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
     clients.value = res.data.data
     totalRecords.value = res.data.total
   } catch(err: any) {

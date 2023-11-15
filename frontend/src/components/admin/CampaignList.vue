@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" :loading="loading">
+  <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -14,23 +14,23 @@
     <template #loading>
       <VueLoader />
     </template>
-    <pvColumn field="title" header="Title"></pvColumn>
-    <pvColumn field="client" header="Client"  class="">
+    <pvColumn field="title" header="Title" sortable></pvColumn>
+    <pvColumn field="client" header="Client" sortable>
       <template #body="{ data }">
         {{ data.client.fullName }}
       </template>
     </pvColumn>
-    <pvColumn field="createdAt" header="Created" class="hidden lg:table-cell">
+    <pvColumn field="createdAt" header="Created" sortable class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="updatedAt" header="Updated" class="hidden lg:table-cell">
+    <pvColumn field="updatedAt" header="Updated" sortable class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" class="hidden sm:table-cell">
+    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
@@ -116,15 +116,20 @@ const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
 const deleteLoading = ref(false)
-// const deleteSuccess = ref(false)
+const sortField = ref('updatedAt')
+const sortOrder = ref(-1)
 
-// const search = computed(() => props.search)
+const sort = (e: any) => {
+  sortField.value = e.sortField
+  sortOrder.value = e.sortOrder
+  getCampaigns()
+}
 
 const getCampaigns = async () => {
   loading.value = true
   try {
     const res = await auth.api.get(
-      `/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+      `/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
     campaigns.value = res.data.data
     totalRecords.value = res.data.total
   } catch(err: any) {

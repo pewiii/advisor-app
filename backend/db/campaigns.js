@@ -54,12 +54,14 @@ const getCampaignCount = async (search) => {
   // return campaigns.length
 }
 
-const getList = async (search, page, perPage) => {
+const getList = async (search, page, perPage, sortField = 'updatedAt', sortOrder = '-1') => {
   try {
     const currentDate = new Date();
-
+    const order = parseInt(sortOrder, 10)
     const limit = parseInt(perPage, 10);
     const skip = page * limit;
+    // console.log(sortOrder)
+    // console.log(order)
 
     const query = {}; // Define an empty query object
 
@@ -121,7 +123,7 @@ const getList = async (search, page, perPage) => {
         $match: query, // Apply the search query
       },
       {
-        $sort: { updatedAt: -1 }
+        $sort: { [sortField]: order }
       },
       {
         $skip: skip, // Skip the specified number of documents

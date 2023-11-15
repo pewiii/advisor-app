@@ -84,7 +84,6 @@ const selectedImage = computed({
     return props.modelValue
   },
   set(image) {
-    console.log("HERE", image)
     emit('update:modelValue', image)
   }
 })

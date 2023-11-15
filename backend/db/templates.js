@@ -22,19 +22,17 @@ const getTemplateCount = () => {
   return models.Template.countDocuments()
 }
 
-const getList = async (search, page, perPage) => {
+const getList = async (search, page, perPage, sortField = 'updatedAt', sortOrder = '-1') => {
   const limit = parseInt(perPage, 10);
   const skip = page * limit;
-
+  const order = parseInt(sortOrder, 10)
   const query = {};
+
   if (search) {
     query.title = new RegExp(search, 'i');
   }
 
   const templates = await models.Template.aggregate([
-    {
-      $match: query
-    },
     {
       $lookup: {
         from: 'campaigns',
@@ -55,12 +53,18 @@ const getList = async (search, page, perPage) => {
       }
     },
     {
+      $match: query
+    },
+    {
+      $sort: { [sortField]: order }
+    },
+    {
       $skip: skip
     },
     {
       $limit: limit
     }
-  ]);
+  ]).exec();
 
   return templates;
 };

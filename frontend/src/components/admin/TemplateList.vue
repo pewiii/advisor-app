@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" :loading="loading">
+  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -14,18 +14,18 @@
     <template #loading>
       <VueLoader />
     </template>
-    <pvColumn field="title" header="Title"></pvColumn>
-    <pvColumn field="createdAt" header="Created">
+    <pvColumn field="title" header="Title" sortable></pvColumn>
+    <pvColumn field="createdAt" sortable header="Created">
       <template #body="{ data }">
         {{ format(new Date(data.createdAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="updatedAt" header="Updated" class="hidden lg:table-cell">
+    <pvColumn field="updatedAt" header="Updated" sortable class="hidden lg:table-cell">
       <template #body="{ data }">
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" class="hidden sm:table-cell">
+    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
         <!-- Status -->
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
@@ -92,6 +92,14 @@ const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
 const deleteLoading = ref(false)
+const sortField = ref('updatedAt')
+const sortOrder = ref(-1)
+
+const sort = (e: any) => {
+  sortField.value = e.sortField
+  sortOrder.value = e.sortOrder
+  getTemplates()
+}
 
 const selectedTemplate = computed({
   get() {
@@ -105,12 +113,12 @@ const selectedTemplate = computed({
     }
   }
 })
-  
+
 const getTemplates = async () => {
   loading.value = true
   try {
     const res = await auth.api.get(
-      `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
+      `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
 
     templates.value = res.data.data
     totalRecords.value = res.data.total

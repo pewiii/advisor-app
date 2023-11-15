@@ -99,8 +99,9 @@ const getClientCount = async (search) => {
   //   return clients.length
 }
 
-const getList = async (search, page, perPage) => {
+const getList = async (search, page, perPage, sortField = 'updatedAt', sortOrder = '-1') => {
   const limit = parseInt(perPage, 10);
+  const order = parseInt(sortOrder, 10)
   const skip = page * limit;
   const query = {};
   if (search) {
@@ -121,15 +122,6 @@ const getList = async (search, page, perPage) => {
         foreignField: 'client',
         as: 'campaigns',
       },
-    },
-    {
-      $match: query,
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
     },
     {
       $project: {
@@ -185,6 +177,18 @@ const getList = async (search, page, perPage) => {
           },
         },
       },
+    },
+    {
+      $match: query,
+    },
+    {
+      $sort: { [sortField]: order }
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
     },
   ]).exec();
 

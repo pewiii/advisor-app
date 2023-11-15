@@ -8,9 +8,9 @@ import db from '../db/index.js'
 
 const getList = async (req, res) => {
   try {
-    const { search = '', page = 1, perPage = 10 } = req.query;
+    const { search = '', page = 1, perPage = 10, sortField, sortOrder } = req.query;
 
-    const templates = await db.templates.getList(search, page, perPage);
+    const templates = await db.templates.getList(search, page, perPage, sortField, sortOrder);
     const count = await db.templates.getTemplateCount(search)
     res.send({
       data: templates,
@@ -21,7 +21,6 @@ const getList = async (req, res) => {
     // res.send(templates)
   } catch(err) {
     console.log(err)
-    console.log(err.message)
     res.status(400).send({ message: err.message })
   }
 }

@@ -70,9 +70,9 @@ const get = async (req, res) => {
 const getList = async (req, res) => {
 
   try {
-    const { search = '', page = 0, perPage = 10 } = req.query;
+    const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
     
-    const campaigns = await db.campaigns.getList(search, page, perPage);
+    const campaigns = await db.campaigns.getList(search, page, perPage, sortField, sortOrder);
     const count = await db.campaigns.getCampaignCount(search)
     // campaigns.forEach(campaign => {
     //   campaign.events.forEach(event => {

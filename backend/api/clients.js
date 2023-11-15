@@ -8,7 +8,7 @@ const create = async (req, res) => {
     const client = await db.clients.createClient({ ...req.body, password })
     res.status(201).send(client)
   } catch(err) {
-    console.log(err.message)
+    console.log(err)
     res.status(400).send({ message: err.message })
   }
 }
@@ -33,9 +33,9 @@ const get = async (req, res) => {
 const getList = async (req, res) => {
 
   try {
-    const { search = '', page = 0, perPage = 10 } = req.query;
+    const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
     
-    const clients = await db.clients.getList(search, page, perPage);
+    const clients = await db.clients.getList(search, page, perPage, sortField, sortOrder);
     const count = await db.clients.getClientCount(search)
     res.send({
       data: clients,
