@@ -15,7 +15,7 @@
     <!-- <div class="bg-white col-span-3 p-6">Campaign List</div> -->
     <!-- <div class="bg-white col-span-3 row-span-2 p-6">Resondent List</div> -->
     <div class="bg-white col-span-3 map-component">
-      <GMap />
+      <GMap :campaign="selectedCampaign" :respondent="selectedRespondent"/>
     </div>
     <div class="bg-white col-span-3 p-6">
       <!-- Latest Respondents -->
