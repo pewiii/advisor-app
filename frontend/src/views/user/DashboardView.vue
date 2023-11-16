@@ -10,16 +10,16 @@
       <AreaChart />
     </div>
     <div class="bg-white col-span-3 row-span-2 p-6">
-      Campaigns
-      <p>Will contain campaign list and respondent drill down</p>
+      <CampaignList v-model:selectedCampaign="selectedCampaign" v-model:selectedRespondent="selectedRespondent" :search="search" />
     </div>
     <!-- <div class="bg-white col-span-3 p-6">Campaign List</div> -->
     <!-- <div class="bg-white col-span-3 row-span-2 p-6">Resondent List</div> -->
     <div class="bg-white col-span-3 map-component">
       <GMap />
     </div>
-    <div class="bg-white col-span-3 h-60 p-6">
-      Latest Respondents
+    <div class="bg-white col-span-3 p-6">
+      <!-- Latest Respondents -->
+      <RespondentView v-if="selectedRespondent" :respondent="selectedRespondent"/>
     </div>
   </div>
 </template>
@@ -31,6 +31,11 @@ import PieChart from '@/components/user/PieChart.vue'
 import AreaChart from '@/components/user/AreaChart.vue'
 import { useAuthStore } from '@/stores/auth'
 import GMap from '@/components/common/GMap.vue'
+import CampaignList from '@/components/user/CampaignList.vue'
+import RespondentView from '@/components/user/RespondentView.vue'
+
+const selectedCampaign = ref(null)
+const selectedRespondent = ref(null)
 
 const auth = useAuthStore()
 

@@ -157,6 +157,13 @@ const respondentSchema = new mongoose.Schema({
   // other info
 }, { timestamps: true })
 
+respondentSchema.pre('save', function (next) {
+  if (!this.fullName) {
+    this.fullName = `${this.firstName} ${this.lastName}`
+  }
+  next()
+})
+
 
 const eventSchema = new mongoose.Schema({
   locationName: {

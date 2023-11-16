@@ -1,5 +1,6 @@
 import db from './index.js'
 import models from './models.js'
+import mongoose from 'mongoose';
 
 const create = (data) => {
   const campaign = models.Campaign(data)
@@ -176,6 +177,92 @@ const getMany = (criteria) => {
   return models.Campaign.find(criteria)
 }
 
+const getClientCampaignCount = async (clientId) => {
+  return models.Campaign.countDocuments({ client: clientId })
+}
+
+const getClientCampaigns = async (clientId, search, page, perPage, sortField = 'updatedAt', sortOrder = '-1') => {
+  const currentDate = new Date();
+  const order = parseInt(sortOrder, 10)
+  const limit = parseInt(perPage, 10);
+  const skip = page * limit;
+
+  const id = new mongoose.Types.ObjectId(clientId)
+
+  const query = { client: id };
+
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      // Add other fields you want to search for in campaigns
+    ];
+  }
+
+  const campaigns = await models.Campaign.aggregate([
+    {
+      $lookup: {
+        from: 'respondents',
+        localField: '_id',
+        foreignField: 'campaign',
+        as: 'respondents',
+      },
+    },
+    {
+      $lookup: {
+        from: 'records',
+        localField: '_id',
+        foreignField: 'campaign',
+        as: 'records',
+      },
+    },
+    {
+      $addFields: {
+        status: {
+          $cond: {
+            if: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: '$events',
+                      as: 'event',
+                      cond: { $gt: ['$$event.eventDate', currentDate] },
+                    },
+                  },
+                },
+                0, // Check if there are events in the future
+              ],
+            },
+            then: 'active', // Set to "active" if there are future events
+            else: 'inactive', // Set to "complete" if there are no future events
+          },
+        },
+        reach: { $size: '$records' }, // Add the 'reach' field counting records
+      },
+    },
+    {
+      $project: {
+        records: 0, // Exclude the 'records' field
+      },
+    },
+    {
+      $match: query, // Apply the search query
+    },
+    {
+      $sort: { [sortField]: order }
+    },
+    {
+      $skip: skip, // Skip the specified number of documents
+    },
+    {
+      $limit: limit, // Limit the number of documents returned
+    },
+  ]).exec();
+
+  return campaigns;
+}
+
+
 export default {
   create,
   update,
@@ -185,5 +272,7 @@ export default {
   deleteMany,
   deleteOne,
   updateMany,
-  getMany
+  getMany,
+  getClientCampaigns,
+  getClientCampaignCount,
 }

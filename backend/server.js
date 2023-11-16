@@ -33,6 +33,7 @@ const upload = multer({ storage: storage })
 
 // const upload = multer({ storage: storage });
 app.post('/login', auth.login)
+app.post('/admin/login', auth.adminLogin)
 
 app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
 app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
@@ -41,11 +42,6 @@ app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.uplo
 app.post('/uploads/image/delete', auth.verifyToken, api.uploads.imageDelete)
 app.get('/images', auth.verifyToken, api.uploads.getImageList)
 
-app.post('/admin/login', auth.adminLogin)
-
-
-
-// app.post('/admin/register', auth.register)
 
 app.post('/clients/add', auth.verifyToken, api.clients.create)
 app.post('/clients/update', auth.verifyToken, api.clients.update)
@@ -69,10 +65,10 @@ app.post('/client-setup/:clientId/:resetToken', api.clients.setupClient)
 
 app.post('/templates/add', auth.verifyToken, api.templates.create)
 app.post('/templates/update', auth.verifyToken, api.templates.update)
-// app.post('/templates/delete', auth.verifyToken, api.templates.destroy)
 app.post('/templates/delete', auth.verifyToken, auth.requireAdmin, api.templates.destroy)
 app.get('/templates', auth.verifyToken, api.templates.getList)
-// app.get('/templates/:templateId', api.templates.get)
+
+app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)
 
 
 app.post('/offer-code', api.offers.handleOfferCode)

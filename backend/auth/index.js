@@ -79,8 +79,8 @@ const adminLogin = async (req, res) => {
     const { email, password } = req.body
     const emailRegex = new RegExp(email, 'i');
     const user = await db.users.getUser({ email: emailRegex })
-    if (!user) {
-      return res.sendStatus(401)
+    if (!user || !user.password) {
+      throw('Invalid user')
     }
     const validPassword = await bcrypt.compare(password, user.password)
     if (!validPassword) {
@@ -99,8 +99,7 @@ const adminLogin = async (req, res) => {
       }
     })
   } catch(err) {
-    console.log(err.message)
-    res.status(500).send({ message: 'Server error' })
+    res.status(400).send({ message: 'Invalid email or password' })
   }
 }
 
@@ -113,10 +112,9 @@ const login = async (req, res) => {
     const { email, password } = req.body
     const emailRegex = new RegExp(email, 'i');
     const client = await db.clients.getFullClient({ email: emailRegex })
-    if (!client) {
-      return res.sendStatus(401)
+    if (!client || !client.password) {
+      throw('Invalid user')
     }
-    console.log(client)
     const validPassword = await bcrypt.compare(password, client.password)
     if (!validPassword) {
       return res.sendStatus(401)
@@ -134,7 +132,7 @@ const login = async (req, res) => {
     })
   } catch(err) {
     console.log(err.message)
-    res.status(500).send({ message: 'Server error'})
+    res.status(400).send({ message: 'Invalid email or password'})
   }
 }
 

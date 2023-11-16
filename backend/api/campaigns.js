@@ -112,11 +112,37 @@ const destroy = async (req, res) => {
   }
 }
 
+const getClientCampaigns = async (req, res) => {
+  try {
+
+    const clientId = req.user.userId
+
+    const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
+    
+    const campaigns = await db.campaigns.getClientCampaigns(clientId, search, page, perPage, sortField, sortOrder);
+    const count = await db.campaigns.getClientCampaignCount(clientId)
+    console.log(count)
+    // const campaigns = await db.campaigns.getMany({ client: clientId })
+    // console.log(clientId)
+
+    res.send({
+      data: campaigns,
+      page: page,
+      perPage: perPage,
+      total: count,
+    })
+
+  } catch(err) {
+    console.log(err)
+    res.status(500).send({ message: 'Server error' })
+  }
+}
 
 export default {
   create,
   update,
   get,
   getList,
-  destroy
+  destroy,
+  getClientCampaigns,
 }
