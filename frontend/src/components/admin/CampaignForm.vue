@@ -483,6 +483,7 @@ const uploadFile = async (file: any) => {
       }
   })
   campaign.value = res.data
+  console.log(res.data)
 }
 const handleFileChange = async (e: Event) => {
   loading.value = true

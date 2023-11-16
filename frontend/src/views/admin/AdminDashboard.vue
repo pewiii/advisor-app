@@ -41,7 +41,7 @@
       </Modal>
     </div> -->
     <div>
-      <pvButton v-if="minimizeList" severity="secondary" label="List" size="small" class="h-9" icon="pi pi-window-maximize" iconPos="right" @click="minimizeList = false"/>
+      <pvButton v-if="minimizeList" severity="warning" raised label="List" size="small" class="h-9" icon="pi pi-window-maximize" iconPos="right" @click="minimizeList = false"/>
     </div>
   </NavBar>
 

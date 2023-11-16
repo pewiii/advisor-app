@@ -18,16 +18,21 @@
           <span class="material-icons text-gray-200 md-24">person</span>
         </div>
         <pvSidebar v-model:visible="showMenu" position="right">
-          <div
-          class="w-8 h-8 rounded-full border-2 border-primary flex justify-center items-center"
-          >
-            <span class="material-icons text-primary md-24">person</span>
-          </div>
-          <h2>Right Sidebar</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-          <div class="">
-            <div class="text-center py-4 px-4 cursor-pointer" @click="logout">
-              <span class="material-icons md-18 translate-y-1">logout</span> Logout
+          <div class="flex flex-col items-center">
+            <div class="flex items-center gap-3">
+              <div
+              class="w-8 h-8 rounded-full border-2 border-primary flex justify-center items-center"
+              >
+                <span class="material-icons text-primary md-24">person</span>
+              </div>
+              <div class="text-lg">
+                {{ auth.user.email }}
+              </div>
+            </div>
+            <div class="mt-4">
+              <div class="text-center py-4 px-4 cursor-pointer" @click="logout">
+                <span class="material-icons md-18 translate-y-1">logout</span> Logout
+              </div>
             </div>
           </div>
         </pvSidebar>

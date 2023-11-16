@@ -8,12 +8,8 @@ const create = (data) => {
 
 const update = async (objectId, data) => {
   return models.Campaign.findByIdAndUpdate(objectId, data, { new: true })
-  .populate('client')
+  .populate('client template')
   .exec()
-  // const campaign = await models.Campaign.findById(objectId)
-  // if (campaign) {
-  //   Object.keys(data).forEach()
-  // }
 }
 
 // const getCampaignCount = () => {

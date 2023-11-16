@@ -1,6 +1,6 @@
 <template>
 
-  <div id="pie-chart" class="">
+  <div :id="element" class="h-full w-full">
 
   </div>
 
@@ -9,6 +9,8 @@
 <script lang="ts" setup>
 import Highcharts from 'highcharts'
 import { onMounted } from 'vue';
+
+const props = defineProps(['element', 'title'])
 
 // Highcharts.setOptions({
 //     colors: Highcharts.map(Highcharts.getOptions().colors, function (color: any) {
@@ -34,12 +36,12 @@ onMounted(() => {
           plotBorderWidth: null,
           plotShadow: false,
           type: 'pie',
-          height: 350,
-          width: 350,
-          renderTo: 'pie-chart',
+        //   height: 350,
+        //   width: 350,
+          renderTo: props.element,
       },
       title: {
-        text: 'Net Worth',
+        text: props.title,
       },
       // title: {
       //     text: 'Registered private vehicles in Norway, by type of fuel, 2020',
@@ -69,9 +71,9 @@ onMounted(() => {
       series: [{
           name: 'Share',
           data: [
-              { name: 'Petrol', y: 938899 },
-              { name: 'Diesel', y: 1229600 },
-              { name: 'Electricity', y: 325251 },
+              { name: 'Something', y: 938899 },
+              { name: 'Something Else', y: 1229600 },
+              { name: 'Another Thing', y: 325251 },
               { name: 'Other', y: 238751 }
           ]
       }]
