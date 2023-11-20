@@ -29,52 +29,60 @@ const storage = multer.diskStorage({
   }
 });
 
-// const storage = multer.memoryStorage()
-
 const upload = multer({ storage: storage })
 
-// const upload = multer({ storage: storage });
-app.post('/login', auth.login)
+// app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
+// app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
+
+// app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.uploads.imageUpload)
+// app.post('/uploads/image/delete', auth.verifyToken, api.uploads.imageDelete)
+// app.get('/images', auth.verifyToken, api.uploads.getImageList)
+
+
+
+// **** Admin routes ****
 app.post('/admin/login', auth.adminLogin)
 
-app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
-app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
-
-app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.uploads.imageUpload)
-app.post('/uploads/image/delete', auth.verifyToken, api.uploads.imageDelete)
-app.get('/images', auth.verifyToken, api.uploads.getImageList)
+app.get('/admin/campaigns', auth.verifyToken,api.admin.campaigns.getList)
+app.get('/admin/campaign/:campaignId', auth.verifyToken,api.admin.campaigns.get)
 
 
-app.post('/clients/add', auth.verifyToken, api.clients.create)
-app.post('/clients/update', auth.verifyToken, api.clients.update)
-app.post('/clients/delete', auth.verifyToken, auth.requireAdmin, api.clients.destroy)
-app.get('/clients', auth.verifyToken, api.clients.getList)
-app.get('/clients/:clientId', auth.verifyToken, api.clients.get)
-app.post('/clients/setup', auth.verifyToken, comm.email.passwordSetup)
-
-app.get('/users', auth.verifyToken, auth.requireAdmin, api.users.getList)
-app.post('/users/add', auth.verifyToken, auth.requireAdmin, auth.adminRegister)
-app.post('/users/update', auth.verifyToken, auth.requireAdmin, auth.adminUpdate)
-app.post('/users/delete', auth.verifyToken, auth.requireAdmin, api.users.destroy)
-
-app.post('/campaigns/add', auth.verifyToken, upload.single('file'), api.campaigns.create)
-app.post('/campaigns/update', auth.verifyToken, upload.single('file'), api.campaigns.update)
-app.get('/campaigns', auth.verifyToken, api.campaigns.getList)
-app.post('/campaigns/delete', auth.verifyToken, auth.requireAdmin, api.campaigns.destroy)
-
-app.get('/client-setup/:clientId/:resetToken', api.clients.getSetupClient)
-app.post('/client-setup/:clientId/:resetToken', api.clients.setupClient)
-
-app.post('/templates/add', auth.verifyToken, api.templates.create)
-app.post('/templates/update', auth.verifyToken, api.templates.update)
-app.post('/templates/delete', auth.verifyToken, auth.requireAdmin, api.templates.destroy)
-app.get('/templates', auth.verifyToken, api.templates.getList)
-
-app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)
 
 
-app.post('/offer-code', api.offers.handleOfferCode)
-app.post('/rsvp', api.offers.rsvp)
+// **** Client Routes ****
+app.post('/login', auth.login)
+// app.post('/clients/add', auth.verifyToken, api.clients.create)
+// app.post('/clients/update', auth.verifyToken, api.clients.update)
+// app.post('/clients/delete', auth.verifyToken, auth.requireAdmin, api.clients.destroy)
+// app.get('/clients', auth.verifyToken, api.clients.getList)
+// app.get('/clients/:clientId', auth.verifyToken, api.clients.get)
+// app.post('/clients/setup', auth.verifyToken, comm.email.passwordSetup)
+
+// app.get('/users', auth.verifyToken, auth.requireAdmin, api.users.getList)
+// app.post('/users/add', auth.verifyToken, auth.requireAdmin, auth.adminRegister)
+// app.post('/users/update', auth.verifyToken, auth.requireAdmin, auth.adminUpdate)
+// app.post('/users/delete', auth.verifyToken, auth.requireAdmin, api.users.destroy)
+
+// app.post('/campaigns/add', auth.verifyToken, upload.single('file'), api.campaigns.create)
+// app.post('/campaigns/update', auth.verifyToken, upload.single('file'), api.campaigns.update)
+// app.get('/campaigns', auth.verifyToken, api.campaigns.getList)
+// app.post('/campaigns/delete', auth.verifyToken, auth.requireAdmin, api.campaigns.destroy)
+
+// app.post('/templates/add', auth.verifyToken, api.templates.create)
+// app.post('/templates/update', auth.verifyToken, api.templates.update)
+// app.post('/templates/delete', auth.verifyToken, auth.requireAdmin, api.templates.destroy)
+// app.get('/templates', auth.verifyToken, api.templates.getList)
+
+
+// app.get('/client-setup/:clientId/:resetToken', api.clients.getSetupClient)
+// app.post('/client-setup/:clientId/:resetToken', api.clients.setupClient)
+
+
+// app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)
+
+
+// app.post('/offer-code', api.offers.handleOfferCode)
+// app.post('/rsvp', api.offers.rsvp)
 
 app.listen(API_PORT, () => {
   console.log(`Listening on port ${API_PORT}`)

@@ -6,8 +6,25 @@ import LoginView from '@/views/user/LoginView.vue'
 import SetupView from '@/views/user/SetupView.vue'
 
 import AdminHome from '@/views/admin/AdminHome.vue'
-import AdminDashboard from '@/views/admin/AdminDashboard.vue'
+// import AdminDashboard from '@/views/admin/AdminDashboard.vue'
+// import AdminCampaigns from '@/views/admin/AdminCampaigns.vue'
+// import AdminClients from '@/views/admin/AdminClients.vue'
+// import AdminTemplates from '@/views/admin/AdminTemplates.vue'
+// import AdminUsers from '@/views/admin/AdminUsers.vue'
 import AdminLogin from '@/views/admin/AdminLogin.vue'
+
+import CampaignHome from '@/views/admin/campaigns/CampaignHome.vue'
+import CampaignList from '@/views/admin/campaigns/CampaignList.vue'
+import CampaignAddEdit from '@/views/admin/campaigns/CampaignAddEdit.vue'
+
+import ClientList from '@/views/admin/clients/ClientList.vue'
+import ClientAddEdit from '@/views/admin/clients/ClientAddEdit.vue'
+
+import TemplateList from '@/views/admin/templates/TemplateList.vue'
+import TemplateAddEdit from '@/views/admin/templates/TemplateAddEdit.vue'
+
+import UserList from '@/views/admin/users/UserList.vue'
+import UserAddEdit from '@/views/admin/users/UserAddEdit.vue'
 
 //   component: () => import('@/views/staff/campaigns/AddEdit.vue'),
 
@@ -36,51 +53,136 @@ const router = createRouter({
           path: 'dashboard',
           name: 'dashboard',
           component: DashboardView
+        },
+        {
+          path: '/admin',
+          name: 'admin',
+          component: AdminHome,
+          children: [
+            {
+              path: 'login',
+              name: 'admin-login',
+              component: AdminLogin
+            },
+            {
+              path: 'campaigns',
+              component: CampaignHome,
+              children: [
+                {
+                  path: '/',
+                  name: 'admin-campaigns',
+                  component: CampaignList
+                },
+                {
+                  path: 'add/:clientId',
+                  name: 'admin-campaigns-add',
+                  component: CampaignAddEdit
+                },
+                {
+                  path: 'edit/:campaignId',
+                  name: 'admin-campaigns-edit',
+                  component: CampaignAddEdit
+                }
+              ]
+            },
+            {
+              path: 'clients',
+              name: 'admin-clients',
+              component: ClientList,
+              children: [
+                {
+                  path: '/:id',
+                  name: 'admin-client-addEdit',
+                  component: ClientAddEdit
+                }
+              ]
+            },
+            {
+              path: 'templates',
+              name: 'admin-templates',
+              component: TemplateList,
+              children: [
+                {
+                  path: '/:id',
+                  name: 'admin-template-addEdit',
+                  component: TemplateAddEdit
+                }
+              ]
+            },
+            {
+              path: 'users',
+              name: 'admin-users',
+              component: UserList,
+              children: [
+                {
+                  path: '/:id',
+                  name: 'admin-user-addEdit',
+                  component: UserAddEdit
+                }
+              ]
+            },
+            // {
+            //   path: 'dashboard',
+            //   name: 'admin-dashboard',
+            //   component: AdminDashboard,
+            //   children: [
+                // {
+                //   path: 'clients',
+                //   name: 'admin-clients',
+                //   component: AdminClients,
+                // },
+                // {
+                //   path: 'templates',
+                //   name: 'admin-templates',
+                //   component: AdminTemplates,
+                // },
+                // {
+                //   path: 'users',
+                //   name: 'admin-users',
+                //   component: AdminUsers,
+                // }
+              // ]
+            // },
+          ]
         }
       ]
     },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: AdminHome,
-      children: [
-        {
-          path: 'login',
-          name: 'admin-login',
-          component: AdminLogin
-        },
-        {
-          path: 'dashboard',
-          name: 'admin-dashboard',
-          component: AdminDashboard
-        }
-      ]
-    }
   ]
 })
     
 router.beforeEach(async (to, from) => {
   const auth = useAuthStore()
   const name = to.name?.toString() || ''
-  if (name.includes('admin') && name !== 'admin-login') {
-    if (!auth.isAuthenticated || !auth.isAdmin) {
-      return { name: 'admin-login' }
-    }
-  }
 
-  if (auth.isAuthenticated && auth.isAdmin && !name.includes('admin')) {
-    return { name: 'admin-dashboard' }
-  }
-
-
-  if (name === 'dashboard' && !auth.isAuthenticated) {
-    return { name: 'login'}
-  }
-
-
-  // if (name !== 'login' && name !== 'setup' && !name.includes('admin') && !auth.isAuthenticated) {
-  //   return { name: 'login' }
+  // if (name.includes('admin') && !auth.user) {
+  //   return { name: 'admin-login' }
   // }
+
+  // if (!name.includes('login') && name !== 'home' && !auth.user) {
+  //   return { name: 'home' }
+  // }
+
+  // if (name === 'admin-dashboard') {
+  //   return { name: 'admin-campaigns' }
+  // }
+
+
+  // if (name.includes('admin') && name !== 'admin-login') {
+  //   if (!auth.isAuthenticated || !auth.isAdmin) {
+  //     return { name: 'admin-login' }
+  //   }
+  // }
+
+  // if (auth.isAuthenticated && auth.isAdmin && !name.includes('admin')) {
+  //   return { name: 'admin-dashboard' }
+  // }
+
+
+  // if (name === 'dashboard' && !auth.isAuthenticated) {
+  //   return { name: 'login'}
+  // }
+
+
 
 
 

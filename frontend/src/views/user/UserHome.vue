@@ -1,7 +1,7 @@
 <template>
-  <!-- <div class="p-8"> -->
+  <div class="bg-gray-300 flex flex-col min-h-screen">
     <RouterView />
-  <!-- </div> -->
+  </div>
 </template>
 
 <script lang="ts" setup>

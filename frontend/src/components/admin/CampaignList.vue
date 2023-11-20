@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" :loading="loading" @sort="sort">
+  <pvDataTable :value="campaigns" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -7,7 +7,7 @@
         </div>
         <div class="flex gap-4">
           <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditCampaign()"><span class="material-icons">add</span></pvButton>
+          <!-- <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditCampaign()"><span class="material-icons">add</span></pvButton> -->
         </div>
           </div>
     </template>
@@ -17,7 +17,7 @@
     <pvColumn field="title" header="Title" sortable></pvColumn>
     <pvColumn field="client" header="Client" sortable>
       <template #body="{ data }">
-        {{ data.client.fullName }}
+        {{ data.client.fullName }} - {{ data.client.company }}
       </template>
     </pvColumn>
     <pvColumn field="createdAt" header="Created" sortable class="hidden lg:table-cell">
@@ -30,16 +30,18 @@
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
+    <!-- <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
         </div>
       </template>
-    </pvColumn>
+    </pvColumn> -->
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditCampaign(data)">edit</div>
+        <RouterLink :to="{ name: 'admin-campaigns-edit', params: { campaignId: data._id }}">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">edit</div>
+        </RouterLink>
         <Modal :header="'Delete Campaign'" v-if="auth.user.isAdmin">
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
@@ -90,23 +92,23 @@ import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'addEditCampaign', 'search'])
+const props = defineProps(['search'])
 
 
-const emit = defineEmits(['update:modelValue'])
+// const emit = defineEmits(['update:modelValue'])
 
-const selectedCampaign = computed({
-  get() {
-    return props.modelValue
-  },
-  set(campaign: any) {
-    if (props.modelValue === campaign) {
-      emit('update:modelValue', null)
-    } else {
-      emit('update:modelValue', campaign)
-    }
-  }
-})
+// const selectedCampaign = computed({
+//   get() {
+//     return props.modelValue
+//   },
+//   set(campaign: any) {
+//     if (props.modelValue === campaign) {
+//       emit('update:modelValue', null)
+//     } else {
+//       emit('update:modelValue', campaign)
+//     }
+//   }
+// })
 
 
 const campaignPaginator = ref(null as any)
@@ -129,8 +131,8 @@ const getCampaigns = async () => {
   loading.value = true
   try {
     const res = await auth.api.get(
-      `/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    campaigns.value = res.data.data
+      `/admin/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
+    campaigns.value = res.data
     totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)

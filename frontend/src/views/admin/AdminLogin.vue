@@ -15,7 +15,7 @@ const auth = useAuthStore()
 const login = async (credentials: { email: string, password: string }) => {
   try {
     await auth.login(credentials, 'admin')
-    router.push({ name: 'admin-dashboard' })
+    router.push({ name: 'admin-campaigns' })
   } catch(err: any) {
     console.log(err.message)
   }
