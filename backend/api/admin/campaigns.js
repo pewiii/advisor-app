@@ -88,6 +88,29 @@ const get = async (req, res) => {
   }
 }
 
+const create = async (req, res) => {
+  try {
+    const data = req.body
+    const campaign = await models.Campaign.create(data)
+    res.status(201).send(campaign)
+  } catch(err) {
+    res.status(400).send({ message: err.message })
+    console.log(err)
+  }
+}
+
+const update = async (req, res) => {
+  try {
+    const { campaignId } = req.params
+    const data = req.body
+    const campaign = await models.Campaign.findOneAndUpdate({ _id: campaignId }, data)
+    res.send(campaign)
+  } catch(err) {
+    console.log(err)
+    res.status(400).send({ message: err.message })
+  }
+}
+
 
 // const convertDatetime = (date, time, timezone) => {
 //   const userDateTime = moment.tz(`${date} ${time}`, 'YYYY-MM-DD HH:mm', timezone);
@@ -201,11 +224,21 @@ const get = async (req, res) => {
 //   }
 // }
 
+const remove = async (req, res) => {
+  try {
+    const { campaignId } = req.params
+    await models.Campaign.findByIdAndDelete(campaignId)
+    res.sendStatus(204)
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
+}
+
 export default {
-  // create,
-  // update,
   get,
   getList,
-  // destroy,
-  // getClientCampaigns,
+  create,
+  update,
+  delete: remove
 }

@@ -1,6 +1,8 @@
 <template>
   <!-- <List :items="campaigns" :loading="loading" :tableType="'campaign'"/> -->
-  <CampaignList :search="search.searchText"/>
+  <div class="p-6 bg-white">
+    <CampaignList :search="search.searchText"/>
+  </div>
 </template>
 
 <script lang="ts" setup>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LandingTemplate v-if="selectedTemplate" :templateData="templateData"/>
+    <LandingTemplate v-if="template" :templateData="templateData"/>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { ref, watch } from 'vue';
 import LandingTemplate from '@/components/template/LandingTemplate.vue'
 
-const props = defineProps(['selectedTemplate', 'previewCampaign'])
+const props = defineProps(['template', 'previewCampaign'])
 
 
 const templateData = ref({
@@ -21,9 +21,9 @@ const templateData = ref({
   }
 })
 
-watch(() => props.selectedTemplate, () => {
-  if (props.selectedTemplate) {
-    templateData.value.config = props.selectedTemplate.config
+watch(() => props.template, () => {
+  if (props.template) {
+    templateData.value.config = props.template.config
   } else {
     templateData.value.config = {}
   }

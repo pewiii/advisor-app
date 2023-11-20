@@ -1,13 +1,15 @@
 <template>
-  <pvDataTable v-model:selection="selectedClient" selectionMode="single" :value="clients" :loading="loading" @sort="sort">
+  <pvDataTable :value="clients" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
           <span class="text-xl font-bold">Clients</span>
         </div>
         <div class="flex gap-4">
-          <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditClient()"><span class="material-icons">add</span></pvButton>
+          <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" v-tooltip.top="'Refresh List'" />
+          <RouterLink :to="{ name: 'admin-clients-add'}">
+            <pvButton v-ripple class="p-ripple" icon="pi" rounded raised v-tooltip.top="'New Client'"><span class="material-icons">add</span></pvButton>
+          </RouterLink>
         </div>
           </div>
     </template>
@@ -26,19 +28,24 @@
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
+    <!-- <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
         </div>
       </template>
-    </pvColumn>
+    </pvColumn> -->
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditClient(data)">edit</div>
+        <RouterLink :to="{ name: 'admin-campaigns-add', params: { clientId: data._id }}">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" v-tooltip.top="'New Campaign'">add_circle</div>
+        </RouterLink>
+        <RouterLink :to="{ name: 'admin-clients-edit', params: { clientId: data._id }}">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" v-tooltip.top="'Edit Client'">edit</div>
+        </RouterLink>
         <Modal :header="'Delete Client'" v-if="auth.user.isAdmin">
           <template v-slot:trigger="{ open }">
-            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open" v-tooltip.top="'Delete Client'">delete</div>
           </template>
           <template v-slot:content="{ close }">
             <!-- <div>{{ data }}</div> -->
@@ -80,21 +87,21 @@ import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'search', 'addEditClient'])
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps(['search'])
+// const emit = defineEmits(['update:modelValue'])
 
-const selectedClient = computed({
-  get() {
-    return props.modelValue
-  },
-  set(client: any) {
-    if (props.modelValue === client) {
-      emit('update:modelValue', null)
-    } else {
-      emit('update:modelValue', client)
-    }
-  }
-})
+// const selectedClient = computed({
+//   get() {
+//     return props.modelValue
+//   },
+//   set(client: any) {
+//     if (props.modelValue === client) {
+//       emit('update:modelValue', null)
+//     } else {
+//       emit('update:modelValue', client)
+//     }
+//   }
+// })
 
 const loading = ref(false)
 const clients = ref([])
@@ -118,8 +125,8 @@ const getClients = async () => {
   try {
     loading.value = true
     const res = await auth.api.get(
-      `/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    clients.value = res.data.data
+      `/admin/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
+    clients.value = res.data
     totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
@@ -148,7 +155,7 @@ const handlePage = (pagination: any) => {
 const deleteClient = async (client: any, closeModal: any) => {
   deleteLoading.value = true
   try {
-    await auth.api.post(`/clients/delete`, { clientId: client._id })
+    await auth.api.delete(`/admin/clients/${client._id}`)
     clients.value = clients.value.filter(c => c !== client)
     totalRecords.value = totalRecords.value - 1
   } catch(err: any) {

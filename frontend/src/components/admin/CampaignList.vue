@@ -173,7 +173,7 @@ const handlePage = (pagination: any) => {
 const deleteCampaign = async (campaign: any, closeModal: any) => {
   deleteLoading.value = true
   try {
-    await auth.api.post(`/campaigns/delete`, { campaignId: campaign._id })
+    await auth.api.delete(`/admin/campaigns/${campaign._id}`)
     campaigns.value = campaigns.value.filter(c => c !== campaign)
     totalRecords.value = totalRecords.value - 1
     // deleteSuccess.value = true

@@ -43,8 +43,23 @@ const upload = multer({ storage: storage })
 // **** Admin routes ****
 app.post('/admin/login', auth.adminLogin)
 
-app.get('/admin/campaigns', auth.verifyToken,api.admin.campaigns.getList)
-app.get('/admin/campaign/:campaignId', auth.verifyToken,api.admin.campaigns.get)
+app.get('/admin/campaigns', auth.verifyToken, api.admin.campaigns.getList)
+app.get('/admin/campaigns/:campaignId', auth.verifyToken, api.admin.campaigns.get)
+app.post('/admin/campaigns', auth.verifyToken, api.admin.campaigns.create)
+app.post('/admin/campaigns/:campaignId', auth.verifyToken, api.admin.campaigns.update)
+app.delete('/admin/campaigns/:campaignId', auth.verifyToken, auth.requireAdmin, api.admin.campaigns.delete)
+
+app.get('/admin/clients', auth.verifyToken, api.admin.clients.getList)
+app.get('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.get)
+app.post('/admin/clients', auth.verifyToken, api.admin.clients.create)
+app.post('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.update)
+app.delete('/admin/clients/:clientId', auth.verifyToken, auth.requireAdmin, api.admin.clients.delete)
+
+app.get('/admin/templates', auth.verifyToken, api.admin.templates.getList)
+app.get('/admin/templates/:templateId', auth.verifyToken, api.admin.templates.get)
+app.post('/admin/templates', auth.verifyToken, api.admin.templates.create)
+app.post('/admin/templates/:templateId', auth.verifyToken, api.admin.templates.update)
+app.delete('/admin/templates/:templateId', auth.verifyToken, auth.requireAdmin, api.admin.templates.delete)
 
 
 

@@ -125,7 +125,7 @@
           </div>
           <div class="material-icons md-30">key</div>
         </div>
-        <div class="md:pl-4 flex gap-x-4 justify-between flex-wrap">
+        <div class="md:pl-4 flex gap-x-4 flex-wrap">
           <div>
             <span>
               Access
@@ -164,17 +164,17 @@
               </template>
             </Modal>
           </div>
-          <div class="md:pl-4">
+          <!-- <div class="md:pl-4">
             <span>
               Active Campaigns
             </span>
             <span v-if="client.status === 'active'" class="material-icons text-green-600 font-bold translate-y-1">check</span>
             <span v-else class="material-icons font-bold translate-y-1 text-red-600">close</span>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="flex justify-center mt-16 gap-4 flex-wrap">
-        <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="client = null" raised />
+        <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
         <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised :disabled="formErrors.hasErrors" />
       </div>
     </form>
@@ -188,6 +188,7 @@ import { notify } from '@kyvg/vue3-notification';
 import { format } from 'date-fns'
 import VueLoader from '@/components/common/VueLoader.vue'
 import FieldError from '@/components/common/FieldError.vue'
+import router from '@/router';
 
 const auth = useAuthStore()
 
@@ -250,7 +251,7 @@ const submitClient = async () => {
   try {
     const data = JSON.parse(JSON.stringify(client.value))
     const info = {
-      path: data._id ? '/clients/update' : '/clients/add',
+      path: data._id ? `/admin/clients/${data._id}` : '/admin/clients',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Client updated successfully' : 'Client created successfully'
     }
@@ -260,7 +261,7 @@ const submitClient = async () => {
       text: info.text,
       type: 'success'
     })
-    client.value = null
+    router.replace({ name: 'admin-clients' })
   } catch(err: any) {
     console.log(err)
     console.log(err.message)

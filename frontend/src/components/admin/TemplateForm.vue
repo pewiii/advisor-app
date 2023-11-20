@@ -315,7 +315,7 @@ const submitTemplate = async () => {
     data.user = auth.user
     console.log(data)
     const info = {
-      path: data._id ? '/templates/update' : '/templates/add',
+      path: data._id ? `/admin/templates/${data._id}` : '/templates',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Template updated successfully' : 'Template created successfully'
     }

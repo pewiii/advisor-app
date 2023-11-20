@@ -17,9 +17,11 @@ import CampaignHome from '@/views/admin/campaigns/CampaignHome.vue'
 import CampaignList from '@/views/admin/campaigns/CampaignList.vue'
 import CampaignAddEdit from '@/views/admin/campaigns/CampaignAddEdit.vue'
 
+import ClientHome from '@/views/admin/clients/ClientHome.vue'
 import ClientList from '@/views/admin/clients/ClientList.vue'
 import ClientAddEdit from '@/views/admin/clients/ClientAddEdit.vue'
 
+import TemplateHome from '@/views/admin/templates/TemplateHome.vue'
 import TemplateList from '@/views/admin/templates/TemplateList.vue'
 import TemplateAddEdit from '@/views/admin/templates/TemplateAddEdit.vue'
 
@@ -87,24 +89,42 @@ const router = createRouter({
             },
             {
               path: 'clients',
-              name: 'admin-clients',
-              component: ClientList,
+              component: ClientHome,
               children: [
                 {
-                  path: '/:id',
-                  name: 'admin-client-addEdit',
+                  path: '/',
+                  name: 'admin-clients',
+                  component: ClientList
+                },
+                {
+                  path: 'add',
+                  name: 'admin-clients-add',
+                  component: ClientAddEdit
+                },
+                {
+                  path: 'edit/:clientId',
+                  name: 'admin-clients-edit',
                   component: ClientAddEdit
                 }
               ]
             },
             {
               path: 'templates',
-              name: 'admin-templates',
-              component: TemplateList,
+              component: TemplateHome,
               children: [
                 {
-                  path: '/:id',
-                  name: 'admin-template-addEdit',
+                  path: '/',
+                  name: 'admin-templates',
+                  component: TemplateList
+                },
+                {
+                  path: '/add',
+                  name: 'admin-templates-add',
+                  component: TemplateAddEdit
+                },
+                {
+                  path: 'edit/:templateId',
+                  name: 'admin-templates-edit',
                   component: TemplateAddEdit
                 }
               ]
@@ -153,6 +173,10 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const auth = useAuthStore()
   const name = to.name?.toString() || ''
+
+  if (!auth.user && !['home', 'setup', 'login', 'admin-login'].includes(name)) {
+    return { name: 'home' }
+  }
 
   // if (name.includes('admin') && !auth.user) {
   //   return { name: 'admin-login' }

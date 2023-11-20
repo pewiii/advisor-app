@@ -59,6 +59,13 @@ const clientSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  // usablePassword: {
+  //   type: Boolean,
+  //   virtual: true,
+  //   get: function () {
+  //     return Boolean(this.password)
+  //   }
+  // },
   company: {
     type: String,
     required: true
@@ -87,6 +94,10 @@ clientSchema.pre('save', function (next) {
   }
   next()
 })
+
+clientSchema.virtual("usablePassword").get(function () {
+  return Boolean(this.password)
+});
 
 const recordSchema = new mongoose.Schema({
   firstName: String,

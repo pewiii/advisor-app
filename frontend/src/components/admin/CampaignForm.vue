@@ -16,24 +16,51 @@
           <pvInputText id="campaign-title" v-model="campaign.title" placeholder="Campaign Title" class="w-full h-9"/>
         </div>
       </div>
-      <div class="md:pl-4">
+      <!-- <div class="md:pl-4">
         <label for="campaign-client" class="">
-          Client (Select from client list)
+          Client
           <FieldError :error="formErrors.client"></FieldError>
         </label>
         <div class="pl-2">
           <pvInputText id="campaign-client" :value="clientDisplay" placeholder="Campaign Client" class="h-9 w-full" @change="(e: any) => e.target.value = clientDisplay" />
         </div>
-      </div>
-      <div class="md:pl-4">
+      </div> -->
+      <!-- <div class="md:pl-4">
         <label for="campaign-template" class="">
-          Template (Select from template list)
+          Template
         </label>
-        <div class="pl-2">
+        <div class="pl-2 flex">
           <pvInputText id="campaign-template" :value="templateDisplay" placeholder="Campaign Template" class="h-9 w-full" @change="(e: any) => e.target.value = templateDisplay" />
         </div>
+      </div> -->
+    </div>
+
+    <div class="mt-8">
+      <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+        <div class="text-lg">
+          Client
+        </div>
+        <div class="material-icons md-30">person</div>
+      </div>
+      <div class="mt-4 flex gap-4 pl-4">
+        {{ clientDisplay }}
       </div>
     </div>
+
+
+    <div class="mt-8">
+      <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+        <div class="text-lg">
+          Template
+        </div>
+        <div class="material-icons md-30">web</div>
+      </div>
+      <div class="mt-4 flex gap-4 pl-4">
+        {{ templateDisplay }}
+        <TemplateSelect v-model="campaign.template" />
+      </div>
+    </div>
+
     <div class="mt-8" v-if="campaign._id">
       <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
         <div class="text-lg">
@@ -274,6 +301,14 @@
       </div>
     </div>
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
+      <Modal :header="'Langing Preview'">
+        <template #trigger="{open}">
+          <pvButton v-ripple class="p-ripple" label="Preview" icon="pi pi-web" iconPos="right" severity="warning" @click="open" raised :disabled="!Boolean(campaign.template)"/>
+        </template>
+        <template #content>
+          <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
+        </template>
+      </Modal>
       <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
       <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitCampaign" raised :disabled="formErrors.hasErrors"/>
     </div>
@@ -287,6 +322,10 @@ import { notify } from "@kyvg/vue3-notification"
 import objects from '@/objects'
 import moment from 'moment-timezone'
 import FieldError from '@/components/common/FieldError.vue'
+import Modal from '@/components/common/Modal.vue'
+import TemplatePreview from '@/components/admin/TemplatePreview.vue'
+import TemplateSelect from '@/components/admin/TemplateSelect.vue'
+import router from '@/router'
 
 
 const loading = ref(false)
@@ -387,8 +426,8 @@ watch(events, () => {
 
 
 const submitCampaign = async () => {
+  loading.value = true
   try {
-    loading.value = true
     const data = JSON.parse(JSON.stringify(campaign.value))
     data.user = auth.user._id
     if (data.client) {
@@ -400,17 +439,19 @@ const submitCampaign = async () => {
       delete data.template
     }
     const info = {
-      path: data._id ? '/campaigns/update' : '/campaigns/add',
+      path: data._id ? `/admin/campaigns/${data._id}` : '/admin/campaigns',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Campaign updated successfully' : 'Campaign created successfully'
     }
     await auth.api.post(info.path, data)
-    campaign.value = null
+
     notify({
       title: info.title,
       text: info.text,
       type: 'success'
     })
+
+    router.replace({ name: 'admin-campaigns' })
     // template.value = null
   } catch(err: any) {
     console.log(err)

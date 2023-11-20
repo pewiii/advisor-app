@@ -1,17 +1,7 @@
 <template>
 
 
-
-
-
-
-
-
-
-
-
-
-  <div class="p-1 items-center px-4 flex justify-between bg-primary">
+  <div class="p-1 items-center px-4 flex justify-between bg-primary" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
     
     <div class="text-white hidden sm:block">
       Logo
@@ -22,30 +12,30 @@
       <nav class="p-2 flex gap-4">
         <div v-if="!auth.user" class="flex gap-4">
           <RouterLink :to="{ name: 'home' }">
-            <a href="#" class="text-white hover:bg-secondary px-4 py-2 rounded">Home</a>
+            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Home</a>
           </RouterLink>
           <div v-if="!route.path.includes('login')" class="flex gap-4">
             <RouterLink :to="{ name: 'login' }">
-              <a href="#login" class="text-white hover:bg-secondary px-4 py-2 rounded">Log In</a>
+              <a href="#login" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Log In</a>
             </RouterLink>
             <RouterLink :to="{ name: 'admin-login'}">
-              <a href="#admin-login" class="text-white hover:bg-secondary px-4 py-2 rounded">Admin</a>
+              <a href="#admin-login" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Admin</a>
             </RouterLink>
           </div>
         </div>
 
-        <div v-if="auth.user && auth.user.userType === 'admin'">
+        <div v-if="auth.user && auth.user.userType === 'admin'" class="flex gap-4 items-center">
           <RouterLink :to="{ name: 'admin-campaigns' }">
-            <a href="#" class="text-white hover:bg-secondary px-4 py-2 rounded">Campaigns</a>
+            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Campaigns</a>
           </RouterLink>
           <RouterLink :to="{ name: 'admin-clients' }">
-            <a href="#" class="text-white hover:bg-secondary px-4 py-2 rounded">Clients</a>
+            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Clients</a>
           </RouterLink>
           <RouterLink :to="{ name: 'admin-templates' }">
-            <a href="#" class="text-white hover:bg-secondary px-4 py-2 rounded">Templates</a>
+            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Templates</a>
           </RouterLink>
           <RouterLink :to="{ name: 'admin-users' }">
-            <a href="#" class="text-white hover:bg-secondary px-4 py-2 rounded">Users</a>
+            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Users</a>
           </RouterLink>
         </div>
 
@@ -198,3 +188,9 @@ const logout = () => {
 }
 
 </script>
+
+<style scoped>
+.router-link-active {
+  @apply bg-sky-800 py-1 rounded
+}
+</style>

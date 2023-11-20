@@ -1,5 +1,5 @@
 <template>
-  <pvDataTable v-model:selection="selectedTemplate" selectionMode="single" :value="templates" :loading="loading" @sort="sort">
+  <pvDataTable :value="templates" :loading="loading" @sort="sort">
     <template #header>
       <div class="flex flex-wrap align-items-center justify-content-between gap-2 justify-between items-center">
         <div>
@@ -7,7 +7,9 @@
         </div>
         <div class="flex gap-4">
           <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditTemplate()"><span class="material-icons">add</span></pvButton>
+          <RouterLink :to="{ name: 'admin-templates-add'}">
+            <pvButton v-ripple class="p-ripple" icon="pi" rounded raised><span class="material-icons">add</span></pvButton>
+          </RouterLink>
         </div>
           </div>
     </template>
@@ -25,18 +27,19 @@
         {{ format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
+    <!-- <pvColumn field="status" header="Status" sortable class="hidden sm:table-cell">
       <template #body="{ data }">
-        <!-- Status -->
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
         </div>
       </template>
-    </pvColumn>
+    </pvColumn> -->
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditTemplate(data)">edit</div>
+        <RouterLink :to="{ name: 'admin-templates-edit', params: { templateId: data._id }}">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">edit</div>
+        </RouterLink>
         <Modal :header="'Delete Template'" v-if="auth.user.isAdmin">
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
@@ -82,8 +85,8 @@ import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'addEditTemplate', 'search'])
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps(['search'])
+// const emit = defineEmits(['update:modelValue'])
 
 const templatePaginator = ref(null as any)
 const templates = ref([])
@@ -101,27 +104,27 @@ const sort = (e: any) => {
   getTemplates()
 }
 
-const selectedTemplate = computed({
-  get() {
-    return props.modelValue
-  },
-  set(template) {
-    if (props.modelValue === template) {
-      emit('update:modelValue', null)
-    } else {
-      emit('update:modelValue', template)
-    }
-  }
-})
+// const selectedTemplate = computed({
+//   get() {
+//     return props.modelValue
+//   },
+//   set(template) {
+//     if (props.modelValue === template) {
+//       emit('update:modelValue', null)
+//     } else {
+//       emit('update:modelValue', template)
+//     }
+//   }
+// })
 
 const getTemplates = async () => {
   loading.value = true
   try {
     const res = await auth.api.get(
-      `/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
+      `/admin/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
 
-    templates.value = res.data.data
-    totalRecords.value = res.data.total
+    templates.value = res.data
+    // totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
   }
@@ -151,7 +154,7 @@ const handlePage = (pagination: any) => {
 const deleteTemplate = async (template: any, closeModal: any) => {
   deleteLoading.value = true
   try {
-    await auth.api.post(`/templates/delete`, { templateId: template._id })
+    await auth.api.delete(`/admin/templates/${template._id}`)
     templates.value = templates.value.filter(t => t !== template)
     totalRecords.value = totalRecords.value - 1
   } catch(err: any) {
