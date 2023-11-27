@@ -5,38 +5,44 @@ const getList = async (req, res) => {
   try {
     const { search = '', page = 1, perPage = 10, sortField, sortOrder } = req.query;
 
+    const order = parseInt(sortOrder, 10);
     const limit = parseInt(perPage, 10);
     const skip = page * limit;
-    const order = parseInt(sortOrder, 10)
     const query = {};
-  
+
     if (search) {
       query.title = new RegExp(search, 'i');
     }
-  
-    const templates = await models.Template.aggregate([
-      {
-        $match: query
-      },
-      {
-        $sort: { [sortField]: order }
-      },
-      {
-        $skip: skip
-      },
-      {
-        $limit: limit
-      }
-    ]).exec()
 
-    res.send(templates)
+    const [paginatedResults, totalCount] = await Promise.all([
+      models.Template.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $sort: { [sortField]: order },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
+      ]).exec(),
+      models.Template.countDocuments(query).exec(),
+    ]);
 
+    res.json({
+      paginatedResults,
+      totalCount,
+    });
 
-  } catch(err) {
-    console.log(err)
-    res.sendStatus(500)
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
-}
+};
+
 
 const get = async (req, res) => {
   try {
@@ -70,7 +76,7 @@ const update = async (req, res) => {
   try {
     const { templateId } = req.params
     const data = req.body
-    const template = await models.Client.findOneAndUpdate({ _id: templateId }, data)
+    const template = await models.Template.findOneAndUpdate({ _id: templateId }, data)
     res.send(template)
   } catch(err) {
     console.log(err)

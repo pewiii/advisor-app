@@ -347,9 +347,14 @@ const campaign = computed({
   }
 })
 
+const nonUniqueTitles = {} as any
+const uniqueTitles = {} as any
+
+
+
 // validation
 const formErrors = ref({} as any)
-watch(campaign, () => {
+watch(campaign, async (newCampaign, oldCampaign) => {
   const required = (field: string) => `${field} is required`
   let errors = {
     ...campaign.value.title ? {} : { title: required('Title') },
@@ -381,6 +386,25 @@ watch(campaign, () => {
     labels.push(question.label)
     return result
   })
+
+  if (campaign.value.title && !uniqueTitles[campaign.value.title]) {
+    try {
+      const res = await auth.api.get(`/admin/campaigns/title/${campaign.value.title}`)
+      if (res.data.campaign && res.data.campaign !== campaign.value._id) {
+        nonUniqueTitles[campaign.value.title] = res.data.campaign
+      } else {
+        uniqueTitles[campaign.value.title] = true
+      }
+    } catch(err) {
+      console.log(err)
+    }
+    
+  }
+
+  if (nonUniqueTitles[campaign.value.title]) {
+    errors.title = 'Title must be unique'
+  }
+
   const hasEventErrors = events.some((event: any) => Object.keys(event).length)
   const hasQuestionErrors = questions.some((question: any) => Object.keys(question).length)
   errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors || hasQuestionErrors

@@ -132,8 +132,8 @@ const getCampaigns = async () => {
   try {
     const res = await auth.api.get(
       `/admin/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    campaigns.value = res.data
-    totalRecords.value = res.data.total
+    campaigns.value = res.data.paginatedResults
+    totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)
   }

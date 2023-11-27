@@ -123,8 +123,8 @@ const getTemplates = async () => {
     const res = await auth.api.get(
       `/admin/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
 
-    templates.value = res.data
-    // totalRecords.value = res.data.total
+    templates.value = res.data.paginatedResults
+    totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)
   }

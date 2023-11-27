@@ -4,7 +4,9 @@
   <div class="p-1 items-center px-4 flex justify-between bg-primary" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
     
     <div class="text-white hidden sm:block">
-      Logo
+
+      <span class="font-bold">P</span><span class="font-thin text-gray-200">ack</span><span class="font-bold">T</span><span class="font-thin text-gray-200">hem</span><span class="font-bold">I</span><span class="font-thin text-gray-200">n</span>
+
     </div>
 
     
@@ -25,16 +27,16 @@
         </div>
 
         <div v-if="auth.user && auth.user.userType === 'admin'" class="flex gap-4 items-center">
-          <RouterLink :to="{ name: 'admin-campaigns' }">
+          <RouterLink :to="{ name: 'admin-campaigns' }" :class="route.name && route.name.toString().includes('admin-campaigns') ? 'router-link-active' : ''">
             <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Campaigns</a>
           </RouterLink>
-          <RouterLink :to="{ name: 'admin-clients' }">
+          <RouterLink :to="{ name: 'admin-clients' }" :class="route.name && route.name.toString().includes('admin-clients') ? 'router-link-active' : ''">
             <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Clients</a>
           </RouterLink>
-          <RouterLink :to="{ name: 'admin-templates' }">
+          <RouterLink :to="{ name: 'admin-templates' }" :class="route.name && route.name.toString().includes('admin-templates') ? 'router-link-active' : ''">
             <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Templates</a>
           </RouterLink>
-          <RouterLink :to="{ name: 'admin-users' }">
+          <RouterLink :to="{ name: 'admin-users' }" :class="route.name && route.name.toString().includes('admin-users') ? 'router-link-active' : ''">
             <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Users</a>
           </RouterLink>
         </div>
@@ -152,7 +154,7 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/stores/auth'
 import { useSearchStore } from '@/stores/search';
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import Modal from '@/components/common/Modal.vue'
@@ -162,6 +164,10 @@ import Modal from '@/components/common/Modal.vue'
 
 const router = useRouter()
 const route = useRoute()
+
+// watch(route, () => {
+//   console.log(route)
+// }, { deep: true })
 
 // const search = computed({
 //   get() {

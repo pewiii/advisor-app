@@ -188,10 +188,11 @@ import { notify } from '@kyvg/vue3-notification';
 import { format } from 'date-fns'
 import VueLoader from '@/components/common/VueLoader.vue'
 import FieldError from '@/components/common/FieldError.vue'
-import router from '@/router';
+// import router from '@/router';
+import { useRouter } from 'vue-router';
 
 const auth = useAuthStore()
-
+const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 
 const emit = defineEmits(['update:modelValue'])

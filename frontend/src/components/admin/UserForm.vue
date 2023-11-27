@@ -67,7 +67,7 @@
       </div>
     </div>
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="user = null" raised />
+      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
       <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitUser" raised />
     </div>
   </form>
@@ -77,9 +77,10 @@
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
+import { useRouter } from 'vue-router';
 
 const auth = useAuthStore()
-
+const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 
 const emit = defineEmits(['update:modelValue'])
@@ -97,17 +98,19 @@ const submitUser = async () => {
   try {
     const data = JSON.parse(JSON.stringify(user.value))
     const info = {
-      path: data._id ? '/users/update' : '/users/add',
+      path: data._id ? `/admin/users/${data._id}` : '/admin/users',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'User updated successfully' : 'User created successfully'
     }
+
     await auth.api.post(info.path, data)
     notify({
       title: info.title,
       text: info.text,
       type: 'success'
     })
-    user.value = null
+    // user.value = null
+    router.replace({ name: 'admin-users' })
   } catch(err: any) {
     console.log(err)
     console.log(err.message)

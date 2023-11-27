@@ -1,10 +1,10 @@
 import models from '../../db/models.js'
 
+
 // const getList = async (req, res) => {
 
 //   try {
 //     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query
-
 
 //     const limit = parseInt(perPage, 10);
 //     const order = parseInt(sortOrder, 10)
@@ -15,30 +15,11 @@ import models from '../../db/models.js'
 //         { 'firstName': { $regex: search, $options: 'i' } },
 //         { 'lastName': { $regex: search, $options: 'i' } },
 //         { 'fullName': { $regex: search, $options: 'i' } },
-//         { 'company': { $regex: search, $options: 'i' } },
-//         { 'campaigns.title': { $regex: search, $options: 'i' } },
+//         { 'email': { $regex: search, $options: 'i' } }
 //       ];
 //     }
 
-//     const clients = await models.Client.aggregate([
-//       {
-//         $lookup: {
-//           from: 'campaigns',
-//           localField: '_id',
-//           foreignField: 'client',
-//           as: 'campaigns',
-//         },
-//       },
-//       {
-//         $project: {
-//           email: 1,
-//           fullName: 1,
-//           company: 1,
-//           createdAt: 1,
-//           updatedAt: 1,
-//           // campaignCount: { $size: '$campaigns' },
-//         },
-//       },
+//     const users = await models.User.aggregate([
 //       {
 //         $match: query,
 //       },
@@ -52,15 +33,12 @@ import models from '../../db/models.js'
 //         $limit: limit,
 //       },
 //     ]).exec();
-
-
-//     res.send(clients)
-
+//     console.log(users)
+//     res.send(users)
 //   } catch(err) {
 //     console.log(err)
 //     res.sendStatus(500)
 //   }
-
 // }
 
 const getList = async (req, res) => {
@@ -76,30 +54,12 @@ const getList = async (req, res) => {
         { 'firstName': { $regex: search, $options: 'i' } },
         { 'lastName': { $regex: search, $options: 'i' } },
         { 'fullName': { $regex: search, $options: 'i' } },
-        { 'company': { $regex: search, $options: 'i' } },
-        { 'campaigns.title': { $regex: search, $options: 'i' } },
+        { 'email': { $regex: search, $options: 'i' } },
       ];
     }
 
     const [paginatedResults, totalCount] = await Promise.all([
-      models.Client.aggregate([
-        {
-          $lookup: {
-            from: 'campaigns',
-            localField: '_id',
-            foreignField: 'client',
-            as: 'campaigns',
-          },
-        },
-        {
-          $project: {
-            email: 1,
-            fullName: 1,
-            company: 1,
-            createdAt: 1,
-            updatedAt: 1,
-          },
-        },
+      models.User.aggregate([
         {
           $match: query,
         },
@@ -113,7 +73,7 @@ const getList = async (req, res) => {
           $limit: limit,
         },
       ]).exec(),
-      models.Client.countDocuments(query).exec(),
+      models.User.countDocuments(query).exec(),
     ]);
 
     res.json({
@@ -130,17 +90,17 @@ const getList = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    const { clientId } = req.params
+    const { userId } = req.params
 
-    const client = await models.Client.findById(clientId)
+    const user = await models.User.findById(userId)
 
-    if (client) {
-      const clientObject = client.toObject({ virtuals: true })
-      delete clientObject.password
-      console.log(clientObject)
-      res.send(clientObject)
+    if (user) {
+      const userObject = user.toObject({ virtuals: true })
+      // delete userObject.password
+      console.log(userObject)
+      res.send(userObject)
     } else {
-      res.status(404).send({ message: 'Client not found' })
+      res.status(404).send({ message: 'User not found' })
     }
 
   } catch(err) {
@@ -152,8 +112,8 @@ const get = async (req, res) => {
 const create = async (req, res) => {
   try {
     const data = req.body
-    const client = await models.Client.create(data)
-    res.status(201).send(client)
+    const user = await models.User.create(data)
+    res.status(201).send(user)
   } catch(err) {
     res.status(400).send({ message: err.message })
     console.log(err)
@@ -162,21 +122,22 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { clientId } = req.params
+    const { userId } = req.params
     const data = req.body
-    data.fullName =  `${data.firstName} ${data.lastName}`
-    const client = await models.Client.findOneAndUpdate({ _id: clientId }, data)
-    res.send(client)
+    data.fullName = `${data.firstName} ${data.lastName}`
+    const user = await models.User.findOneAndUpdate({ _id: userId }, data)
+    res.send(user)
   } catch(err) {
     console.log(err)
     res.status(400).send({ message: err.message })
   }
 }
 
+
 const remove = async (req, res) => {
   try {
-    const { clientId } = req.params
-    await models.Client.findByIdAndDelete(clientId)
+    const { userId } = req.params
+    await models.User.findByIdAndDelete(userId)
     res.sendStatus(204)
   } catch(err) {
     console.log(err)
@@ -184,10 +145,11 @@ const remove = async (req, res) => {
   }
 }
 
+
 export default {
   getList,
   get,
   create,
   update,
-  delete: remove
+  delete: remove,
 }

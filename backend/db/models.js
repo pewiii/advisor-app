@@ -220,7 +220,8 @@ const questionSchema = new mongoose.Schema({
 const campaignSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,

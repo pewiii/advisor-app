@@ -6,27 +6,15 @@ import LoginView from '@/views/user/LoginView.vue'
 import SetupView from '@/views/user/SetupView.vue'
 
 import AdminHome from '@/views/admin/AdminHome.vue'
-// import AdminDashboard from '@/views/admin/AdminDashboard.vue'
-// import AdminCampaigns from '@/views/admin/AdminCampaigns.vue'
-// import AdminClients from '@/views/admin/AdminClients.vue'
-// import AdminTemplates from '@/views/admin/AdminTemplates.vue'
-// import AdminUsers from '@/views/admin/AdminUsers.vue'
+
 import AdminLogin from '@/views/admin/AdminLogin.vue'
 
-import CampaignHome from '@/views/admin/campaigns/CampaignHome.vue'
-import CampaignList from '@/views/admin/campaigns/CampaignList.vue'
-import CampaignAddEdit from '@/views/admin/campaigns/CampaignAddEdit.vue'
+import CampaignAddEdit from '@/views/admin/CampaignAddEdit.vue'
+import ClientAddEdit from '@/views/admin/ClientAddEdit.vue'
+import TemplateAddEdit from '@/views/admin/TemplateAddEdit.vue'
+import UserAddEdit from '@/views/admin/UserAddEdit.vue'
 
-import ClientHome from '@/views/admin/clients/ClientHome.vue'
-import ClientList from '@/views/admin/clients/ClientList.vue'
-import ClientAddEdit from '@/views/admin/clients/ClientAddEdit.vue'
-
-import TemplateHome from '@/views/admin/templates/TemplateHome.vue'
-import TemplateList from '@/views/admin/templates/TemplateList.vue'
-import TemplateAddEdit from '@/views/admin/templates/TemplateAddEdit.vue'
-
-import UserList from '@/views/admin/users/UserList.vue'
-import UserAddEdit from '@/views/admin/users/UserAddEdit.vue'
+import ListView from '@/views/admin/Listview.vue'
 
 //   component: () => import('@/views/staff/campaigns/AddEdit.vue'),
 
@@ -68,12 +56,11 @@ const router = createRouter({
             },
             {
               path: 'campaigns',
-              component: CampaignHome,
               children: [
                 {
                   path: '/',
                   name: 'admin-campaigns',
-                  component: CampaignList
+                  component: ListView
                 },
                 {
                   path: 'add/:clientId',
@@ -89,12 +76,11 @@ const router = createRouter({
             },
             {
               path: 'clients',
-              component: ClientHome,
               children: [
                 {
                   path: '/',
                   name: 'admin-clients',
-                  component: ClientList
+                  component: ListView
                 },
                 {
                   path: 'add',
@@ -110,15 +96,14 @@ const router = createRouter({
             },
             {
               path: 'templates',
-              component: TemplateHome,
               children: [
                 {
                   path: '/',
                   name: 'admin-templates',
-                  component: TemplateList
+                  component: ListView
                 },
                 {
-                  path: '/add',
+                  path: 'add',
                   name: 'admin-templates-add',
                   component: TemplateAddEdit
                 },
@@ -131,12 +116,20 @@ const router = createRouter({
             },
             {
               path: 'users',
-              name: 'admin-users',
-              component: UserList,
               children: [
                 {
-                  path: '/:id',
-                  name: 'admin-user-addEdit',
+                  path: '/',
+                  name: 'admin-users',
+                  component: ListView
+                },
+                {
+                  path: 'add',
+                  name: 'admin-users-add',
+                  component: UserAddEdit
+                },
+                {
+                  path: 'edit/:userId',
+                  name: 'admin-users-edit',
                   component: UserAddEdit
                 }
               ]

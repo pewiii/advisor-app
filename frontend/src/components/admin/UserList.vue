@@ -7,7 +7,9 @@
         </div>
         <div class="flex gap-4">
           <pvButton v-ripple class="p-ripple" icon="pi pi-refresh" rounded raised @click="refresh" />
-          <pvButton v-ripple class="p-ripple" icon="pi" rounded raised @click="addEditUser()"><span class="material-icons">add</span></pvButton>
+          <RouterLink :to="{ name: 'admin-users-add'}">
+            <pvButton v-ripple class="p-ripple" icon="pi" rounded raised><span class="material-icons">add</span></pvButton>
+          </RouterLink>
         </div>
           </div>
     </template>
@@ -26,16 +28,26 @@
         {{ data.updatedAt && format(new Date(data.updatedAt), 'dd/MM/yyyy HH:mm') }}
       </template>
     </pvColumn>
-    <pvColumn field="status" header="Status" class="hidden sm:table-cell">
+    <pvColumn field="isAdmin" header="User Type" class="hidden sm:table-cell">
+      <template #body="{ data }">
+        {{ data.isAdmin ? 'Admin' : 'User' }}
+        <!-- <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
+          {{ data.status }}
+        </div> -->
+      </template>
+    </pvColumn>
+    <!-- <pvColumn field="status" header="Status" class="hidden sm:table-cell">
       <template #body="{ data }">
         <div class="inline px-2 py-1 rounded-lg text-white" :class="data.status === 'active' ? 'bg-green-600' : 'bg-secondary'">
           {{ data.status }}
         </div>
       </template>
-    </pvColumn>
+    </pvColumn> -->
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
-        <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600" @click="addEditUser(data)">edit</div>
+        <RouterLink :to="{ name: 'admin-users-edit', params: { userId: data._id }}">
+          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">edit</div>
+        </RouterLink>
         <Modal :header="'Delete User'" v-if="auth.user.isAdmin">
           <template v-slot:trigger="{ open }">
             <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
@@ -73,7 +85,7 @@ import Modal from '@/components/common/Modal.vue'
 
 const auth = useAuthStore()
 
-const props = defineProps(['modelValue', 'search', 'addEditUser'])
+const props = defineProps(['search'])
 
 const loading = ref(false)
 const users = ref([])
@@ -82,14 +94,17 @@ const perPage = ref(5)
 const totalRecords = ref(0)
 const userPaginator = ref(null as any)
 const deleteLoading = ref(false)
+const sortField = ref('updatedAt')
+const sortOrder = ref(-1)
 
 const getUsers = async () => {
   try {
     loading.value = true
     const res = await auth.api.get(
-      `/users?search=${props.search}&page=${page.value}&perPage=${perPage.value}`)
-    users.value = res.data.data
-    totalRecords.value = res.data.total
+      `/admin/users?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
+    users.value = res.data.paginatedResults
+    // console.log(users.value)
+    totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)
   }

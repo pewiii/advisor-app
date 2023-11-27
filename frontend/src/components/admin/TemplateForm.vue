@@ -281,9 +281,10 @@ import { notify } from '@kyvg/vue3-notification';
 import ImageSelect from '@/components/admin/ImageSelect.vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
 import FieldError from '@/components/common/FieldError.vue'
+import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
-
+const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 
 const emit = defineEmits(['update:modelValue'])
@@ -315,7 +316,7 @@ const submitTemplate = async () => {
     data.user = auth.user
     console.log(data)
     const info = {
-      path: data._id ? `/admin/templates/${data._id}` : '/templates',
+      path: data._id ? `/admin/templates/${data._id}` : '/admin/templates',
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Template updated successfully' : 'Template created successfully'
     }
@@ -325,8 +326,8 @@ const submitTemplate = async () => {
       text: info.text,
       type: 'success'
     })
-
-    template.value = null
+    router.replace({ name: 'admin-templates' })
+    // template.value = null
   } catch(err: any) {
     console.log(err.message)
   }

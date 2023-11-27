@@ -36,22 +36,22 @@ services:
     # env_file:
     #   - .env
 
-  offers:
-    container_name: offers
-    build:
-      context: ./offers
-      dockerfile: docker/dev/Dockerfile
-    working_dir: /app
-    volumes:
-      - ./offers:/app
-      - /app/node_modules
-    ports:
-      - ${OFFERS_PORT}:${OFFERS_PORT}
-    depends_on:
-      - backend
-    environment:
-      VITE_APP_API_URL: ${API_URL}
-      PORT: ${OFFERS_PORT}
+  # offers:
+  #   container_name: offers
+  #   build:
+  #     context: ./offers
+  #     dockerfile: docker/dev/Dockerfile
+  #   working_dir: /app
+  #   volumes:
+  #     - ./offers:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - ${OFFERS_PORT}:${OFFERS_PORT}
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     VITE_APP_API_URL: ${API_URL}
+  #     PORT: ${OFFERS_PORT}
 
 
   mongo:

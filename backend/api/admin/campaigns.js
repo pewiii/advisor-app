@@ -3,16 +3,17 @@
 
 import models from '../../db/models.js'
 
+
 const getList = async (req, res) => {
   try {
     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
-  
-    const order = parseInt(sortOrder, 10)
+
+    const order = parseInt(sortOrder, 10);
     const limit = parseInt(perPage, 10);
     const skip = page * limit;
-  
-    const query = {}
-  
+
+    const query = {};
+
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -22,53 +23,130 @@ const getList = async (req, res) => {
         { 'client.company': { $regex: search, $options: 'i' } },
         { 'client.phone': { $regex: search, $options: 'i' } },
         { 'client.email': { $regex: search, $options: 'i' } },
-      ]
+      ];
     }
-  
-    const campaigns = await models.Campaign.aggregate([
-      {
-        $lookup: {
-          from: 'clients',
-          localField: 'client',
-          foreignField: '_id',
-          as: 'client',
+
+    const [paginatedResults, totalCount] = await Promise.all([
+      models.Campaign.aggregate([
+        {
+          $lookup: {
+            from: 'clients',
+            localField: 'client',
+            foreignField: '_id',
+            as: 'client',
+          },
         },
-      },
-      {
-        $project: {
-          title: 1,
-          updatedAt: 1,
-          createdAt: 1,
-          'client.fullName': 1,
-          'client.company': 1,
-          'client._id': 1
-        }
-      },
-      {
-        $match: query, // Apply the search query
-      },
-      {
-        $sort: { [sortField]: order }
-      },
-      {
-        $skip: skip, // Skip the specified number of documents
-      },
-      {
-        $limit: limit, // Limit the number of documents returned
-      },
-    ]).exec();
+        {
+          $project: {
+            title: 1,
+            updatedAt: 1,
+            createdAt: 1,
+            'client.fullName': 1,
+            'client.company': 1,
+            'client._id': 1,
+          },
+        },
+        {
+          $match: query,
+        },
+        {
+          $sort: { [sortField]: order },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
+      ]).exec(),
+      models.Campaign.countDocuments(query).exec(),
+    ]);
 
-    for (let i = 0; i < campaigns.length; i++) {
-      campaigns[i].client = campaigns[i].client[0]
+    for (let i = 0; i < paginatedResults.length; i++) {
+      paginatedResults[i].client = paginatedResults[i].client[0];
     }
 
-    res.send(campaigns)
+    res.json({
+      paginatedResults,
+      totalCount,
+      page,
+      perPage,
+      sortField,
+      sortOrder
+    });
 
-  } catch(err) {
-    console.log(err)
-    res.sendStatus(500)
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
-}
+};
+
+// const getList = async (req, res) => {
+//   try {
+//     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
+  
+//     const order = parseInt(sortOrder, 10)
+//     const limit = parseInt(perPage, 10);
+//     const skip = page * limit;
+  
+//     const query = {}
+  
+//     if (search) {
+//       query.$or = [
+//         { title: { $regex: search, $options: 'i' } },
+//         { 'client.firstName': { $regex: search, $options: 'i' } },
+//         { 'client.lastName': { $regex: search, $options: 'i' } },
+//         { 'client.fullName': { $regex: search, $options: 'i' } },
+//         { 'client.company': { $regex: search, $options: 'i' } },
+//         { 'client.phone': { $regex: search, $options: 'i' } },
+//         { 'client.email': { $regex: search, $options: 'i' } },
+//       ]
+//     }
+  
+//     const campaigns = await models.Campaign.aggregate([
+//       {
+//         $lookup: {
+//           from: 'clients',
+//           localField: 'client',
+//           foreignField: '_id',
+//           as: 'client',
+//         },
+//       },
+//       {
+//         $project: {
+//           title: 1,
+//           updatedAt: 1,
+//           createdAt: 1,
+//           'client.fullName': 1,
+//           'client.company': 1,
+//           'client._id': 1
+//         }
+//       },
+//       {
+//         $match: query,
+//       },
+//       {
+//         $sort: { [sortField]: order }
+//       },
+//       {
+//         $skip: skip,
+//       },
+//       {
+//         $limit: limit,
+//       },
+//     ]).exec();
+
+//     for (let i = 0; i < campaigns.length; i++) {
+//       campaigns[i].client = campaigns[i].client[0]
+//     }
+
+//     res.send(campaigns)
+
+//   } catch(err) {
+//     console.log(err)
+//     res.sendStatus(500)
+//   }
+// }
 
 const get = async (req, res) => {
   try {
@@ -235,10 +313,26 @@ const remove = async (req, res) => {
   }
 }
 
+const checkTitle = async (req, res) => {
+  try {
+    const { campaignTitle } = req.params
+    const campaign = await models.Campaign.findOne({ title: campaignTitle })
+    if (campaign) {
+      res.send({ campaign: campaign._id })
+    } else {
+      res.send({ campaign: null })
+    }
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
+}
+
 export default {
   get,
   getList,
   create,
   update,
-  delete: remove
+  delete: remove,
+  checkTitle
 }
