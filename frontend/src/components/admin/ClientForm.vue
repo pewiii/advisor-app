@@ -183,7 +183,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import Modal from '@/components/common/Modal.vue'
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
 import { format } from 'date-fns'
 import VueLoader from '@/components/common/VueLoader.vue'
@@ -191,7 +191,7 @@ import FieldError from '@/components/common/FieldError.vue'
 // import router from '@/router';
 import { useRouter } from 'vue-router';
 
-const auth = useAuthStore()
+const auth = useAuth()
 const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 

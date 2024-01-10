@@ -81,11 +81,11 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { format } from 'date-fns'
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 import VueLoader from '@/components/common/VueLoader.vue'
 import Modal from '@/components/common/Modal.vue'
 
-const auth = useAuthStore()
+const auth = useAuth()
 
 const props = defineProps(['search'])
 // const emit = defineEmits(['update:modelValue'])

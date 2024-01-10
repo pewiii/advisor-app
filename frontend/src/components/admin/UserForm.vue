@@ -75,11 +75,11 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 import { notify } from '@kyvg/vue3-notification';
 import { useRouter } from 'vue-router';
 
-const auth = useAuthStore()
+const auth = useAuth()
 const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 

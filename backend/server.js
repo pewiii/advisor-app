@@ -102,7 +102,7 @@ app.post('/login', auth.login)
 // app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)
 
 
-// app.post('/offer-code', api.offers.handleOfferCode)
+app.post('/offer-code', api.offers.handleOfferCode)
 // app.post('/rsvp', api.offers.rsvp)
 
 app.listen(API_PORT, () => {

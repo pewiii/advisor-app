@@ -76,11 +76,11 @@ import { ref, onMounted, computed, watch } from 'vue'
 import topImage from '@/assets/tempimage.jpg'
 import bottomImage from '@/assets/steak.jpg'
 import moment from 'moment-timezone'
-import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/stores/auth'
 
 const props = defineProps(['templateData'])
 
-const auth = useAuthStore()
+const auth = useAuth()
 
 const selectedEvent = ref(null)
 const answers = ref([] as any)

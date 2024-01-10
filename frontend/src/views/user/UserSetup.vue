@@ -51,11 +51,11 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 import { ref } from 'vue';
 import VueLoader from '@/components/common/VueLoader.vue'
 
-const auth = useAuthStore()
+const auth = useAuth()
 const route = useRoute()
 const router = useRouter()
 

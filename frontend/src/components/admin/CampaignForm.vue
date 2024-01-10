@@ -301,7 +301,7 @@
       </div>
     </div>
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
-      <Modal :header="'Langing Preview'">
+      <Modal :header="'Landing Preview'">
         <template #trigger="{open}">
           <pvButton v-ripple class="p-ripple" label="Preview" icon="pi pi-web" iconPos="right" severity="warning" @click="open" raised :disabled="!Boolean(campaign.template)"/>
         </template>
@@ -317,7 +317,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, computed, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/stores/auth'
 import { notify } from "@kyvg/vue3-notification"
 import objects from '@/objects'
 import moment from 'moment-timezone'
@@ -333,7 +333,7 @@ const loading = ref(false)
 const props = defineProps(['campaign', 'selectedClient', 'selectedTemplate', 'cancel'])
 const emit = defineEmits(['update:campaign'])
 
-const auth = useAuthStore()
+const auth = useAuth()
 const fileUpload = ref(null as any)
 const expandedEvents = ref([] as any[])
 const expandedQuestions = ref([] as any[])

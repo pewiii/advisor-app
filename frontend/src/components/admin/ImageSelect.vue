@@ -10,7 +10,7 @@
         <template #header>
           <div class="flex justify-center mb-4 gap-8">
             <pvButton label="Delete Image" severity="danger" @click="deleteImage"/>
-            <pvButton label="Use Image" @click="useImage"/>
+            <pvButton label="Use Image" @click="selectImage"/>
           </div>
         </template>
         <template #item="slotProps">
@@ -40,13 +40,13 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import Modal from '@/components/common/Modal.vue'
-import { useAuthStore } from '@/stores/auth';
-import { useImageStore } from '@/stores/images';
+import { useAuth } from '@/stores/auth';
+import { useImage } from '@/stores/images';
 import { notify } from '@kyvg/vue3-notification';
 import { storeToRefs } from 'pinia';
 
-const auth = useAuthStore()
-const imageStore = useImageStore()
+const auth = useAuth()
+const imageStore = useImage()
 const { images } = storeToRefs(imageStore)
 
 const props = defineProps(['modelValue'])
@@ -88,7 +88,7 @@ const selectedImage = computed({
   }
 })
 
-const useImage = () => {
+const selectImage = () => {
   const image = images.value[activeIndex.value]
   selectedImage.value = image
   displayCustom.value = false

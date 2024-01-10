@@ -1,4 +1,5 @@
 <template>
+  <LoginNav />
   <div class="flex justify-center h-screen items-center bg-red-950">
     <LoginForm :login="login" :userType="'admin'" />
   </div>
@@ -7,10 +8,11 @@
 <script lang="ts" setup>
 import LoginForm from '@/components/common/LoginForm.vue'
 import router from '@/router';
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 // import { useRouter } from 'vue-router';
+import LoginNav from '@/components/LoginNav.vue'
 
-const auth = useAuthStore()
+const auth = useAuth()
 
 const login = async (credentials: { email: string, password: string }) => {
   try {

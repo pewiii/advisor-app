@@ -4,7 +4,7 @@ import axios from 'axios'
 import { notify } from "@kyvg/vue3-notification"
 import { useRouter } from 'vue-router'
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuth = defineStore('auth', () => {
   const API_URL = import.meta.env.VITE_APP_API_URL
 
   const router = useRouter()

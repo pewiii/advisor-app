@@ -9,11 +9,11 @@ import CampaignForm from '@/components/admin/CampaignForm.vue'
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import objects from '@/objects';
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 
 const route = useRoute()
 const router = useRouter()
-const auth = useAuthStore()
+const auth = useAuth()
 const error = ref(false)
 
 const cancel = () => {

@@ -2,7 +2,7 @@
 // import campaigns from './admin/campaigns.js'
 // import templates from './templates.js'
 // import uploads from './uploads.js'
-// import offers from './offers.js'
+import offers from './offers.js'
 // import users from './users.js'
 import admin from './admin/index.js'
 import client from './client/index.js'
@@ -11,7 +11,8 @@ import client from './client/index.js'
 
 export default {
   admin,
-  client
+  client,
+  offers,
   // clients,
   // campaigns,
   // uploads,

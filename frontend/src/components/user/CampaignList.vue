@@ -69,10 +69,10 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch, computed } from 'vue';
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
 import format from 'date-fns/format';
 
-const auth = useAuthStore()
+const auth = useAuth()
 
 const props = defineProps(['selectedCampaign', 'selectedRespondent', 'search'])
 

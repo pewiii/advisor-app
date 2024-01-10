@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white p-6">
-    <TemplateForm v-model="template" :cancel="cancel"/>
+  <div class="">
+    <TemplateForm v-model="template" :cancel="cancel" />
   </div>
 </template>
 
@@ -9,12 +9,16 @@ import TemplateForm from '@/components/admin/TemplateForm.vue'
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import objects from '@/objects';
-import { useAuthStore } from '@/stores/auth';
+import { useAuth } from '@/stores/auth';
+import TemplatePreview from '@/components/admin/TemplatePreview.vue'
+import Modal from '@/components/common/Modal.vue'
 
 const route = useRoute()
 const router = useRouter()
-const auth = useAuthStore()
+const auth = useAuth()
 const error = ref(false)
+
+const header = "Edit Template"
 
 const cancel = () => {
   router.replace({ name: 'admin-templates' })

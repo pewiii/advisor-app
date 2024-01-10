@@ -1,7 +1,7 @@
 <template>
 
 
-  <div class="p-1 items-center px-4 flex justify-between bg-primary" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
+  <div class="p-1 items-center px-4 flex justify-between bg-primary h-12" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
     
     <div class="text-white hidden sm:block">
 
@@ -12,49 +12,21 @@
     
     <div class="flex gap-4 items-center">
       <nav class="p-2 flex gap-4">
-        <div v-if="!auth.user" class="flex gap-4">
-          <RouterLink :to="{ name: 'home' }">
-            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Home</a>
-          </RouterLink>
-          <div v-if="!route.path.includes('login')" class="flex gap-4">
-            <RouterLink :to="{ name: 'login' }">
-              <a href="#login" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Log In</a>
-            </RouterLink>
-            <RouterLink :to="{ name: 'admin-login'}">
-              <a href="#admin-login" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Admin</a>
-            </RouterLink>
-          </div>
-        </div>
 
-        <div v-if="auth.user && auth.user.userType === 'admin'" class="flex gap-4 items-center">
-          <RouterLink :to="{ name: 'admin-campaigns' }" :class="route.name && route.name.toString().includes('admin-campaigns') ? 'router-link-active' : ''">
-            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Campaigns</a>
-          </RouterLink>
-          <RouterLink :to="{ name: 'admin-clients' }" :class="route.name && route.name.toString().includes('admin-clients') ? 'router-link-active' : ''">
-            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Clients</a>
-          </RouterLink>
-          <RouterLink :to="{ name: 'admin-templates' }" :class="route.name && route.name.toString().includes('admin-templates') ? 'router-link-active' : ''">
-            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Templates</a>
-          </RouterLink>
-          <RouterLink :to="{ name: 'admin-users' }" :class="route.name && route.name.toString().includes('admin-users') ? 'router-link-active' : ''">
-            <a href="#" class="text-white hover:bg-sky-700 px-4 py-2 rounded">Users</a>
-          </RouterLink>
-        </div>
+
 
       </nav>
 
 
-
-
-
-
-      <div class="flex gap-4" v-if="auth.user">
+      <div class="flex gap-4">
 
         <div>
           <input type="text" placeholder="Search" class="h-8 ml-4 bg-gray-200 px-2 md:w-96" v-model="searchText" />
         </div>
 
-        <Modal header="User" size="medium">
+        <UserMenu />
+
+        <!-- <Modal header="User" size="medium">
 
           <template #trigger="{open}">
             <div
@@ -75,7 +47,7 @@
             </div>
           </template>
 
-        </Modal>
+        </Modal> -->
 
         <!-- <div class="">
           <div
@@ -152,12 +124,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useAuthStore } from '@/stores/auth'
-import { useSearchStore } from '@/stores/search';
+// import { useAuthStore } from '@/stores/auth'
+import { useSearch } from '@/stores/search';
 import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import Modal from '@/components/common/Modal.vue'
+import UserMenu from '@/components/common/UserMenu.vue'
 
 // const props = defineProps(['modelValue'])
 // const emit = defineEmits(['update:modelValue'])
@@ -178,8 +151,8 @@ const route = useRoute()
 //   }
 // })
 
-const auth = useAuthStore()
-const search = useSearchStore()
+// const auth = useAuthStore()
+const search = useSearch()
 const { searchText } = storeToRefs(search)
 
 // const showMenu = ref(false)
@@ -188,15 +161,18 @@ const { searchText } = storeToRefs(search)
 //   return auth.user && auth.user.userType === 'admin'
 // })
 
-const logout = () => {
-  auth.logout()
-  router.go(0)
-}
+// const logout = () => {
+//   auth.logout()
+//   router.go(0)
+// }
 
 </script>
 
 <style scoped>
 .router-link-active {
   @apply bg-sky-800 py-1 rounded
+}
+.nav-btn {
+  @apply text-white hover:bg-black hover:bg-opacity-25 px-4 py-2 rounded
 }
 </style>

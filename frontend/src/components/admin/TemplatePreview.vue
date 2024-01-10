@@ -1,12 +1,12 @@
 <template>
   <div>
-    <LandingTemplate v-if="template" :templateData="templateData"/>
+    <OfferLanding v-if="template" :templateData="templateData"/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import LandingTemplate from '@/components/template/LandingTemplate.vue'
+import OfferLanding from '@/components/offer/OfferLanding.vue'
 
 const props = defineProps(['template', 'previewCampaign'])
 
@@ -39,8 +39,8 @@ watch(() => props.previewCampaign, () => {
   }
 }, { deep: true, immediate: true })
 
-watch(templateData, () => {
-  console.log(templateData.value)
-}, { deep: true })
+// watch(templateData, () => {
+//   console.log(templateData.value)
+// }, { deep: true })
 
 </script>

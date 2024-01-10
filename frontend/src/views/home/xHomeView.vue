@@ -26,11 +26,11 @@
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import image from '@/assets/pexels-photo.jpeg'
-import { useAuthStore } from '@/stores/auth';
-import LandingTemplate from '@/components/template/LandingTemplate.vue'
+import { useAuth } from '@/stores/auth';
+// import LandingTemplate from '@/components/template/LandingTemplate.vue'
 
 const route = useRoute()
-const auth = useAuthStore()
+const auth = useAuth()
 
 const loading = ref(false)
 const offerCode = ref('')

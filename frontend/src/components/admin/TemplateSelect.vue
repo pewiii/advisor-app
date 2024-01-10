@@ -35,9 +35,9 @@
 <script lang="ts" setup>
 import Modal from '@/components/common/Modal.vue'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuth } from '@/stores/auth'
 
-const auth = useAuthStore()
+const auth = useAuth()
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])

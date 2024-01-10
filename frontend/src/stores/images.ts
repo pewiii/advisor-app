@@ -3,11 +3,11 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { notify } from "@kyvg/vue3-notification"
 import { useRouter } from 'vue-router'
-import { useAuthStore } from './auth'
+import { useAuth } from './auth'
 
-export const useImageStore = defineStore('images', () => {
+export const useImage = defineStore('images', () => {
   
-  const auth = useAuthStore()
+  const auth = useAuth()
 
   const images = ref([] as any[])
 

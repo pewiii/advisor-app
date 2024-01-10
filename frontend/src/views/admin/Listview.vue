@@ -12,10 +12,10 @@ import CampaignList from '@/components/admin/CampaignList.vue'
 import ClientList from '@/components/admin/ClientList.vue'
 import TemplateList from '@/components/admin/TemplateList.vue'
 import UserList from '@/components/admin/UserList.vue'
-import { useSearchStore } from '@/stores/search';
+import { useSearch } from '@/stores/search';
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
-const search = useSearchStore()
+const search = useSearch()
 </script>
