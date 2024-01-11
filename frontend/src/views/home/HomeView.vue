@@ -1,7 +1,7 @@
 <template>
   <HomeNav />
   <!-- <NavBar /> -->
-  <div class="image-parent overflow-hidden relative min-w-screen bg-red-300 min-h-screen">
+  <div class="image-parent overflow-hidden relative min-w-screen min-h-screen">
     <img :src="image" class="w-full h-full object-cover bottom-0 left-0 absolute" />
   </div>
   <!-- <RouterView /> -->

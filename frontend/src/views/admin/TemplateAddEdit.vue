@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="shadow-lg p-4 bg-white">
     <TemplateForm v-model="template" :cancel="cancel" />
   </div>
 </template>

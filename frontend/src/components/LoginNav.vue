@@ -1,7 +1,7 @@
 <template>
 
 
-  <div class="p-1 items-center px-4 flex justify-between bg-primary h-12" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
+  <div class="p-1 items-center px-4 flex justify-between bg-primary h-12 overflow-hidden shadow-lg" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
     <div class="text-white hidden sm:block">
       <NavLogo />
     </div>

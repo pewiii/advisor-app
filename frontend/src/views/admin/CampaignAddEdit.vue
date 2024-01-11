@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white p-6">
+  <div class="bg-white p-6 shadow-lg">
     <CampaignForm v-model:campaign="campaign" @onCancel="cancel" @onSubmit="submitCampaign"/>
   </div>
 </template>

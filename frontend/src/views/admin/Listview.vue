@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-white">
+  <div class="p-6 bg-white shadow-lg">
     <CampaignList v-if="route.name === 'admin-campaigns'" :search="search.searchText" />
     <ClientList v-if="route.name === 'admin-clients'" :search="search.searchText" />
     <TemplateList v-if="route.name === 'admin-templates'" :search="search.searchText" />

@@ -1,7 +1,7 @@
 <template>
-  <div class="p-1 items-center px-4 flex justify-between bg-primary h-12" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
+  <div class="p-1 items-center px-4 flex justify-between bg-primary h-12 overflow-hidden shadow-lg" :class="route.path.includes('login') ? 'bg-opacity-0 fixed w-full' : ''">
     <div class="text-white hidden sm:block">
-      <span class="font-bold">P</span><span class="font-thin text-gray-200">ack</span><span class="font-bold">T</span><span class="font-thin text-gray-200">hem</span><span class="font-bold">I</span><span class="font-thin text-gray-200">n</span>
+      <NavLogo />
     </div>
     <div class="flex gap-4 items-center">
       <nav class="p-2 flex gap-4">
@@ -32,6 +32,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import UserMenu from '@/components/common/UserMenu.vue'
 import SearchInput from '@/components/common/SearchInput.vue'
+import NavLogo from '@/components/common/NavLogo.vue'
 const route = useRoute()
 
 </script>

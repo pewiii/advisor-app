@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white p-6">
+  <div class="bg-white p-6 shadow-lg">
     <ClientForm v-model="client" :cancel="cancel"/>
   </div>
 </template>
