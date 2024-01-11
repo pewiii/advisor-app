@@ -1,4 +1,5 @@
 import models from '../../db/models.js'
+import auth from '../../auth/index.js'
 
 
 // const getList = async (req, res) => {
@@ -112,6 +113,7 @@ const get = async (req, res) => {
 const create = async (req, res) => {
   try {
     const data = req.body
+    data.password = await auth.hashPassword(data.password)
     const user = await models.User.create(data)
     res.status(201).send(user)
   } catch(err) {
@@ -119,14 +121,23 @@ const create = async (req, res) => {
     console.log(err)
   }
 }
+// if (user.password !== data.password) {
+  
+// }
 
 const update = async (req, res) => {
   try {
     const { userId } = req.params
     const data = req.body
     data.fullName = `${data.firstName} ${data.lastName}`
-    const user = await models.User.findOneAndUpdate({ _id: userId }, data)
-    res.send(user)
+    const user = await models.User.findById({ _id: userId })
+
+    if (user.password !== data.password) {
+      data.password = await auth.hashPassword(data.password)
+    }
+
+    const updatedUser = await models.User.findOneAndUpdate({ _id: userId }, data)
+    res.send(updatedUser)
   } catch(err) {
     console.log(err)
     res.status(400).send({ message: err.message })
