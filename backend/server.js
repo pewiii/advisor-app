@@ -34,9 +34,9 @@ const upload = multer({ storage: storage })
 // app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
 // app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
 
-// app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.uploads.imageUpload)
-// app.post('/uploads/image/delete', auth.verifyToken, api.uploads.imageDelete)
-// app.get('/images', auth.verifyToken, api.uploads.getImageList)
+app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.admin.uploads.imageUpload)
+app.post('/uploads/image/delete', auth.verifyToken, api.admin.uploads.imageDelete)
+app.get('/images', auth.verifyToken, api.admin.uploads.getImageList)
 
 
 

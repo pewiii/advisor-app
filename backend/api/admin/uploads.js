@@ -1,7 +1,8 @@
 import fs from 'fs'
 import csv from 'csv-parser'
 import { Readable } from 'stream'
-import db from '../db/index.js'
+// import db from '../../../db/index.js'
+import db from '../../db/index.js'
 import {
   S3Client,
   PutObjectCommand,
