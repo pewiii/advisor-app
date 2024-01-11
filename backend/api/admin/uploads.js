@@ -15,6 +15,7 @@ import {
 
 const S3ACCESSKEYID = process.env.S3ACCESSKEYID
 const S3SECRETACCESSKEY = process.env.S3SECRETACCESSKEY
+const S3BUCKET = process.env.S3BUCKET
 
 const s3Client = new S3Client({
   region: 'us-east-1',
@@ -86,7 +87,7 @@ const imageUpload = async (req, res) => {
     const key = Date.now() + sanitizedFileName;
 
     const putCommand = new PutObjectCommand({
-      Bucket: 'advisorapp',
+      Bucket: S3BUCKET,
       Body: fs.createReadStream(req.file.path),
       // Body: file.buffer,
       // ContentType:'content-type',
@@ -95,7 +96,7 @@ const imageUpload = async (req, res) => {
 
     const result = await s3Client.send(putCommand);
 
-    const image = await db.images.createImage({ url: `https://advisorapp.s3.amazonaws.com/${key}`, key })
+    const image = await db.images.createImage({ url: `https://${S3BUCKET}.s3.amazonaws.com/${key}`, key })
 
     // console.log(result)
     res.send(image)
@@ -121,15 +122,15 @@ const imageDelete = async (req, res) => {
   try {
     const image = req.body
 
-    console.log(image)
+    // console.log(image)
+    await db.images.deleteImage(image._id)
 
     const deleteCommand = new DeleteObjectCommand({
-      Bucket: 'advisorapp',
+      Bucket: S3BUCKET,
       Key: image.key
     })
 
     await s3Client.send(deleteCommand)
-    await db.images.deleteImage(image._id)
 
     res.sendStatus(201)
   } catch (err) {

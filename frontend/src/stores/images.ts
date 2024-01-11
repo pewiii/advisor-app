@@ -23,12 +23,13 @@ export const useImage = defineStore('images', () => {
   const deleteImage = async (image: any) => {
     try {
       // const image = images.value[activeIndex.value]
-      await auth.api.post('/uploads/image/delete', image)
-      // displayCustom.value = false
       images.value = images.value.filter((i) => {
         console.log(i === image)
         return i !== image
       })
+      
+      await auth.api.post('/uploads/image/delete', image)
+      // displayCustom.value = false
     } catch(err) {
       console.log(err)
     }
