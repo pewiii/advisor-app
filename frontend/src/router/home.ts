@@ -4,7 +4,7 @@ export const homeRoutes = [
     name: 'home',
     beforeEnter: () => {
       console.log(window.location)
-      if (window.location.hostname !== 'packthemin' && window.location.hostname !== 'localhost')
+      if (window.location.hostname !== 'packthemin.com' && window.location.hostname !== 'localhost')
       return { name: 'offer' }
     },
     component: () => import('@/views/home/HomeView.vue'),
