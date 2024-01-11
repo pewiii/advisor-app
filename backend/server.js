@@ -31,8 +31,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.uploads.csvUpload)
-// app.post('/uploads/csv/delete', auth.verifyToken, api.uploads.csvDelete)
+app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.admin.uploads.csvUpload)
+app.post('/uploads/csv/delete', auth.verifyToken, api.admin.uploads.csvDelete)
 
 app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.admin.uploads.imageUpload)
 app.post('/uploads/image/delete', auth.verifyToken, api.admin.uploads.imageDelete)
