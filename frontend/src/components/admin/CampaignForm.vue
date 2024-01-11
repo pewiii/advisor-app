@@ -309,29 +309,26 @@
           <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
         </template>
       </Modal>
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitCampaign" raised :disabled="formErrors.hasErrors"/>
+      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
+      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors"/>
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch, onBeforeMount } from 'vue'
 import { useAuth } from '@/stores/auth'
 import { notify } from "@kyvg/vue3-notification"
 import objects from '@/objects'
-import moment from 'moment-timezone'
 import FieldError from '@/components/common/FieldError.vue'
 import Modal from '@/components/common/Modal.vue'
 import TemplatePreview from '@/components/admin/TemplatePreview.vue'
 import TemplateSelect from '@/components/admin/TemplateSelect.vue'
-import router from '@/router'
-
 
 const loading = ref(false)
 
-const props = defineProps(['campaign', 'selectedClient', 'selectedTemplate', 'cancel'])
-const emit = defineEmits(['update:campaign'])
+const props = defineProps(['campaign'])
+const emit = defineEmits(['update:campaign', 'onSubmit', 'onCancel'])
 
 const auth = useAuth()
 const fileUpload = ref(null as any)
@@ -413,12 +410,6 @@ watch(campaign, async (newCampaign, oldCampaign) => {
   formErrors.value = errors
 }, { deep: true, immediate: true })
 
-onMounted(() => {
-  if (props.selectedTemplate && !campaign.value.template) {
-    campaign.value.template = props.selectedTemplate
-  }
-})
-
 
 const clientDisplay = computed(() => {
   let result = ''
@@ -435,63 +426,6 @@ const templateDisplay = computed(() => {
   return campaign.value.template ? campaign.value.template.title : ''
 })
 
-const events = computed(() => campaign.value.events)
-watch(events, () => {
-  events.value.forEach((event: any) => {
-    if (event.eventDate && event.timezone && !(event.date || event.time)) {
-      const localEventTime = moment.utc(event.eventDate).tz(event.timezone);
-      const localDate = localEventTime.format('YYYY-MM-DD');
-      const localTime = localEventTime.format('HH:mm:ss');
-      event.date = localDate
-      event.time = localTime
-    }
-  })
-}, { deep: true, immediate: true })
-
-
-const submitCampaign = async () => {
-  loading.value = true
-  try {
-    const data = JSON.parse(JSON.stringify(campaign.value))
-    data.user = auth.user._id
-    if (data.client) {
-      data.client = data.client._id
-    }
-    if (data.template) {
-      data.template = data.template._id
-    } else {
-      delete data.template
-    }
-    const info = {
-      path: data._id ? `/admin/campaigns/${data._id}` : '/admin/campaigns',
-      title: data._id ? 'Updated' : 'Created',
-      text: data._id ? 'Campaign updated successfully' : 'Campaign created successfully'
-    }
-    await auth.api.post(info.path, data)
-
-    notify({
-      title: info.title,
-      text: info.text,
-      type: 'success'
-    })
-
-    router.replace({ name: 'admin-campaigns' })
-    // template.value = null
-  } catch(err: any) {
-    console.log(err)
-  }
-  loading.value = false
-}
-
-
-watch(() => props.selectedClient, () => {
-  campaign.value.client = props.selectedClient
-})
-watch(() => props.selectedTemplate, () => {
-  campaign.value.template = props.selectedTemplate
-})
-
-
 
 const expandEvent = (event: any) => {
   if (expandedEvents.value.includes(event)) {
@@ -506,8 +440,6 @@ const addEvent = () => {
 const removeEvent = (event: any) => {
   campaign.value.events = campaign.value.events.filter((campaignEvent: any) => campaignEvent !== event)
 }
-
-
 
 const expandQuestion = (question: any) => {
   if (expandedQuestions.value.includes(question)) {

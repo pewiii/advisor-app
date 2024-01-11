@@ -1,5 +1,5 @@
 // import db from '../db/index.js'
-// import moment from 'moment-timezone'
+import moment from 'moment-timezone'
 
 import models from '../../db/models.js'
 
@@ -148,6 +148,39 @@ const getList = async (req, res) => {
 //   }
 // }
 
+const eventsToUTC = (events) => {
+  return events.map(event => {
+    const eventResult = {
+      ...event
+    }
+    if (event.date && event.time) {
+      const inputDateTime = `${event.date} ${event.time}`;
+      eventResult.eventDate = moment.tz(inputDateTime, event.timezone).utc().format();
+    }
+    return eventResult
+  })
+}
+
+const eventsToDateTime = (events) => {
+  return events.map(event => {
+    const eventResult = {
+      ...event
+    }
+    if (event.eventDate && event.timezone) {
+      // Assuming storedDateTime is the UTC time retrieved from MongoDB
+      // const userTimeZone = 'user-input-timezone'; // Replace with the user's timezone
+      const convertedDateTime = moment.tz(event.eventDate, event.timezone).format();
+      let [date, time] = convertedDateTime.split('T')
+      time = time.split(':')
+      time = [time[0],time[1]].join(':')
+      eventResult.date = date
+      eventResult.time = time
+    }
+
+    return eventResult
+  })
+}
+
 const get = async (req, res) => {
   try {
     const { campaignId } = req.params
@@ -156,7 +189,9 @@ const get = async (req, res) => {
       .populate('client template')
 
     if (campaign) {
-      res.send(campaign)
+      const campaignObject = campaign.toObject()
+      campaignObject.events = eventsToDateTime(campaignObject.events)
+      res.send(campaignObject)
     } else {
       res.status(404).send({ message: 'Campaign not found' })
     }
@@ -169,6 +204,7 @@ const get = async (req, res) => {
 const create = async (req, res) => {
   try {
     const data = req.body
+    data.events = eventsToUTC(data.events)
     const campaign = await models.Campaign.create(data)
     res.status(201).send(campaign)
   } catch(err) {
@@ -181,6 +217,7 @@ const update = async (req, res) => {
   try {
     const { campaignId } = req.params
     const data = req.body
+    data.events = eventsToUTC(data.events)
     const campaign = await models.Campaign.findOneAndUpdate({ _id: campaignId }, data)
     res.send(campaign)
   } catch(err) {

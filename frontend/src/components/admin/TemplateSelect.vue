@@ -44,7 +44,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const selectedTemplate = computed({
   get() {
-    return props.modelValue
+    return props.modelValue || { _id: null }
   },
   set(template) {
     emit('update:modelValue', template)
@@ -69,7 +69,7 @@ const getTemplates = async () => {
     const res = await auth.api.get(
       `/admin/templates?search=${search.value}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
 
-    templates.value = res.data
+    templates.value = res.data.paginatedResults
     // totalRecords.value = res.data.total
   } catch(err: any) {
     console.log(err.message)
