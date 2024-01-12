@@ -11,5 +11,10 @@ export const userRoutes = [
       }
     },
     children: []
-  }
+  },
+  {
+    path: '/setup/:clientId/:token',
+    name: 'setup',
+    component: () => import('@/views/user/UserSetup.vue')
+  },
 ]

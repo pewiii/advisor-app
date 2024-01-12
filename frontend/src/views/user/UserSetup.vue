@@ -14,7 +14,7 @@
           <p>Password created Successfully</p>
         </div>
         <div class="mt-8 text-end">
-          <RouterLink :to="{ name: 'login' }">
+          <RouterLink :to="{ name: 'user-login' }">
             <button class="w-full btn">Login</button>
           </RouterLink>
         </div>
@@ -72,7 +72,7 @@ const passwordMatch = ref('')
 const submit = async () => {
   loading.value = true
   try {
-    const res = await auth.api.post(`/client-setup/${clientId}/${token}`, { password: password.value, passwordMatch: passwordMatch.value })
+    const res = await auth.api.post(`/clients/setup/${clientId}/${token}`, { password: password.value, passwordMatch: passwordMatch.value })
     success.value = true
   } catch(err) {
     error.value = true
@@ -83,11 +83,11 @@ const submit = async () => {
 
 onMounted(async () => {
   try {
-    const res = await auth.api.get(`/client-setup/${clientId}/${token}`)
+    const res = await auth.api.get(`/clients/setup/${clientId}/${token}`)
     client.value = res.data
   } catch(err: any) {
     console.log(err.message)
-    router.push({ name: 'login' })
+    router.push({ name: 'user-login' })
   }
 })
 

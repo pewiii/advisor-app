@@ -35,6 +35,7 @@
         </div>
       </template>
     </pvColumn> -->
+    <pvColumn field="campaignCount" header="Campaigns" sortable />
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <RouterLink :to="{ name: 'admin-campaigns-add', params: { clientId: data._id }}">
@@ -127,6 +128,7 @@ const getClients = async () => {
     const res = await auth.api.get(
       `/admin/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
     clients.value = res.data.paginatedResults
+    console.log(clients.value)
     totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)

@@ -28,6 +28,28 @@ const getList = async (req, res) => {
         {
           $limit: limit,
         },
+        {
+          $lookup: {
+            from: 'campaigns',
+            localField: '_id',
+            foreignField: 'template',
+            as: 'campaigns',
+          },
+        },
+        {
+          $addFields: {
+            campaignCount: { $size: '$campaigns' }, // Add a new field representing the count of campaigns
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            // Include other fields from the Template model that you want in the result
+            campaignCount: 1, // Include the campaign count in the result
+            createdAt: 1,
+            updatedAt: 1,
+          },
+        },
       ]).exec(),
       models.Template.countDocuments(query).exec(),
     ]);
@@ -42,6 +64,68 @@ const getList = async (req, res) => {
     res.sendStatus(500);
   }
 };
+
+// const getList = async (req, res) => {
+//   try {
+//     const { search = '', page = 1, perPage = 10, sortField, sortOrder } = req.query;
+
+//     const order = parseInt(sortOrder, 10);
+//     const limit = parseInt(perPage, 10);
+//     const skip = page * limit; // Adjusted skip calculation for pagination
+//     const query = {};
+
+//     if (search) {
+//       query.title = new RegExp(search, 'i');
+//     }
+
+//     const [paginatedResults, totalCount] = await Promise.all([
+//       models.Template.aggregate([
+//         {
+//           $match: query,
+//         },
+//         {
+//           $sort: { [sortField]: order },
+//         },
+//         {
+//           $skip: skip,
+//         },
+//         {
+//           $limit: limit,
+//         },
+//         {
+//           $lookup: {
+//             from: 'campaigns',
+//             localField: '_id',
+//             foreignField: 'template',
+//             as: 'campaigns',
+//           },
+//         },
+//         {
+//           $addFields: {
+//             campaignCount: { $size: '$campaigns' }, // Add a new field representing the count of campaigns
+//           },
+//         },
+//         {
+//           $project: {
+//             title: 1,
+//             // Include other fields from the Template model that you want in the result
+//             campaignCount: 1, // Include the campaign count in the result
+//           },
+//         },
+//       ]).exec(),
+//       models.Template.countDocuments(query).exec(),
+//     ]);
+
+//     res.json({
+//       paginatedResults,
+//       totalCount,
+//     });
+
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500);
+//   }
+// };
 
 
 const get = async (req, res) => {
@@ -87,6 +171,12 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const { templateId } = req.params
+    const campaigns = await models.Campaign.find({ template: templateId })
+    console.log(campaigns)
+    await Promise.all(campaigns.map(campaign => {
+      campaign.template = null
+      return campaign.save()
+    }))
     await models.Template.findByIdAndDelete(templateId)
     res.sendStatus(204)
   } catch(err) {

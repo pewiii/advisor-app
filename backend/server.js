@@ -4,7 +4,6 @@ import cors from 'cors'
 import auth from './auth/index.js'
 import api from './api/index.js'
 import multer from 'multer'
-import comm from './comm/index.js'
 
 import mongoose from './db/connect.js'
 
@@ -33,6 +32,7 @@ const upload = multer({ storage: storage })
 
 app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.admin.uploads.csvUpload)
 app.post('/uploads/csv/delete', auth.verifyToken, api.admin.uploads.csvDelete)
+app.post('/uploads/csv/code', auth.verifyToken, upload.single('file'), api.admin.uploads.csvCode)
 
 app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.admin.uploads.imageUpload)
 app.post('/uploads/image/delete', auth.verifyToken, api.admin.uploads.imageDelete)
@@ -55,6 +55,7 @@ app.get('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.get)
 app.post('/admin/clients', auth.verifyToken, api.admin.clients.create)
 app.post('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.update)
 app.delete('/admin/clients/:clientId', auth.verifyToken, auth.requireAdmin, api.admin.clients.delete)
+app.post('/admin/clients/setup', auth.verifyToken, api.admin.clients.passwordSetup)
 
 app.get('/admin/templates', auth.verifyToken, api.admin.templates.getList)
 app.get('/admin/templates/:templateId', auth.verifyToken, api.admin.templates.get)
@@ -77,7 +78,6 @@ app.post('/login', auth.login)
 // app.post('/clients/delete', auth.verifyToken, auth.requireAdmin, api.clients.destroy)
 // app.get('/clients', auth.verifyToken, api.clients.getList)
 // app.get('/clients/:clientId', auth.verifyToken, api.clients.get)
-// app.post('/clients/setup', auth.verifyToken, comm.email.passwordSetup)
 
 // app.get('/users', auth.verifyToken, auth.requireAdmin, api.users.getList)
 // app.post('/users/add', auth.verifyToken, auth.requireAdmin, auth.adminRegister)
@@ -95,8 +95,8 @@ app.post('/login', auth.login)
 // app.get('/templates', auth.verifyToken, api.templates.getList)
 
 
-// app.get('/client-setup/:clientId/:resetToken', api.clients.getSetupClient)
-// app.post('/client-setup/:clientId/:resetToken', api.clients.setupClient)
+app.get('/clients/setup/:clientId/:resetToken', api.client.setup.getSetupClient)
+app.post('/clients/setup/:clientId/:resetToken', api.client.setup.setupClient)
 
 
 // app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)

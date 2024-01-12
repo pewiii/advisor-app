@@ -234,7 +234,7 @@ const emailLoading = ref(false)
 const emailClient = async () => {
   emailLoading.value = true
   try {
-    const res = await auth.api.post('/clients/setup', { clientId: client.value._id })
+    const res = await auth.api.post('admin/clients/setup', { clientId: client.value._id })
     client.value = res.data
     emailSuccess.value = true
     notify({

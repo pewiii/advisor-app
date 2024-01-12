@@ -111,11 +111,16 @@ const recordSchema = new mongoose.Schema({
     maxlength: 2,
   },
   zip: String,
-  offerCode: String,
+  offerCode: {
+    type: String,
+    index: true,
+    unique: true
+  },
   campaign: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Campaign'
+    ref: 'Campaign',
+    index: true
   },
   age: Number,
   netWorth: String,
@@ -124,7 +129,14 @@ const recordSchema = new mongoose.Schema({
   race: String,
   vetInHouse: Boolean,
   wealthRating: String,
+  expirationDate: {
+    type: Date,
+    required: true,
+  },
 }, { timestamps: true })
+
+recordSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
+
 
 const respondentSchema = new mongoose.Schema({
   firstName: {
@@ -163,7 +175,8 @@ const respondentSchema = new mongoose.Schema({
   campaign: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Campaign'
+    ref: 'Campaign',
+    index: true
   }
   // other info
 }, { timestamps: true })
@@ -221,12 +234,14 @@ const campaignSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Client'
+    ref: 'Client',
+    index: true
   },
   template: {
     type: mongoose.Schema.Types.ObjectId,
@@ -241,6 +256,7 @@ const campaignSchema = new mongoose.Schema({
   fileRecords: Number,
   events: [eventSchema]
 }, { timestamps: true })
+
 
 const templateSchema = new mongoose.Schema({
   title: {
@@ -269,7 +285,6 @@ const imageSchema = new mongoose.Schema({
   }
 })
 
-
 const User = mongoose.model('User', userSchema);
 const Client = mongoose.model('Client', clientSchema)
 const Record = mongoose.model('Record', recordSchema)
@@ -277,8 +292,6 @@ const Respondent = mongoose.model('Respondent', respondentSchema)
 const Template = mongoose.model('Template', templateSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)
 const Image = mongoose.model('Image', imageSchema)
-const Event = mongoose.model('Event', eventSchema)
-const Question = mongoose.model('Question', questionSchema)
 
 export default {
   User,
@@ -287,5 +300,5 @@ export default {
   Respondent,
   Template,
   Campaign,
-  Image
+  Image,
 }

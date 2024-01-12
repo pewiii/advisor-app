@@ -34,6 +34,7 @@
         </div>
       </template>
     </pvColumn> -->
+    <pvColumn field="campaignCount" header="Campaigns" sortable />
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
         <!-- <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">visibility</div> -->
@@ -48,6 +49,7 @@
             <div v-if="!deleteLoading">
               <div>Are you sure you want to delete this template?</div>
               <div class="text-red-600">{{ data.title }}</div>
+              <div>This template will be removed from {{ data.campaignCount }} campaign{{ data.campaignCount === 1 ? '' : 's' }}.</div>
               <div class="flex justify-end mt-4">
                 <pvButton label="Delete" severity="danger" @click="deleteTemplate(data, close)"/>
               </div>
@@ -122,7 +124,7 @@ const getTemplates = async () => {
   try {
     const res = await auth.api.get(
       `/admin/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-
+    console.log(res.data)
     templates.value = res.data.paginatedResults
     totalRecords.value = res.data.totalCount
   } catch(err: any) {

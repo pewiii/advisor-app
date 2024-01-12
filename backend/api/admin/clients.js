@@ -1,4 +1,10 @@
 import models from '../../db/models.js'
+import sgMail from '@sendgrid/mail'
+import auth from '../../auth/index.js'
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+const FRONTEND_URL = process.env.FRONTEND_URL
 
 // const getList = async (req, res) => {
 
@@ -63,6 +69,70 @@ import models from '../../db/models.js'
 
 // }
 
+// const getList = async (req, res) => {
+//   try {
+//     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
+
+//     const limit = parseInt(perPage, 10);
+//     const order = parseInt(sortOrder, 10);
+//     const skip = page * limit;
+//     const query = {};
+//     if (search) {
+//       query.$or = [
+//         { 'firstName': { $regex: search, $options: 'i' } },
+//         { 'lastName': { $regex: search, $options: 'i' } },
+//         { 'fullName': { $regex: search, $options: 'i' } },
+//         { 'company': { $regex: search, $options: 'i' } },
+//         { 'campaigns.title': { $regex: search, $options: 'i' } },
+//       ];
+//     }
+
+//     const [paginatedResults, totalCount] = await Promise.all([
+//       models.Client.aggregate([
+//         {
+//           $lookup: {
+//             from: 'campaigns',
+//             localField: '_id',
+//             foreignField: 'client',
+//             as: 'campaigns',
+//           },
+//         },
+//         {
+//           $project: {
+//             email: 1,
+//             fullName: 1,
+//             company: 1,
+//             createdAt: 1,
+//             updatedAt: 1,
+//           },
+//         },
+//         {
+//           $match: query,
+//         },
+//         {
+//           $sort: { [sortField]: order },
+//         },
+//         {
+//           $skip: skip,
+//         },
+//         {
+//           $limit: limit,
+//         },
+//       ]).exec(),
+//       models.Client.countDocuments(query).exec(),
+//     ]);
+
+//     res.json({
+//       paginatedResults,
+//       totalCount,
+//     });
+
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500);
+//   }
+// };
+
 const getList = async (req, res) => {
   try {
     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
@@ -71,6 +141,7 @@ const getList = async (req, res) => {
     const order = parseInt(sortOrder, 10);
     const skip = page * limit;
     const query = {};
+    
     if (search) {
       query.$or = [
         { 'firstName': { $regex: search, $options: 'i' } },
@@ -92,12 +163,18 @@ const getList = async (req, res) => {
           },
         },
         {
+          $addFields: {
+            campaignCount: { $size: '$campaigns' }, // Add a new field representing the count of campaigns
+          },
+        },
+        {
           $project: {
             email: 1,
             fullName: 1,
             company: 1,
             createdAt: 1,
             updatedAt: 1,
+            campaignCount: 1, // Include the campaign count in the result
           },
         },
         {
@@ -176,6 +253,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const { clientId } = req.params
+    await models.Campaign.deleteMany({ client: clientId })
     await models.Client.findByIdAndDelete(clientId)
     res.sendStatus(204)
   } catch(err) {
@@ -184,10 +262,44 @@ const remove = async (req, res) => {
   }
 }
 
+const passwordSetup = async (req, res) => {
+  try {
+    const { clientId } = req.body
+    const client = await models.Client.findById(clientId)
+    // const client = await db.clients.getClientById(clientId)
+    if (!client) {
+      res.status(404).send({ message: 'Client not found'})
+    } else if (client.password) {
+      res.status(400).send({ message: 'Client already setup' })
+    } else {
+      client.resetToken = auth.generateResetToken()
+      client.resetTokenExpiration = new Date(Date.now() + 3600000 * 24);
+      // await client.save()
+      //send email
+      await sgMail.send({
+        to: client.email,
+        from: 'support@packthemin.com',
+        template_id: 'd-80c7eb1df75a48e1ac013e55a41ad929',
+        dynamic_template_data: {
+          username: client.firstName,
+          resetLink: `${FRONTEND_URL}/setup/${client._id}/${client.resetToken}`
+        }
+      })
+      client.emailSentAt = new Date()
+      await client.save()
+      res.status(200).send(client)
+    }
+  } catch(err) {
+    console.log(err.message)
+    res.status(500).send({ message: err.message })
+  }
+}
+
 export default {
   getList,
   get,
   create,
   update,
-  delete: remove
+  delete: remove,
+  passwordSetup,
 }

@@ -32,11 +32,6 @@ const router = createRouter({
     ...adminRoutes,
     ...userRoutes,
       //   {
-      //     path: 'setup/:clientId/:token',
-      //     name: 'setup',
-      //     component: SetupView
-      //   },
-      //   {
       //     path: 'dashboard',
       //     name: 'dashboard',
       //     component: DashboardView
@@ -44,6 +39,9 @@ const router = createRouter({
     {
       path: '/offer',
       name: 'offer',
+      beforeEnter() {
+        document.title='RSVP'
+      },
       component: () => import('@/views/offer/OfferView.vue'),
     }
   ]

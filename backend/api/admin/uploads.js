@@ -1,5 +1,7 @@
 import fs from 'fs'
 import csv from 'csv-parser'
+import { stringify } from 'csv-stringify'
+import FIFOCache from './fifoCache.js';
 import { Readable } from 'stream'
 // import db from '../../../db/index.js'
 import db from '../../db/index.js'
@@ -12,6 +14,9 @@ import {
   // paginateListObjectsV2,
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
+import models from '../../db/models.js'
+
+const offerCache = new FIFOCache(50000)
 
 const S3ACCESSKEYID = process.env.S3ACCESSKEYID
 const S3SECRETACCESSKEY = process.env.S3SECRETACCESSKEY
@@ -315,9 +320,111 @@ const csvUpload = async (req, res) => {
   }
 }
 
+function createCSVStream(data) {
+  // Create a writable stream to capture the CSV string
+  const csvStringifierStream = stringify({ 
+    header: true,
+    // formatters: {
+    //   number: (value) => "'" + value, // Prepend an apostrophe to numeric fields
+    // },
+  });
+  const csvData = [];
+
+  // Listen for 'readable' event to capture CSV string
+  csvStringifierStream.on('readable', () => {
+    let chunk;
+    while ((chunk = csvStringifierStream.read()) !== null) {
+      csvData.push(chunk);
+    }
+  });
+
+  // Push each row of data into the stringifier stream
+  data.forEach(row => csvStringifierStream.write(row));
+
+  // End the stringifier stream to trigger the 'end' event
+  csvStringifierStream.end();
+
+  // Create a readable stream from the captured CSV string
+  const readable = new Readable();
+  readable._read = () => {}; // Implement _read method for the Readable stream
+
+  // Push the CSV string into the readable stream
+  csvStringifierStream.on('end', () => {
+    csvData.forEach(chunk => readable.push(chunk));
+    readable.push(null); // Signal the end of the stream
+  });
+
+  return readable;
+}
+
+function generateRandomHex(length) {
+  const characters = '0123456789ABCDEF';
+  let hex = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    hex += characters.charAt(randomIndex);
+  }
+
+  return hex;
+}
+
+const generateUniqueOfferCode = async () => {
+  let code = null
+  let i = 0;
+  while (i < 100) {
+    code = generateRandomHex(6)
+    const record = await models.Record.findOne({ offerCode: code })
+    console.log(record)
+    if (!record && !offerCache.get(code)) {
+      offerCache.set(code, true)
+      return code
+    }
+    i++
+  }
+  return null
+}
+
+const csvCode = async (req, res) => {
+  const stream = fs.createReadStream(req.file.path)
+  const processedData = []
+  let recordCount = 0
+  stream
+  .pipe(csv())
+  .on('data', async (data) => {
+    recordCount++
+    const code = await generateUniqueOfferCode()
+    // prepend ` so the field is read as text
+    data.offerCode = "'" + code
+    // console.log(data)
+    processedData.push(data)
+
+    if (processedData.length === recordCount) {
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=processed_data.csv');
+    
+      const csvStream = createCSVStream(processedData)
+      csvStream.pipe(res)
+    }
+  })
+  .on('end', async () => {
+    try {
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err);
+        }
+      });
+    } catch (err) {
+      console.log(err.message)
+      res.status(400).send({ message: err.message })
+    }
+  })
+}
+
 export default {
   csvUpload,
   csvDelete,
+  csvCode,
   imageUpload,
   imageDelete,
   getImageList

@@ -93,6 +93,11 @@ export const adminRoutes = [
           }
         ]
       },
+      {
+        path: 'code',
+        name: 'admin-code',
+        component: () => import('@/views/admin/FileCodeView.vue')
+      }
     ]
   },
 ]

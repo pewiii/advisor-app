@@ -17,6 +17,9 @@
         <RouterLink :to="{ name: 'admin-users' }" class="nav-btn">
           <a href="#" >Users</a>
         </RouterLink>
+        <RouterLink :to="{ name: 'admin-code' }" class="nav-btn">
+          <a href="#" >File Coder</a>
+        </RouterLink>
       </nav>
       <div class="flex gap-4">
         <SearchInput />
