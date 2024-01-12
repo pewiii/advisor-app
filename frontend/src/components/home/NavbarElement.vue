@@ -14,21 +14,21 @@
 		<!-- Toggler end -->
 
 		<!-- Menu content start -->
-		<div ref="menu" class="absolute left-0 right-0 translate-y-16 bg-opacity-90 bg-primary md:bg-none md:bg-opacity-0 shadow hidden md:flex flex-col gap-4 items-center p-4 md:flex-row md:static md:shadow-none md:translate-y-0 text-white" role="menu" aria-expanded="false">
+		<div ref="menu" class="absolute left-0 top-0 right-0 translate-y-16 bg-opacity-90 bg-primary md:bg-none md:bg-opacity-0 shadow hidden md:flex flex-col gap-4 items-center p-4 md:flex-row md:static md:shadow-none md:translate-y-0 text-white" role="menu" aria-expanded="false">
 			<!-- Links start -->
-			<a href="#" class="menuitem">
+			<a href="#" class="menuitem" @click="showNav && navToggle()">
 				<p class="mx-4">Home</p>
 			</a>
 
-			<a href="#about-section" class="menuitem">
+			<a href="#about-section" class="menuitem" @click="showNav && navToggle()">
 				<p class="mx-4">About</p>
 			</a>
 
-			<a href="#services-section" class="menuitem">
+			<a href="#services-section" class="menuitem" @click="showNav && navToggle()">
 				<p class="mx-4">Explore</p>
 			</a>
 
-			<a href="#contact-section">
+			<a href="#contact-section" @click="showNav && navToggle()">
 				<button class="btn">
 					Contact us
 				</button>
@@ -53,12 +53,15 @@ import { ref } from 'vue';
 
 const menu = ref(null as any)
 
+const showNav = ref(false)
+
 const navToggle = () => {
 	if (menu.value) {
 		let isExpanded = menu.value.getAttribute('aria-expanded');
 		menu.value.setAttribute('aria-expanded', !isExpanded);
 		menu.value.classList.toggle('hidden');
 		menu.value.classList.toggle('flex');
+		showNav.value = true
 	}
 }
 </script>
