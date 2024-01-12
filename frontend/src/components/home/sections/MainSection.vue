@@ -34,7 +34,7 @@
 
 		<!-- Photographer image start -->
 		<!-- <div class="absolute bottom-0 right-0 overflow-hidden h-2/5 sm:h-1/2 md:h-3/5 lg:h-4/6 -z-50"> -->
-			<div class="absolute top-0 left-0 -z-50 w-screen">
+			<div class="absolute right-0 top-0 -z-50 w-screen">
     		<img :src="image" alt="img" class="min-w-full min-h-screen object-cover">
 			</div>
 
