@@ -23,7 +23,7 @@
       <!-- "More" link end -->
 
       <!-- Circle start -->
-      <div class="bg-slate-200 h-44 w-44 md:h-52 md:w-52 rounded-full absolute top-0 -left-20 mt-16 "></div>
+      <div class="bg-slate-200 h-44 w-44 md:h-52 md:w-52 rounded-full absolute top-0 -left-20 mt-16 -z-20"></div>
       <!-- Circle end -->
   </section>
   <!-- About section end -->
