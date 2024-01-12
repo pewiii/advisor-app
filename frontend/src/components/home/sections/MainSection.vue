@@ -1,13 +1,14 @@
 <template>
     <!-- Main section start -->
-	<section class="lg:h-screen px-12 lg:px-32 py-32" :class="showArrow ? 'section' : ''">
+	<section class="lg:h-screen px-12 lg:px-72 py-32" :class="showArrow ? 'section' : ''">
 		<div class="w-full md:w-1/2 h-full flex flex-col md:justify-center">
 			<!-- Main text start -->
-			<div class="bg-slate-900 p-6 bg-opacity-90 rounded-lg hover:bg-opacity-100 transition	ease-in-out">
+			<!-- <div class="bg-slate-900 p-6 bg-opacity-90 rounded-lg hover:bg-opacity-100 transition	ease-in-out"> -->
+			<div class="">
 				<h1 class="uppercase text-2xl lg:text-5xl xl:text-7xl mb-4 font-semibold text-primary">
 					Empowering Your Events
 				</h1>
-				<p class="capitalize w-full text-stone-300 text-lg">
+				<p class="capitalize w-full text-stone-700 text-lg">
 					Pack Them In specializes in curating vibrant and responsive audiences for your events. 
 					With our expert team and innovative strategies, we ensure a packed house, 
 					providing advisors and organizers with the ideal platform to connect, 
@@ -16,7 +17,7 @@
 				<!-- Main text end -->
 	
 				<!-- Social links start -->
-				<div class="flex mt-4 gap-8 text-stone-300">
+				<div class="flex mt-4 gap-8 text-stone-700">
 					<a href="#">
 						<i class="pi pi-instagram socialIcon" style="font-size: 2rem"></i>
 					</a>
@@ -53,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import image from '@/assets/AIimage2.jpg'
+import image from '@/assets/herobg.webp'
 import { onMounted, ref } from 'vue';
 
 const showArrow = ref(false)
@@ -90,7 +91,7 @@ onMounted(() => {
 .section::before {
   animation: bounce 1s ease infinite;
   bottom: 2rem;
-  color: #fff;
+  /* color: #fff; */
   content: '╲╱';
   font-size: 2rem;
   height: 4rem;
@@ -102,6 +103,7 @@ onMounted(() => {
   position: absolute;
   text-align: center;
   width: 6rem;
+	@apply text-primary
 }
 
 @keyframes bounce {

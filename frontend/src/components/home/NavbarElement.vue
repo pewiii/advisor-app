@@ -1,9 +1,9 @@
 <template>
     <!-- Navbar start -->
-    <nav class="w-screen fixed bg-primary bg-opacity-80 p-4 lg:px-20 flex justify-between z-50">
+    <nav class="w-screen fixed bg-primary p-4 lg:px-20 flex justify-around z-50 transition ease-in-out duration-500" :class="showNavBg ? 'bg-opacity-80' : 'bg-opacity-0'">
 		<!-- Logo start -->
 		<div class="overflow-hidden flex flex-col justify-center">
-			<p class="tracking-widest font-extrabold text-3xl text-white">PACK<span class="text-cyan-400">THEM</span>IN</p>
+			<p class="tracking-widest font-extrabold text-3xl" :class="showNavBg ? 'text-white' : 'text-primary'">PACK<span class="text-cyan-400">THEM</span>IN</p>
 		</div>
 		<!-- Logo end -->
 
@@ -14,7 +14,7 @@
 		<!-- Toggler end -->
 
 		<!-- Menu content start -->
-		<div ref="menu" class="absolute left-0 top-0 right-0 translate-y-16 bg-opacity-90 bg-primary md:bg-none md:bg-opacity-0 shadow hidden md:flex flex-col gap-4 items-center p-4 md:flex-row md:static md:shadow-none md:translate-y-0 text-white" role="menu" aria-expanded="false">
+		<div ref="menu" class="absolute left-0 top-0 right-0 translate-y-16 bg-opacity-90 bg-primary md:bg-none md:bg-opacity-0 shadow hidden md:flex flex-col gap-4 items-center p-4 md:flex-row md:static md:shadow-none md:translate-y-0" :class="showNavBg ? 'text-white' : 'text-primary'" role="menu" aria-expanded="false">
 			<!-- Links start -->
 			<a href="#" class="menuitem" @click="showNav && navToggle()">
 				<p class="mx-4">Home</p>
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 // import { useRouter } from 'vue-router';
 // import image from '@/assets/4.png'
 
@@ -54,6 +54,7 @@ import { ref } from 'vue';
 const menu = ref(null as any)
 
 const showNav = ref(false)
+const showNavBg = ref(false)
 
 const navToggle = () => {
 	if (menu.value) {
@@ -64,7 +65,26 @@ const navToggle = () => {
 		showNav.value = true
 	}
 }
+
+function isWindowScrolledToTop() {
+    return window.scrollY === 0;
+}
+
+onMounted(() => {
+	window.addEventListener('scroll', function() {
+    if (isWindowScrolledToTop()) {
+        // Window is scrolled to the top
+        console.log('Window is scrolled to the top!');
+				showNavBg.value = false
+    } else {
+        // Window is not scrolled to the top
+        console.log('Window is not scrolled to the top.');
+				showNavBg.value = true
+    }
+});
+})
 </script>
+
 
 <style scoped>
 
