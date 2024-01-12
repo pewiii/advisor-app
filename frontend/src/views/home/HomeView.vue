@@ -1,22 +1,32 @@
 <template>
-  <HomeNav />
-  <!-- <NavBar /> -->
-  <div class="image-parent overflow-hidden relative min-w-screen min-h-screen">
-    <img :src="image" class="w-full h-full object-cover bottom-0 left-0 absolute" />
-  </div>
-  <!-- <RouterView /> -->
+
+	<NavBarElement />
+
+	<MainSection />
+
+	<AboutSection />
+
+	<ServiceSection />
+
+	<PortfolioSection />
+
+	<ContactSection />
+
+  <FooterElement />
+
 </template>
 
 <script lang="ts" setup>
-// import NavBar from '@/components/common/NavBar.vue'
-import HomeNav from '@/components/home/HomeNav.vue'
-import image from '@/assets/AIimage2.jpg'
+import MainSection from '@/components/home/sections/MainSection.vue';
+import AboutSection from '@/components/home/sections/AboutSection.vue';
+import ServiceSection from '@/components/home/sections/ServiceSection.vue';
+import PortfolioSection from '@/components/home/sections/PortfolioSection.vue';
+import ContactSection from '@/components/home/sections/ContactSection.vue';
+import FooterElement from '@/components/home/FooterElement.vue'
+import NavBarElement from '@/components/home/NavbarElement.vue'
 </script>
 
 <style scoped>
-  .image-parent {
-    height: 70vh;
 
-  }
 
 </style>
