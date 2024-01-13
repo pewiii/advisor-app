@@ -7,7 +7,7 @@
       <p class="tracking-widest font-extrabold text-5xl text-primary">800<span class="text-cyan-400">RSVP</span></p>
     </div>
     <div class="lg:h-screen px-12 lg:flex lg:justify-center py-64">
-      <div class="w-full md:w-1/2 h-full flex flex-col md:justify-center lg:ml-64">
+      <div class="w-full md:w-1/2 h-full flex flex-col md:justify-center lg:ml-64 lg:-mt-24">
       <!-- Main text start -->
       <!-- <div class="bg-slate-900 p-6 bg-opacity-90 rounded-lg hover:bg-opacity-100 transition	ease-in-out"> -->
       <div class="">
