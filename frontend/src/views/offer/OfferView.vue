@@ -14,7 +14,7 @@
         <h1 class="uppercase text-2xl lg:text-5xl xl:text-7xl mb-4 font-semibold text-primary">
           Welcome to 800RSVP
         </h1>
-        <p class="capitalize w-full text-stone-700 text-lg">
+        <p class="capitalize w-full text-stone-700 lg:text-2xl">
           Please enter your offer code below to confirm your registration
         </p>
         <!-- Main text end -->
