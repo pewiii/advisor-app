@@ -1,6 +1,6 @@
 <template>
   <!-- About section start -->
-  <section id="about-section" class="px-12 lg:px-32 py-52 relative transition ease-in-out duration-300 border-b-2 border-t-2 border-slate-300 hover:bg-slate-100 hover:bg-opacity-60">
+  <section id="about-section" class="px-12 lg:px-32 py-52 relative transition ease-in-out duration-300">
   <!-- Main text start -->
 	<h1 class="uppercase text-5xl mb-4 font-semibold text-primary">
       ABOUT US
