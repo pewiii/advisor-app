@@ -114,7 +114,8 @@ const recordSchema = new mongoose.Schema({
   offerCode: {
     type: String,
     index: true,
-    unique: true
+    unique: true,
+    required: true
   },
   campaign: {
     type: mongoose.Schema.Types.ObjectId,
@@ -137,6 +138,18 @@ const recordSchema = new mongoose.Schema({
 
 recordSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
 
+const usedOfferCodeSchema = new mongoose.Schema({
+  offerCode: {
+    type: String,
+    required: true
+  },
+  expirationDate: {
+    type: Date,
+    required: true
+  }
+})
+
+usedOfferCodeSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
 
 const respondentSchema = new mongoose.Schema({
   firstName: {
@@ -252,8 +265,13 @@ const campaignSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  fileName: String,
-  fileRecords: Number,
+  // fileName: String,
+  // fileRecords: Number,
+  file: {
+    name: String,
+    recordCount: Number,
+    expirationDate: Date
+  },
   events: [eventSchema]
 }, { timestamps: true })
 
@@ -292,6 +310,7 @@ const Respondent = mongoose.model('Respondent', respondentSchema)
 const Template = mongoose.model('Template', templateSchema)
 const Campaign = mongoose.model('Campaign', campaignSchema)
 const Image = mongoose.model('Image', imageSchema)
+const UsedOfferCode = mongoose.model('UsedOfferCode', usedOfferCodeSchema)
 
 export default {
   User,
@@ -301,4 +320,5 @@ export default {
   Template,
   Campaign,
   Image,
+  UsedOfferCode
 }

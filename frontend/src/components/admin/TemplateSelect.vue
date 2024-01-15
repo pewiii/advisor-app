@@ -1,7 +1,7 @@
 <template>
   <Modal header="Templates" size="">
     <template #trigger="{open}">
-      <pvButton v-ripple class="p-ripple" @click="open" raised :label="selectedTemplate ? 'Change' : 'Choose'" icon="pi pi-file" iconPos="right" outlined size="small" text/>
+      <pvButton v-ripple class="p-ripple" @click="open" raised :label="selectedTemplate._id ? 'Change' : 'Choose'" icon="pi pi-file" iconPos="right" outlined size="small" text/>
     </template>
     <template #content>
       <div class="h-full flex flex-col">

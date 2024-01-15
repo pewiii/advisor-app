@@ -148,11 +148,14 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const { userId } = req.params
+    if (userId === req.user.userId) {
+      throw({message: 'cannot delete user you logged in as'})
+    }
     await models.User.findByIdAndDelete(userId)
     res.sendStatus(204)
   } catch(err) {
     console.log(err)
-    res.sendStatus(500)
+    res.status(500).send({ message: err.message })
   }
 }
 

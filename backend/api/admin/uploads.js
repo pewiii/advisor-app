@@ -1,10 +1,8 @@
 import fs from 'fs'
 import csv from 'csv-parser'
 import { stringify } from 'csv-stringify'
-import FIFOCache from './fifoCache.js';
 import { Readable } from 'stream'
-// import db from '../../../db/index.js'
-import db from '../../db/index.js'
+import moment from 'moment-timezone'
 import {
   S3Client,
   PutObjectCommand,
@@ -15,8 +13,6 @@ import {
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import models from '../../db/models.js'
-
-const offerCache = new FIFOCache(50000)
 
 const S3ACCESSKEYID = process.env.S3ACCESSKEYID
 const S3SECRETACCESSKEY = process.env.S3SECRETACCESSKEY
@@ -101,7 +97,8 @@ const imageUpload = async (req, res) => {
 
     const result = await s3Client.send(putCommand);
 
-    const image = await db.images.createImage({ url: `https://${S3BUCKET}.s3.amazonaws.com/${key}`, key })
+    // const image = await db.images.createImage({ url: `https://${S3BUCKET}.s3.amazonaws.com/${key}`, key })
+    const image = await models.Image.create({ url: `https://${S3BUCKET}.s3.amazonaws.com/${key}`, key })
 
     // console.log(result)
     res.send(image)
@@ -115,7 +112,8 @@ const imageUpload = async (req, res) => {
 
 const getImageList = async (req, res) => {
   try {
-    const images = await db.images.getList()
+    // const images = await db.images.getList()
+    const images = await models.Image.find()
     res.send(images)
   } catch (err) {
     res.status(500).send({ message: 'Server error' })
@@ -128,7 +126,8 @@ const imageDelete = async (req, res) => {
     const image = req.body
 
     // console.log(image)
-    await db.images.deleteImage(image._id)
+    // await db.images.deleteImage(image._id)
+    await models.Image.findByIdAndDelete(image._id)
 
     const deleteCommand = new DeleteObjectCommand({
       Bucket: S3BUCKET,
@@ -152,11 +151,9 @@ const imageDelete = async (req, res) => {
 
 const csvDelete = async (req, res) => {
   try {
-    const { campaign } = req.body
-
-    await db.records.deleteMany(campaign)
-    const resultCampaign = await db.campaigns.update(campaign, { fileName: null })
-    console.log(resultCampaign)
+    const { campaignId } = req.params
+    await models.Record.deleteMany({ campaign: campaignId })
+    const resultCampaign = await models.Campaign.findByIdAndUpdate(campaignId, { file: null })
     res.status(201).send(resultCampaign)
 
   } catch (err) {
@@ -166,20 +163,21 @@ const csvDelete = async (req, res) => {
 }
 
 
-
 const csvUpload = async (req, res) => {
   try {
     const campaign = req.body.campaign
-    // const { buffer } = req.file
-
-    // if (!buffer || !campaign) {
-    //   return res.status(400).send({ message: 'Missing file data or campaign'})
-    // }
-
-
+    const months = parseInt(req.body.months)
+    
+    const currentDate = moment().utc()
+    //test
+    // const futureDate = currentDate.add(1, 'minutes')
+    const futureDate = currentDate.add(months, 'months')
+    const expirationDate = futureDate.toDate()
 
     const records = []
     let headerSkipped = false
+
+    let savedRecords = null
 
     // const stream = Readable.from(buffer.toString())
     const stream = fs.createReadStream(req.file.path)
@@ -192,12 +190,16 @@ const csvUpload = async (req, res) => {
       }
       const keys = Object.keys(data)
       const record = {
-        campaign
+        campaign,
+        expirationDate
       }
 
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]
-        const lowKey = key.toLowerCase()
+        let lowKey = key.toLowerCase()
+        if (lowKey === 'offer code') {
+          lowKey = 'offercode'
+        }
         const item = data[key] === 'N/A' ? null : data[key]
 
         switch (lowKey) {
@@ -249,8 +251,8 @@ const csvUpload = async (req, res) => {
           case 'wealth rating':
             record.wealthRating = item
             break
-          case 'offer code':
-            record.offerCode = item
+          case 'offercode':
+            record.offerCode = item.replace("'", '')
             break
         }
 
@@ -300,19 +302,28 @@ const csvUpload = async (req, res) => {
         processRecord(data)
       })
       .on('end', async () => {
+
+
         try {
-          await db.records.createMany(records)
-          const resultCampaign = await db.campaigns.update(campaign, { fileName: req.file.originalname, fileRecords: records.length })
-          res.status(201).send(resultCampaign)
-          fs.unlink(req.file.path, (err) => {
-            if (err) {
-              console.error('Error deleting file:', err);
-            }
-          });
+          savedRecords = await models.Record.insertMany(records)
+          const resultCampaign = await models.Campaign.findByIdAndUpdate(campaign, { file: { name: req.file.originalname, recordCount: records.length, expirationDate } })
+          res.status(201).send(resultCampaign.file)
         } catch (err) {
+          try {
+            await models.Record.deleteMany(savedRecords)
+          } catch(err) {
+            console.log(err)
+          }
+
           console.log(err.message)
           res.status(400).send({ message: err.message })
         }
+
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+          }
+        });
       })
   } catch (err) {
     console.log(err.message)
@@ -369,55 +380,97 @@ function generateRandomHex(length) {
   return hex;
 }
 
-const generateUniqueOfferCode = async () => {
-  let code = null
-  let i = 0;
-  while (i < 100) {
-    code = generateRandomHex(6)
-    const record = await models.Record.findOne({ offerCode: code })
-    console.log(record)
-    if (!record && !offerCache.get(code)) {
-      offerCache.set(code, true)
-      return code
-    }
-    i++
-  }
-  return null
-}
+
+// const generateUniqueOfferCode = async () => {
+//   let code = null
+//   let i = 0;
+//   while (i < 100) {
+//     code = generateRandomHex(6)
+//     if (!codeCache[code]) {
+//       const record = await models.Record.findOne({ offerCode: code })
+//       if (!record) {
+//         const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode: code })
+//         if (!usedOfferCode) {
+//           codeCache[code] = true
+//           return code
+//         }
+//       }
+
+//     }
+//     i++
+//   }
+//   return null
+// }
 
 const csvCode = async (req, res) => {
   const stream = fs.createReadStream(req.file.path)
-  const processedData = []
-  let recordCount = 0
+  const records = []
   stream
   .pipe(csv())
-  .on('data', async (data) => {
-    recordCount++
-    const code = await generateUniqueOfferCode()
-    // prepend ` so the field is read as text
-    data.offerCode = "'" + code
-    // console.log(data)
-    processedData.push(data)
-
-    if (processedData.length === recordCount) {
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename=processed_data.csv');
-    
-      const csvStream = createCSVStream(processedData)
-      csvStream.pipe(res)
-    }
-  })
+  .on('data', (data) => records.push(data))
   .on('end', async () => {
-    try {
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.error('Error deleting file:', err);
+    
+    const codeCache = {}
+    let uniqueCodeError = false
+
+    const processedRecords = await Promise.all(records.map(async (record) => {
+      let offerCode = null
+      let i = 0
+      // 100 tries to find unique code
+      while(i < 100) {
+        offerCode = generateRandomHex(6)
+        const existingRecord = await models.Record.findOne({ offerCode })
+        if (!existingRecord) {
+          const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode })
+          if (!usedOfferCode) {
+            if (!codeCache[offerCode]) {
+              codeCache[offerCode] = true
+              record.offerCode = "'" + offerCode
+              return record
+            }
+          }
         }
-      });
-    } catch (err) {
-      console.log(err.message)
-      res.status(400).send({ message: err.message })
+        i++
+      }
+      uniqueCodeError = true
+    }))
+
+    if (!uniqueCodeError && processedRecords.length === records.length) {
+      try {
+        const now = moment().utc()
+        const futureDate = now.add(1, 'month')
+        const expirationDate = futureDate.toDate()
+        const usedCodes = Object.keys(codeCache).map(code => {
+          return {
+            offerCode: code,
+            expirationDate
+          }
+        })
+        await models.UsedOfferCode.insertMany(usedCodes)
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=processed_data.csv');
+        const csvStream = createCSVStream(processedRecords)
+        csvStream.pipe(res)
+      } catch(err) {
+        console.log(err)
+        res.status(500).send({ message: 'server error' })
+      }
+    } else {
+      if (uniqueCodeError) {
+        console.log('unique code error')
+        res.status(500).send({ message: 'out of unique codes' })
+      } else {
+        console.log('file read error')
+        res.status(500).send({ message: 'file read error' })
+      }
     }
+
+    fs.unlink(req.file.path, (err) => {
+      if (err) {
+        console.error('Error deleting file:', err)
+      }
+    })
   })
 }
 

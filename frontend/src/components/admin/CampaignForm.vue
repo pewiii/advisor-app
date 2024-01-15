@@ -35,60 +35,93 @@
       </div> -->
     </div>
 
-    <div class="mt-8">
+    <div class="mt-4 border-t-2 pt-4">
       <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
         <div class="text-lg">
           Client
         </div>
         <div class="material-icons md-30">person</div>
       </div>
-      <div class="mt-4 flex gap-4 pl-4">
+      <div class="mt-4 flex gap-4 pl-4 text-gray-600 truncate font-semibold text-lg">
         {{ clientDisplay }}
       </div>
     </div>
 
 
-    <div class="mt-8">
-      <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
-        <div class="text-lg">
-          Template
+    <div class="mt-4 border-t-2 py-4">
+      <div class="flex items-center font-semibold text-primary justify-between">
+        <div class="flex gap-2">
+          <div class="text-lg">
+            Template
+          </div>
+          <div class="material-icons md-30">web</div>
         </div>
-        <div class="material-icons md-30">web</div>
+        <div>
+          <TemplateSelect v-model="campaign.template" />
+        </div>
       </div>
-      <div class="mt-4 flex gap-4 pl-4">
+      <div class="flex gap-4 pl-4 text-gray-600 truncate font-semibold text-lg">
         {{ templateDisplay }}
-        <TemplateSelect v-model="campaign.template" />
       </div>
     </div>
 
-    <div class="mt-8" v-if="campaign._id">
-      <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
+    <div class="border-t-2 py-4">
+      <!-- <div class="flex items-center font-semibold gap-2 text-primary">
         <div class="text-lg">
           Mailing List
         </div>
         <div class="material-icons md-30">email</div>
-      </div>
-      <div class="mt-4 flex gap-4 pl-4">
-        <div v-if="!campaign.fileName">
-          <label></label>
+      </div> -->
+      <!-- <div>
+        <label></label>
           <input id="choose_file" ref="fileUpload" @change="handleFileChange" type="file" accept=".csv" hidden>
           <pvButton v-ripple class="p-ripple" @click="chooseFiles()" raised :disabled="campaign.fileName" label="Choose File" icon="pi pi-file" iconPos="right" outlined size="small" text/>
-        </div>
-        <div
-        v-else
-        class="text-gray-600 truncate font-semibold text-lg flex gap-4"
-        >
+      </div> -->
+      <!-- <div v-if="!campaign._id" class="mt-4 flex gap-4 pl-4">
+        Save the campaign to add a mailing list
+      </div> -->
+      <div class="flex items-center font-semibold text-primary justify-between">
         <div>
-          {{ campaign.fileName }}
+          <div class="flex gap-2">
+            <div class="text-lg">
+              Mailing List
+            </div>
+            <div class="material-icons md-30">email</div>
+          </div>
         </div>
-        <div class="cursor-pointer material-icons hover:text-red-600" @click="removeFile">
-          delete
-        </div>
+        <div>
+          <!-- <pvButton v-ripple class="p-ripple" raised @click="addEvent" size="small" icon="pi pi-plus" iconPos="right" label="Add Event" outlined /> -->
+          <!-- <div v-if="fileLoading" class="h-16">
+          </div> -->
+          <div v-if="campaign._id">
+            <div v-if="campaign.file && !fileLoading" class="flex gap-4">
+              <div v-if="fileExpired" class="text-red-600">
+                Expired
+              </div>
+              <div>
+                {{ campaign.file.name }}
+              </div>
+              <div class="text-secondary">
+                {{ campaign.file.recordCount }} Records
+              </div>
+              <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete File'" @click="removeFile"></pvButton>
+            </div>
+            <div v-if="!campaign.file && !fileLoading">
+              <MailingListSelect v-model="campaign.file" :campaign="campaign"/>
+            </div>
+            <div v-if="fileLoading">
+              <VueLoader />
+            </div>
+          </div>
+          <div v-else>
+            <div>Save the campaign to add a mailing list</div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="mt-8">
-      <div class="flex items-center mb-2 font-semibold text-primary justify-between">
+
+    <div class="border-t-2 py-4">
+      <div class="flex items-center font-semibold text-primary justify-between">
         <div class="flex gap-2">
           <div class="text-lg">
             Events
@@ -101,12 +134,12 @@
       </div>
       <div>
         <div v-for="(event, idx) in campaign.events" class=" mt-4" :key="`campaign-event-${idx}`">
-          <div class="text-slate-600 flex justify-between mt-4 bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50" @click="expandEvent(event)">
+          <div class="text-slate-600 flex justify-between mt-4 bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50">
             <div class="flex gap-2">
               <div class="font-semibold">
                 Event {{ idx + 1 }}
               </div>
-              <div v-if="campaign.events.length" class="flex cursor-pointer font-bold text-primary">
+              <div v-if="campaign.events.length" class="flex cursor-pointer font-bold text-primary" @click="expandEvent(event)">
                 <div v-if="expandedEvents.includes(event)" class="flex">
                   <div class="flex items-center justify-center">Collapse</div>
                   <span class="material-icons">expand_less</span>
@@ -117,7 +150,12 @@
                 </div>
               </div>
             </div>
-            <div class="material-icons hover:text-red-600 cursor-pointer" @click="removeEvent(event)">delete</div>
+            <div class="flex gap-2">
+              <!-- <div class="material-icons hover:text-red-600 cursor-pointer" @click="cloneEvent(event)" title="Clone">content_copy</div> -->
+              <pvButton v-ripple class="p-ripple h-7" icon="pi pi-copy" v-tooltip.top="'Clone Event'" @click="cloneEvent(event)"></pvButton>
+              <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete Event'" @click="removeEvent(event)"></pvButton>
+              <!-- <div class="material-icons hover:text-red-600 cursor-pointer" @click="removeEvent(event)" title="Delete">delete</div> -->
+            </div>
           </div>
           <div v-if="expandedEvents.includes(event)" class="bg-gray-100 pr-4 pb-2">
             <div class="md:pl-4">
@@ -209,97 +247,105 @@
       </div>
     </div>
 
-    <div class="flex items-center mb-2 justify-between mt-8 text-primary font-semibold">
-      <div class="flex gap-2">
-          <div class="text-lg">
-            Questions
+    <div class="border-t-2 pt-4 border-b-2 pb-4">
+      <div class="flex items-center justify-between text-primary font-semibold">
+        <div class="flex gap-2">
+            <div class="text-lg">
+              Questions
+            </div>
+            <div class="material-icons md-30">question_mark</div>
           </div>
-          <div class="material-icons md-30">question_mark</div>
-        </div>
+        <div>
+            <pvButton v-ripple class="p-ripple" raised @click="addQuestion" size="small" icon="pi pi-plus" iconPos="right" label="Add Question" outlined />
+          </div>
+      </div>
       <div>
-          <pvButton v-ripple class="p-ripple" raised @click="addQuestion" size="small" icon="pi pi-plus" iconPos="right" label="Add Question" outlined />
-        </div>
-    </div>
-    <div>
-      <div v-for="(question, idx) in campaign.questions" class="mt-4 bg-gray-100" :key="`campaign-question-${idx}`">
-        <div class="text-slate-600 flex justify-between bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50" @click="expandQuestion(question)">
-            <div class="flex gap-2">
-              <div class="font-semibold">
-                Question {{ idx + 1 }}
-              </div>
-              <div v-if="campaign.questions.length" class="flex cursor-pointer font-bold text-primary">
-                <div v-if="expandedQuestions.includes(question)" class="flex">
-                  <div class="flex items-center justify-center">Collapse</div>
-                  <span class="material-icons">expand_less</span>
+        <div v-for="(question, idx) in campaign.questions" class="mt-4 bg-gray-100" :key="`campaign-question-${idx}`">
+          <div class="text-slate-600 flex justify-between bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50" @click="expandQuestion(question)">
+              <div class="flex gap-2">
+                <div class="font-semibold">
+                  Question {{ idx + 1 }}
                 </div>
-                <div v-else class="flex">
-                  <div class="flex items-center justify-center">Expand</div>
-                  <span class="material-icons">expand_more</span>
+                <div v-if="campaign.questions.length" class="flex cursor-pointer font-bold text-primary">
+                  <div v-if="expandedQuestions.includes(question)" class="flex">
+                    <div class="flex items-center justify-center">Collapse</div>
+                    <span class="material-icons">expand_less</span>
+                  </div>
+                  <div v-else class="flex">
+                    <div class="flex items-center justify-center">Expand</div>
+                    <span class="material-icons">expand_more</span>
+                  </div>
                 </div>
               </div>
+              <div class="flex gap-2">
+                <pvButton v-ripple class="p-ripple h-7" icon="pi pi-copy" v-tooltip.top="'Clone Question'" @click="cloneQuestion(question)"></pvButton>
+                <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete Question'" @click="removeQuestion(question)"></pvButton>
+              </div>
             </div>
-            <div class="material-icons hover:text-red-600 cursor-pointer" @click="removeQuestion(question)">delete</div>
-          </div>
-        <div v-if="expandedQuestions.includes(question)" class="bg-gray-100 pr-4 pb-2">
-          <div class="md:pl-4">
-            <label :for="`question-${idx}-text`" class="">
-              Question
-              <FieldError :error="formErrors.questions[idx].text" />
-            </label>
-            <div class="pl-2">
-              <pvInputText :id="`question-${idx}-text`" v-model="campaign.questions[idx].text" placeholder="Question Text" size="small" class="w-full h-9"/>
-            </div>
-          </div>
-          <div class="flex flex-col md:flex-row">
-            <div class="md:pl-4 flex-1">
-              <label :for="`question-${idx}-answertype`" class="">
-                Answer Type
-                <FieldError :error="formErrors.questions[idx].answerType" />
+          <div v-if="expandedQuestions.includes(question)" class="bg-gray-100 pr-4 pb-2">
+            <div class="md:pl-4">
+              <label :for="`question-${idx}-text`" class="">
+                Question
+                <FieldError :error="formErrors.questions[idx].text" />
               </label>
               <div class="pl-2">
-                <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="objects.questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
+                <pvInputText :id="`question-${idx}-text`" v-model="campaign.questions[idx].text" placeholder="Question Text" size="small" class="w-full h-9"/>
               </div>
             </div>
-            <div class="md:pl-4 flex-1">
-              <label :for="`question-${idx}-placeholder`" class="">
-                Label
-                <FieldError :error="formErrors.questions[idx].label" />
-              </label>
-              <div class="pl-2">
-                <pvInputText :id="`question-${idx}-label`" v-model="campaign.questions[idx].label" placeholder="Label" size="small" class="w-full h-9"/>
-              </div>
-            </div>
-            <div class="md:pl-4 flex-1" v-if="question.answerType !== 'select' && question.answerType !== 'checkbox'">
-              <label :for="`question-${idx}-placeholder`" class="">
-                Placeholder Text
-              </label>
-              <div class="pl-2">
-                <pvInputText :id="`question-${idx}-placeholder`" v-model="campaign.questions[idx].placeholder" placeholder="Placeholder" size="small" class="w-full h-9"/>
-              </div>
-            </div>
-          </div>
-          <div v-if="question.answerType === 'select'" class="w-full md:pl-8">
-            <div class="flex">
-              <label class="label mt-2 mr-2">Options:</label>
-              <div class="">
-                <pvButton v-ripple @click="question.options.push('')" size="small" icon="pi pi-plus" iconPos="right" rounded class="p-ripple !h-7 !w-7 mt-1" />
-              </div>
-            </div>
-            <div class="md:pl-4 w-full" v-for="(option, opIdx) in question.options" :key="`campaign-queston-${idx}-option-${opIdx}`">
-              <div class="flex justify-between">
-                <label :for="`question-${idx}-option-${opIdx}`" class="">
-                  Option {{ opIdx + 1 }}
+            <div class="flex flex-col md:flex-row">
+              <div class="md:pl-4 flex-1">
+                <label :for="`question-${idx}-answertype`" class="">
+                  Answer Type
+                  <FieldError :error="formErrors.questions[idx].answerType" />
                 </label>
-                <div class="material-icons text-slate-600 hover:text-red-600 cursor-pointer" @click="removeOption(question.options, idx)">delete</div>
+                <div class="pl-2">
+                  <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="objects.questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
+                </div>
               </div>
-              <div class="pl-2 md:flex w-full">
-                <pvInputText :id="`event-${idx}-address1`" v-model="campaign.questions[idx].options[opIdx]" placeholder="Dropdown Option" class="w-full h-9"/>
+              <div class="md:pl-4 flex-1">
+                <label :for="`question-${idx}-placeholder`" class="">
+                  Label
+                  <FieldError :error="formErrors.questions[idx].label" />
+                </label>
+                <div class="pl-2">
+                  <pvInputText :id="`question-${idx}-label`" v-model="campaign.questions[idx].label" placeholder="Label" size="small" class="w-full h-9"/>
+                </div>
+              </div>
+              <div class="md:pl-4 flex-1" v-if="question.answerType !== 'select' && question.answerType !== 'checkbox'">
+                <label :for="`question-${idx}-placeholder`" class="">
+                  Placeholder Text
+                </label>
+                <div class="pl-2">
+                  <pvInputText :id="`question-${idx}-placeholder`" v-model="campaign.questions[idx].placeholder" placeholder="Placeholder" size="small" class="w-full h-9"/>
+                </div>
+              </div>
+            </div>
+            <div v-if="question.answerType === 'select'" class="w-full md:pl-8">
+              <div class="flex">
+                <label class="label mt-2 mr-2">Options:</label>
+                <div class="">
+                  <pvButton v-ripple @click="question.options.push('')" size="small" icon="pi pi-plus" iconPos="right" rounded class="p-ripple !h-7 !w-7 mt-1" />
+                </div>
+              </div>
+              <div class="md:pl-4 w-full" v-for="(option, opIdx) in question.options" :key="`campaign-queston-${idx}-option-${opIdx}`">
+                <div class="flex justify-between h-8 mt-2">
+                  <label :for="`question-${idx}-option-${opIdx}`" class="">
+                    Option {{ opIdx + 1 }}
+                  </label>
+                  <!-- <div class="material-icons text-slate-600 hover:text-red-600 cursor-pointer" @click="removeOption(question.options, idx)">delete</div> -->
+                  <pvButton severity="danger" text v-ripple class="p-ripple h-6" icon="pi pi-delete-left" v-tooltip.top="'Delete Option'" @click="removeOption(question.options, idx)"></pvButton>
+                </div>
+                <div class="pl-2 md:flex w-full">
+                  <pvInputText :id="`event-${idx}-address1`" v-model="campaign.questions[idx].options[opIdx]" placeholder="Dropdown Option" class="w-full h-9"/>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
+
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
       <Modal :header="'Landing Preview'">
         <template #trigger="{open}">
@@ -309,14 +355,14 @@
           <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
         </template>
       </Modal>
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
-      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors"/>
+      <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
+      <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors"/>
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed, watch, onBeforeMount } from 'vue'
+import { onMounted, ref, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { useAuth } from '@/stores/auth'
 import { notify } from "@kyvg/vue3-notification"
 import objects from '@/objects'
@@ -324,14 +370,16 @@ import FieldError from '@/components/common/FieldError.vue'
 import Modal from '@/components/common/Modal.vue'
 import TemplatePreview from '@/components/admin/TemplatePreview.vue'
 import TemplateSelect from '@/components/admin/TemplateSelect.vue'
+import MailingListSelect from '@/components/admin/MailingListSelect.vue'
+import VueLoader from '@/components/common/VueLoader.vue'
+import moment from 'moment-timezone'
 
-const loading = ref(false)
+const fileLoading = ref(false)
 
 const props = defineProps(['campaign'])
 const emit = defineEmits(['update:campaign', 'onSubmit', 'onCancel'])
 
 const auth = useAuth()
-const fileUpload = ref(null as any)
 const expandedEvents = ref([] as any[])
 const expandedQuestions = ref([] as any[])
 
@@ -342,6 +390,18 @@ const campaign = computed({
   set(campaign) {
     emit('update:campaign', campaign)
   }
+})
+
+const fileExpired = computed(() => {
+  if (campaign.value.file) {
+    const expirationDate = moment.utc(campaign.value.file.expirationDate)
+    const now = moment().utc()
+    if (expirationDate < now) {
+      return true
+    }
+    // console.log(expirationDate)
+  }
+  return false
 })
 
 const nonUniqueTitles = {} as any
@@ -435,10 +495,26 @@ const expandEvent = (event: any) => {
   }
 }
 const addEvent = () => {
-  campaign.value.events.push({ ...objects.emptyEvent })
+  const event = { ...objects.emptyEvent }
+  campaign.value.events.push(event)
+  expandEvent(event)
 }
 const removeEvent = (event: any) => {
   campaign.value.events = campaign.value.events.filter((campaignEvent: any) => campaignEvent !== event)
+}
+
+const cloneEvent = (event: any) => {
+  const newEvent = { ...event }
+  delete newEvent._id
+  campaign.value.events.push(newEvent)
+  expandEvent(newEvent)
+}
+
+const cloneQuestion = (question: any) => {
+  const newQuestion = { ...question, options: [...question.options] }
+  delete newQuestion._id
+  campaign.value.questions.push(newQuestion)
+  expandQuestion(newQuestion)
 }
 
 const expandQuestion = (question: any) => {
@@ -449,7 +525,9 @@ const expandQuestion = (question: any) => {
   }
 }
 const addQuestion = () => {
-  campaign.value.questions.push({ ...objects.emptyQuestion })
+  const question = { ...objects.emptyQuestion, options: [] }
+  campaign.value.questions.push(question)
+  expandQuestion(question)
 }
 const removeQuestion = (question: any) => {
   campaign.value.questions = campaign.value.questions.filter((campaignQuestion: any) => campaignQuestion !== question)
@@ -463,50 +541,11 @@ const removeOption = (options: string[], idx: number) => {
   return options
 }
 
-
-
-const chooseFiles = () => {
-  if (fileUpload.value) {
-    fileUpload.value.click()
-  }
-}
-const uploadFile = async (file: any) => {
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('campaign', campaign.value._id)
-  const res = await auth.api.post('/uploads/csv/add', formData, {
-    headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-  })
-  campaign.value = res.data
-  console.log(res.data)
-}
-const handleFileChange = async (e: Event) => {
-  loading.value = true
-  try {
-    const inputEl = e.target as HTMLInputElement
-    if (inputEl.files && inputEl.files[0]) {
-      await uploadFile(inputEl.files[0])
-      notify({
-      title: 'Mail File',
-      text: 'File uploaded successfully',
-      type: 'success'
-      })
-    }
-  } catch(err) {
-    console.log(err)
-  }
-  loading.value = false
-}
 const removeFile = async () => {
-  loading.value = true
+  fileLoading.value = true
   try {
-    const data = {
-      campaign: campaign.value._id
-    }
-    const res = await auth.api.post('/uploads/csv/delete', data)
-    campaign.value = res.data
+    await auth.api.delete(`/uploads/csv/${campaign.value._id}`)
+    campaign.value.file = null
     notify({
       title: 'Mail File',
       text: 'File removed successfully',
@@ -515,7 +554,8 @@ const removeFile = async () => {
   } catch(err: any) {
     console.log(err.message)
   }
-  loading.value = false
+  fileLoading.value = false
+
 }
 
 </script>

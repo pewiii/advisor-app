@@ -31,20 +31,28 @@
       </div>
       <div class="material-icons md-30">key</div>
     </div>
-    <div class="mt-4 flex gap-4 pl-4">
-      <pvButton v-ripple class="p-ripple" @click="codeFile" raised :disabled="!file" label="Code" icon="pi pi-key" iconPos="right" outlined size="small" text/>
+    <div class="flex gap-4">
+      <div class="mt-4 gap-4 pl-4">
+        <pvButton v-ripple class="p-ripple" @click="codeFile" raised :disabled="!file" label="Code" icon="pi pi-key" iconPos="right" outlined size="small" text/>
+      </div>
+      <div class="-mt-1" v-if="loading">
+        <VueLoader />
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAuth } from '@/stores/auth';
+import VueLoader from '@/components/common/VueLoader.vue'
+import { useNotification } from '@kyvg/vue3-notification';
 
 const auth = useAuth()
 
 const fileUpload = ref(null as any)
-
-const file = ref(null)
+const file = ref(null as any)
+const loading = ref(false)
+const { notify } = useNotification()
 
 const chooseFiles = () => {
   if (fileUpload.value) {
@@ -67,27 +75,37 @@ const removeFile = () => {
 
 
 const codeFile = async () => {
-  const formData = new FormData()
-  formData.append('file', file.value)
-  const res = await auth.api.post('/uploads/csv/code', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
-    responseType: 'blob'
-  })
-
-  const blob = res.data
-  const url = URL.createObjectURL(blob)
+  loading.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', file.value)
+    const res = await auth.api.post('/uploads/csv/code', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      responseType: 'blob'
+    })
   
-  // const files = res.headers['content-disposition'].split(';')[1]
-  // const fileName = files.split('=')[1]
-  console.log(file.value)
-  const downloadLink = document.createElement('a')
-  downloadLink.href = url
-  downloadLink.download = `coded_${file.value.name}`
-  downloadLink.click()
-  URL.revokeObjectURL(url)
-  file.value = null
+    const blob = res.data
+    const url = URL.createObjectURL(blob)
+    
+    // const files = res.headers['content-disposition'].split(';')[1]
+    // const fileName = files.split('=')[1]
+    const downloadLink = document.createElement('a')
+    downloadLink.href = url
+    downloadLink.download = `coded_${file.value.name}`
+    downloadLink.click()
+    URL.revokeObjectURL(url)
+    file.value = null
+  } catch (err) {
+    console.log(err)
+    notify({
+      title: 'File error',
+      text: 'Error codeing file',
+      type: 'error'
+    })
+  }
+  loading.value = false
 }
 
 </script>

@@ -132,7 +132,7 @@ const handlePage = (pagination: any) => {
 const deleteUser = async (user: any, closeModal: any) => {
   deleteLoading.value = true
   try {
-    await auth.api.post(`/users/delete`, { userId: user._id })
+    await auth.api.delete(`admin/users/${user._id}`)
     users.value = users.value.filter(c => c !== user)
     totalRecords.value = totalRecords.value - 1
   } catch(err: any) {

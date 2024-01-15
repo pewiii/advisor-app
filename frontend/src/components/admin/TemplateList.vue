@@ -106,25 +106,12 @@ const sort = (e: any) => {
   getTemplates()
 }
 
-// const selectedTemplate = computed({
-//   get() {
-//     return props.modelValue
-//   },
-//   set(template) {
-//     if (props.modelValue === template) {
-//       emit('update:modelValue', null)
-//     } else {
-//       emit('update:modelValue', template)
-//     }
-//   }
-// })
-
 const getTemplates = async () => {
   loading.value = true
   try {
     const res = await auth.api.get(
       `/admin/templates?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    console.log(res.data)
+
     templates.value = res.data.paginatedResults
     totalRecords.value = res.data.totalCount
   } catch(err: any) {

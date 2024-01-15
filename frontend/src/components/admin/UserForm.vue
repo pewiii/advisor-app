@@ -67,8 +67,8 @@
       </div>
     </div>
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
-      <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-      <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitUser" raised />
+      <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
+      <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised />
     </div>
   </form>
 </template>
@@ -83,39 +83,16 @@ const auth = useAuth()
 const router = useRouter()
 const props = defineProps(['modelValue', 'cancel'])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'onCancel', 'onSubmit'])
 
 const user = computed({
-get() {
-  return props.modelValue
-},
-set(user) {
-  emit('update:modelValue', user)
-}
-})
-
-const submitUser = async () => {
-  try {
-    const data = JSON.parse(JSON.stringify(user.value))
-    const info = {
-      path: data._id ? `/admin/users/${data._id}` : '/admin/users',
-      title: data._id ? 'Updated' : 'Created',
-      text: data._id ? 'User updated successfully' : 'User created successfully'
-    }
-
-    await auth.api.post(info.path, data)
-    notify({
-      title: info.title,
-      text: info.text,
-      type: 'success'
-    })
-    // user.value = null
-    router.replace({ name: 'admin-users' })
-  } catch(err: any) {
-    console.log(err)
-    console.log(err.message)
+  get() {
+    return props.modelValue
+  },
+  set(user) {
+    emit('update:modelValue', user)
   }
-}
+})
 
 </script>
 

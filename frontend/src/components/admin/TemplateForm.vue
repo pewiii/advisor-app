@@ -276,8 +276,8 @@
       </Modal>
       
       <div class="flex gap-4">
-        <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitTemplate()" raised :disabled="formErrors.hasErrors" />
+        <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
+        <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors" />
       </div>
     </div>
 
@@ -288,19 +288,14 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import Modal from '@/components/common/Modal.vue'
-import { useAuth } from '@/stores/auth';
-import { notify } from '@kyvg/vue3-notification';
 import ImageSelect from '@/components/admin/ImageSelect.vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
 import FieldError from '@/components/common/FieldError.vue'
-import { useRouter } from 'vue-router'
 import TemplatePreview from '@/components/admin/TemplatePreview.vue'
 
-const auth = useAuth()
-const router = useRouter()
-const props = defineProps(['modelValue', 'cancel'])
+const props = defineProps(['modelValue'])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'onSubmit', 'onCancel'])
 
 const template = computed({
   get() {
@@ -322,29 +317,6 @@ watch(template, () => {
   errors.hasErrors = Boolean(Object.keys(errors).length)
   formErrors.value = errors
 }, { deep: true, immediate: true })
-
-const submitTemplate = async () => {
-  try {
-    const data = JSON.parse(JSON.stringify(template.value))
-    data.user = auth.user
-    console.log(data)
-    const info = {
-      path: data._id ? `/admin/templates/${data._id}` : '/admin/templates',
-      title: data._id ? 'Updated' : 'Created',
-      text: data._id ? 'Template updated successfully' : 'Template created successfully'
-    }
-    await auth.api.post(info.path, data)
-    notify({
-      title: info.title,
-      text: info.text,
-      type: 'success'
-    })
-    router.replace({ name: 'admin-templates' })
-    // template.value = null
-  } catch(err: any) {
-    console.log(err.message)
-  }
-}
 
 </script>
 

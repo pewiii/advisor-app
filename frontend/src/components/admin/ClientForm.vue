@@ -118,14 +118,17 @@
           </div>
         </div>
       </div>
-      <div class="mt-8" v-if="client._id">
+      <div class="mt-8">
         <div class="flex items-center mb-2 font-semibold gap-2 text-primary">
           <div class="text-lg">
             Status
           </div>
           <div class="material-icons md-30">key</div>
         </div>
-        <div class="md:pl-4 flex gap-x-4 flex-wrap">
+        <div v-if="!client._id" class="mt-4 flex gap-4 pl-4">
+          Save the client to give access
+        </div>
+        <div v-else class="md:pl-4 flex gap-x-4 flex-wrap">
           <div>
             <span>
               Access
@@ -174,8 +177,8 @@
         </div>
       </div>
       <div class="flex justify-center mt-16 gap-4 flex-wrap">
-        <pvButton v-ripple class="p-ripple" label="Cancel" icon="pi pi-times" iconPos="right" severity="secondary" @click="cancel" raised />
-        <pvButton v-ripple class="p-ripple" label="Submit" icon="pi pi-check" iconPos="right" @click="submitClient" raised :disabled="formErrors.hasErrors" />
+        <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
+        <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors" />
       </div>
     </form>
 </template>
@@ -193,9 +196,9 @@ import { useRouter } from 'vue-router';
 
 const auth = useAuth()
 const router = useRouter()
-const props = defineProps(['modelValue', 'cancel'])
+const props = defineProps(['modelValue'])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'onSubmit', 'onCancel'])
 
 const client = computed({
   get() {
@@ -234,7 +237,7 @@ const emailLoading = ref(false)
 const emailClient = async () => {
   emailLoading.value = true
   try {
-    const res = await auth.api.post('admin/clients/setup', { clientId: client.value._id })
+    const res = await auth.api.post(`admin/setup/${client.value._id}`)
     client.value = res.data
     emailSuccess.value = true
     notify({
@@ -248,26 +251,6 @@ const emailClient = async () => {
   emailLoading.value = false
 }
 
-const submitClient = async () => {
-  try {
-    const data = JSON.parse(JSON.stringify(client.value))
-    const info = {
-      path: data._id ? `/admin/clients/${data._id}` : '/admin/clients',
-      title: data._id ? 'Updated' : 'Created',
-      text: data._id ? 'Client updated successfully' : 'Client created successfully'
-    }
-    await auth.api.post(info.path, data)
-    notify({
-      title: info.title,
-      text: info.text,
-      type: 'success'
-    })
-    router.replace({ name: 'admin-clients' })
-  } catch(err: any) {
-    console.log(err)
-    console.log(err.message)
-  }
-}
 
 </script>
 

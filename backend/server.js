@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.admin.uploads.csvUpload)
-app.post('/uploads/csv/delete', auth.verifyToken, api.admin.uploads.csvDelete)
+app.delete('/uploads/csv/:campaignId', auth.verifyToken, api.admin.uploads.csvDelete)
 app.post('/uploads/csv/code', auth.verifyToken, upload.single('file'), api.admin.uploads.csvCode)
 
 app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.admin.uploads.imageUpload)
@@ -55,7 +55,8 @@ app.get('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.get)
 app.post('/admin/clients', auth.verifyToken, api.admin.clients.create)
 app.post('/admin/clients/:clientId', auth.verifyToken, api.admin.clients.update)
 app.delete('/admin/clients/:clientId', auth.verifyToken, auth.requireAdmin, api.admin.clients.delete)
-app.post('/admin/clients/setup', auth.verifyToken, api.admin.clients.passwordSetup)
+
+app.post('/admin/setup/:clientId', auth.verifyToken, api.admin.clients.passwordSetup)
 
 app.get('/admin/templates', auth.verifyToken, api.admin.templates.getList)
 app.get('/admin/templates/:templateId', auth.verifyToken, api.admin.templates.get)

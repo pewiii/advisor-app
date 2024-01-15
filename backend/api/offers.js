@@ -1,13 +1,16 @@
 import db from '../db/index.js'
+import models from '../db/models.js'
 
 const handleOfferCode = async (req, res) => {
   try {
     const { offerCode } = req.body
-    let record = null
+    // let record = null
     let campaign = null
-    record = await db.records.getByOfferCode(offerCode)
+    // record = await db.records.getByOfferCode(offerCode)
+    const record = await models.Record.findOne({ offerCode })
     if (record) {
-      campaign = await db.campaigns.getById(record.campaign.toString())
+      campaign = await models.Campaign.findById(record.campaign)
+      .populate('template')
     }
     if (record && campaign) {
       res.send({

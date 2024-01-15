@@ -206,6 +206,10 @@ const create = async (req, res) => {
     const data = req.body
     data.events = eventsToUTC(data.events)
     const campaign = await models.Campaign.create(data)
+    // const campaignObject = campaign.toObject()
+    // campaignObject.events = eventsToDateTime(campaignObject.events)
+    // campaignObject.template = await models.Template.findById(data.template)
+    // campaignObject.client = await models.Client.findById(data.client)
     res.status(201).send(campaign)
   } catch(err) {
     res.status(400).send({ message: err.message })
@@ -342,6 +346,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const { campaignId } = req.params
+    await models.Record.deleteMany({ campaign: campaignId })
     await models.Campaign.findByIdAndDelete(campaignId)
     res.sendStatus(204)
   } catch(err) {

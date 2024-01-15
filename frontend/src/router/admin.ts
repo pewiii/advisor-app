@@ -7,7 +7,7 @@ export const adminRoutes = [
     component: () => import('@/views/admin/AdminDashboard.vue'),
     beforeEnter: () => {
       const auth = useAuth()
-      if(auth.user.userType !== 'admin') {
+      if(!auth.user || auth.user.userType !== 'admin') {
         return { name: 'home' }
       }
     },

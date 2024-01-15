@@ -1,6 +1,9 @@
 <template>
-  <div class="bg-white p-6 shadow-lg">
+  <div v-if="campaign" class="bg-white p-6 shadow-lg">
     <CampaignForm v-model:campaign="campaign" @onCancel="cancel" @onSubmit="submitCampaign"/>
+  </div>
+  <div v-else class="flex justify-center">
+    <VueLoader />
   </div>
 </template>
 
@@ -11,6 +14,7 @@ import { useRoute, useRouter } from 'vue-router';
 import objects from '@/objects';
 import { useAuth } from '@/stores/auth';
 import { useNotification } from '@kyvg/vue3-notification';
+import VueLoader from '@/components/common/VueLoader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,9 +26,12 @@ const cancel = () => {
   router.replace({ name: 'admin-campaigns' })
 }
 
-const campaign = ref({
-  ...objects.emptyCampaign
-})
+const campaign = ref(null as any)
+// const campaign = ref({
+//   ...objects.emptyCampaign,
+//   events: [],
+//   questions: []
+// })
 
 const getCampaign = async (campaignId: any) => {
   try {
@@ -38,7 +45,7 @@ const getCampaign = async (campaignId: any) => {
 const getClient = async (clientId: any) => {
   try {
     const res = await auth.api.get(`admin/clients/${clientId}`)
-    campaign.value.client = res.data
+    return res.data
   } catch(err) {
     console.log(err)
   }
@@ -61,7 +68,7 @@ const submitCampaign = async () => {
       title: data._id ? 'Updated' : 'Created',
       text: data._id ? 'Campaign updated successfully' : 'Campaign created successfully'
     }
-    await auth.api.post(info.path, data)
+    const res = await auth.api.post(info.path, data)
 
     notify({
       title: info.title,
@@ -69,19 +76,29 @@ const submitCampaign = async () => {
       type: 'success'
     })
     
-    router.replace({ name: 'admin-campaigns' })
-    // template.value = null
+    if (route.name === 'admin-campaigns-add') {
+      router.replace({ name: 'admin-campaigns-edit', params: { campaignId: res.data._id } })
+    }
+    getCampaign(res.data._id)
+    
   } catch(err: any) {
     console.log(err)
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (route.params.clientId) {
-    getClient(route.params.clientId)
+      campaign.value = {
+      ...objects.emptyCampaign,
+      events: [],
+      questions: [],
+      client: await getClient(route.params.clientId)
+    }
+    // getClient(route.params.clientId)
   }
   if (route.params.campaignId) {
     getCampaign(route.params.campaignId)
+    // getCampaign(route.params.campaignId)
   }
 })
 

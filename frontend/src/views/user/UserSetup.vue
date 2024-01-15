@@ -3,9 +3,9 @@
     <div v-if="loading">
       <VueLoader />
     </div>
-    <div v-else-if="error" class="text-center">
-      <div class="font-bold text-lg">Sorry</div>
-      Error setting up your account. Please contact us for support.
+    <div v-else-if="error" class="text-center text-lg">
+      <div class="font-bold text-xl">Sorry</div>
+      Error setting up your account. Please contact <span class="text-primary font-bold">support@packthemin.com</span> for support.
     </div>
     <form v-else-if="client" class="bg-white p-10 shadow-lg rounded-lg">
       <div v-if="success">
@@ -87,7 +87,10 @@ onMounted(async () => {
     client.value = res.data
   } catch(err: any) {
     console.log(err.message)
-    router.push({ name: 'user-login' })
+    error.value = true
+    setTimeout(() => {
+      router.push({ name: 'home' })
+    }, 10000);
   }
 })
 

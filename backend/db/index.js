@@ -1,8 +1,8 @@
-import users from './users.js'
+// import users from './users.js'
 import clients from './clients.js'
-import campaigns from './campaigns.js'
-import records from './records.js'
-import templates from './templates.js'
+// import campaigns from './campaigns.js'
+// import records from './records.js'
+// import templates from './templates.js'
 import images from './images.js'
 import respondents from './respondents.js'
 
@@ -22,11 +22,11 @@ import respondents from './respondents.js'
 
 
 export default {
-  users,
+  // users,
   clients,
-  campaigns,
-  records,
-  templates,
+  // campaigns,
+  // records,
+  // templates,
   images,
   respondents,
 }

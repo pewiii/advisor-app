@@ -80,6 +80,10 @@ import { useAuth } from '@/stores/auth'
 
 const props = defineProps(['templateData'])
 
+onMounted(() => {
+  console.log(props.templateData)
+})
+
 const auth = useAuth()
 
 const selectedEvent = ref(null)

@@ -128,7 +128,6 @@ const getClients = async () => {
     const res = await auth.api.get(
       `/admin/clients?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
     clients.value = res.data.paginatedResults
-    console.log(clients.value)
     totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)

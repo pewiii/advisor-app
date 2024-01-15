@@ -214,7 +214,6 @@ const get = async (req, res) => {
     if (client) {
       const clientObject = client.toObject({ virtuals: true })
       delete clientObject.password
-      console.log(clientObject)
       res.send(clientObject)
     } else {
       res.status(404).send({ message: 'Client not found' })
@@ -264,7 +263,7 @@ const remove = async (req, res) => {
 
 const passwordSetup = async (req, res) => {
   try {
-    const { clientId } = req.body
+    const { clientId } = req.params
     const client = await models.Client.findById(clientId)
     // const client = await db.clients.getClientById(clientId)
     if (!client) {
@@ -279,7 +278,7 @@ const passwordSetup = async (req, res) => {
       await sgMail.send({
         to: client.email,
         from: 'support@packthemin.com',
-        template_id: 'd-80c7eb1df75a48e1ac013e55a41ad929',
+        template_id: 'd-2be5ab3f1d4e446cbca734e855b8e81f',
         dynamic_template_data: {
           username: client.firstName,
           resetLink: `${FRONTEND_URL}/setup/${client._id}/${client.resetToken}`
@@ -290,7 +289,7 @@ const passwordSetup = async (req, res) => {
       res.status(200).send(client)
     }
   } catch(err) {
-    console.log(err.message)
+    console.log(err.response.body.errors)
     res.status(500).send({ message: err.message })
   }
 }

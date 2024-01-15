@@ -1,3 +1,5 @@
+import { useAuth } from '@/stores/auth'
+
 export const homeRoutes = [
   {
     path: '/',

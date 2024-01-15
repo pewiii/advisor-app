@@ -28,7 +28,8 @@ const emptyCampaign = {
   user: '',
   events: [] as any[],
   questions: [] as any[],
-  files: null as any
+  file: null
+  // files: null as any
 }
 
 const emptyEvent = {
@@ -105,6 +106,15 @@ const questionTypes = [
   // { name: 'Time Picker', value: 'time'},
 ]
 
+const listExpirationMonths = [
+  { name: '1 Month', value: 1 },
+  { name: '2 Month', value: 2 },
+  { name: '3 Month', value: 3 },
+  { name: '4 Month', value: 4 },
+  { name: '5 Month', value: 5 },
+  { name: '6 Month', value: 6 }
+]
+
 export default {
   emptyClient,
   emptyCampaign,
@@ -114,4 +124,5 @@ export default {
   timezones,
   questionTypes,
   emptyUser,
+  listExpirationMonths
 }

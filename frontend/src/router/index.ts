@@ -24,6 +24,8 @@ import { userRoutes } from './user'
 
 // import { useAuthStore } from '@/stores/auth'
 
+import { useAuth } from '@/stores/auth'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,7 +45,18 @@ const router = createRouter({
         document.title='RSVP'
       },
       component: () => import('@/views/offer/OfferView.vue'),
-    }
+    },
+    {
+      path: '/setup/:clientId/:token',
+      name: 'setup',
+      beforeEnter() {
+        const auth = useAuth()
+        if (auth.user) {
+          auth.logout()
+        }
+      },
+      component: () => import('@/views/user/UserSetup.vue')
+    },
   ]
 })
     

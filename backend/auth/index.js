@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import db from '../db/index.js'
 import crypto from 'crypto'
+import models from '../db/models.js'
 
 const JWT_KEY = process.env.JWT_KEY
 
@@ -42,7 +42,8 @@ const adminRegister = async (req, res) => {
       throw ({ message: 'Password required' })
     }
     const hashedPassword = await hashPassword(password)
-    const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
+    // const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
+    const user = await models.User.create({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin})
     res.status(201).send(user)
   } catch(err) {
     console.log(err.message)
@@ -57,7 +58,8 @@ const adminUpdate = async (req, res) => {
       throw ({ message: 'Password required' })
     }
     const hashedPassword = await hashPassword(password)
-    const user = await db.users.updateUser(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
+    // const user = await db.users.updateUser(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
+    const user = await models.User.findByIdAndUpdate(req.body._id, { email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName, isAdmin: req.body.isAdmin })
     // const user = await db.users.createUser({ email, password: hashedPassword, firstName: req.body.firstName, lastName: req.body.lastName })
     res.status(201).send(user)
   } catch(err) {
@@ -78,7 +80,8 @@ const adminLogin = async (req, res) => {
 
     const { email, password } = req.body
     const emailRegex = new RegExp(email, 'i');
-    const user = await db.users.getUser({ email: emailRegex })
+    const user = await models.User.findOne({ email: emailRegex })
+    // const user = await db.users.getUser({ email: emailRegex })
     if (!user || !user.password) {
       throw('Invalid user')
     }
@@ -111,7 +114,8 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body
     const emailRegex = new RegExp(email, 'i');
-    const client = await db.clients.getFullClient({ email: emailRegex })
+    // const client = await db.clients.getFullClient({ email: emailRegex })
+    const client = await models.Client.findOne({ email: emailRegex })
     if (!client || !client.password) {
       throw('Invalid user')
     }

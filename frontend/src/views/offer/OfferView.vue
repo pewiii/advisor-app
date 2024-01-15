@@ -72,7 +72,8 @@ const submitCode = async () => {
   loading.value = true
 
   try {
-    const { data } = await auth.api.post('/offer-code', { offerCode: offerCode.value })
+    console.log(offerCode.value)
+    const { data } = await auth.api.post('/offer-code', { offerCode: offerCode.value.toUpperCase() })
     templateData.value = data
   } catch(err: any) {
     codeError.value = true
