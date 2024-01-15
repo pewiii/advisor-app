@@ -306,8 +306,10 @@ const csvUpload = async (req, res) => {
 
         try {
           savedRecords = await models.Record.insertMany(records)
-          const resultCampaign = await models.Campaign.findByIdAndUpdate(campaign, { file: { name: req.file.originalname, recordCount: records.length, expirationDate } })
-          res.status(201).send(resultCampaign.file)
+          const file = { name: req.file.originalname, recordCount: records.length, expirationDate }
+          const resultCampaign = await models.Campaign.findByIdAndUpdate(campaign, { file })
+          console.log(resultCampaign)
+          res.status(201).send(file)
         } catch (err) {
           try {
             await models.Record.deleteMany(savedRecords)
