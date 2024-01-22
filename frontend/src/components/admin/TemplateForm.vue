@@ -90,7 +90,7 @@
 
               <div class="md:pl-4">
                 <label for="client-first" class="">
-                  Panel Coler
+                  Panel 1 Coler
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel Color'" :size="'small'">
@@ -106,7 +106,7 @@
 
               <div class="md:pl-4">
                 <label for="client-first" class="">
-                  Panel Coler
+                  Panel 2 Coler
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel Color'" :size="'small'">
@@ -376,7 +376,7 @@
       </div>
     </div>
     <div class="h-screen relative">
-      <TemplatePreview :template="template" />
+      <TemplatePreview :template="template" :previewCampaign="previewCampaign" />
     </div>
   </form>
 </template>
@@ -402,6 +402,47 @@ const template = computed({
   }
 })
 
+const previewCampaign = {
+  events: [
+    {
+      locationName: 'Location Name',
+      address1: 'Address 1',
+      address2: 'Address 2',
+      city: 'City',
+      state: 'State',
+      zip: 'Zip Code',
+      eventDate: '2024-01-31T05:00:00.000Z',
+      timezone: "America/New_York"
+    },
+    {
+      locationName: 'Location Name',
+      address1: 'Address 1',
+      address2: 'Address 2',
+      city: 'City',
+      state: 'State',
+      zip: 'Zip Code',
+      eventDate: '2024-02-12T16:00:00.000Z',
+      timezone: "America/New_York"
+    }
+  ],
+  questions: [
+    {
+        "text": "Are you bringing a guest?",
+        "answerType": "select",
+        "placeholder": "",
+        "label": "guest",
+        "options": [
+            "Yes",
+            "No"
+        ],
+    },
+    {
+        "text": "What is your phone number?",
+        "answerType": "phone",
+        "options": [],
+    }
+  ],
+}
 
 // validation
 const formErrors = ref({} as any)
