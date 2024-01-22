@@ -104,7 +104,7 @@ app.post('/clients/setup/:clientId/:resetToken', api.client.setup.setupClient)
 
 
 app.post('/offer-code', api.offers.handleOfferCode)
-// app.post('/rsvp', api.offers.rsvp)
+app.post('/rsvp', api.offers.rsvp)
 
 app.listen(API_PORT, () => {
   console.log(`Listening on port ${API_PORT}`)

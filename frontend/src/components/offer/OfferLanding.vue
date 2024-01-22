@@ -1,9 +1,9 @@
 <!-- <div class="w-screen h-screen fixed" :style="`background-image: url(${headerImage}); background-size: cover;`"> -->
 <template>
-  <div class="min-w-full min-h-screen relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
+  <div class="min-w-full min-h-screen  relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
     <div class="flex min-w-full justify-center flex-wrap" style="{}">
 
-      <div class="p-4 max-w-xl" :style="{color: config.firstPanelTextColor, backgroundColor: config.firstPanelColor}">
+      <div class="p-8 max-w-xl" :style="{color: config.firstPanelTextColor, backgroundColor: config.firstPanelColor}">
         <div class="mb-4 capitalize text-xl flex justify-center font-[500]">
           <div>
             Hello {{ person.firstName.toLowerCase() }}
@@ -21,82 +21,116 @@
 
 
 
-      <div class="p-4 lg:max-w-xl w-full" :style="{color: config.secondPanelTextColor, backgroundColor: config.secondPanelColor }">
-        <div class="text-2xl">
-          Registration
-        </div>
+      <div class="p-8 lg:max-w-xl w-full" :style="{color: config.secondPanelTextColor, backgroundColor: config.secondPanelColor }">
 
-        <div class="mt-4">
-          Please select an event
-        </div>
-
-        <div v-if="events" class="flex gap-4 flex-col">
-          <label v-for="(event) in events" :key="event._id" class="flex align-items-center items-center p-4 gap-4 cursor-pointer" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }" :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
-              <pvRadioButton v-model="selectedEvent" :inputId="event._id" name="dynamic" :value="event"/>
-              <div class="font-semibold opacity-90">{{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
-              <div v-if="eventLocations.length > 1">
-                <div>{{ event.locationName }}</div>
-                <div>{{ event.address1 }}</div>
-                <div v-if="event.address2">{{ event.address2 }}</div>
-                <div>{{ event.city }}, {{ event.state }} {{ event.zip }}</div>
-              </div>
-          </label>        
-        </div>
-
-        <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
-
-          <div class="ml-4 font-semibold text-lg opacity-70 whitespace-nowrap mr-4">
-            <div>{{ eventLocations[0].locationName }}</div>
-            <div>{{ eventLocations[0].address1 }}</div>
-            <div v-if="eventLocations[0].address2">{{ eventLocations[0].address2 }}</div>
-            <div>{{ eventLocations[0].city }}, {{ eventLocations[0].state }} {{ eventLocations[0].zip }}</div>
+        <div v-if="!success">    
+          <div class="text-2xl">
+            Registration
           </div>
-
-          <div>
-            <Modal :header="eventLocations[0].locationName">
-              <template #trigger="{open}">
-                <!-- <div @click="open" class="w-32 h-32 bg-red-300">
-                  <GMap :addresses="eventLocations"/>
-                </div> -->
-                <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"></pvButton>
-                <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
-              </template>
-              <template #content="{maximized}">
-                <div class="w-full" :class="maximized ? 'h-full' : 'h-96'">
-                  <GMap :addresses="eventLocations"/>
+  
+          <div class="mt-4">
+            Please select an event
+          </div>
+  
+          <div v-if="events" class="flex gap-4 flex-col">
+            <label v-for="(event) in events" :key="event._id" class="flex align-items-center items-center p-4 gap-4 cursor-pointer" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }" :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
+                <pvRadioButton v-model="selectedEvent" :disabled="success" :inputId="event._id" name="dynamic" :value="event"/>
+                <div class="font-semibold opacity-90">{{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
+                <div v-if="eventLocations.length > 1">
+                  <div>{{ event.locationName }}</div>
+                  <div>{{ event.address1 }}</div>
+                  <div v-if="event.address2">{{ event.address2 }}</div>
+                  <div>{{ event.city }}, {{ event.state }} {{ event.zip }}</div>
                 </div>
-              </template>
-            </Modal>
+            </label>        
           </div>
-        </div>
-
-        <div v-if="questions.length" class="mt-4">
-
-          <div class="text-2xl">Question<span v-if="questions.length > 1">s</span></div>
-          <div class="flex flex-col gap-4">
-            <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="p-4 flex gap-4 flex-wrap" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }">
-              <div>{{ question.text }}</div>
-              <div v-if="question.answerType === 'phone'">
-                <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/>
-                <FieldError :error="formErrors[idx]"></FieldError>
-              </div>
-              <div v-else-if="question.answerType === 'email'">
-                <pvInputText v-model="answers[idx].answer" placeholder="youremail@email.com" class="!py-0 h-8"/>
-                <FieldError :error="formErrors[idx]"></FieldError>
-                <!-- <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/> -->
-              </div>
-              <div v-else>
-                <component :is="component[question.answerType]" v-model="answers[idx].answer" binary :options="question.options" :placeholder="question.placeholder" class="!py-0 h-8"/>
+  
+          <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
+  
+            <div class="ml-4 font-semibold text-lg opacity-70 whitespace-nowrap mr-4">
+              <div>{{ eventLocations[0].locationName }}</div>
+              <div>{{ eventLocations[0].address1 }}</div>
+              <div v-if="eventLocations[0].address2">{{ eventLocations[0].address2 }}</div>
+              <div>{{ eventLocations[0].city }}, {{ eventLocations[0].state }} {{ eventLocations[0].zip }}</div>
+            </div>
+  
+            <div>
+              <Modal :header="eventLocations[0].locationName">
+                <template #trigger="{open}">
+                  <!-- <div @click="open" class="w-32 h-32 bg-red-300">
+                    <GMap :addresses="eventLocations"/>
+                  </div> -->
+                  <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"></pvButton>
+                  <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
+                </template>
+                <template #content="{maximized}">
+                  <div class="w-full" :class="maximized ? 'h-full' : 'h-96'">
+                    <GMap :addresses="eventLocations"/>
+                  </div>
+                </template>
+              </Modal>
+            </div>
+          </div>
+  
+          <div v-if="questions.length" class="mt-4">
+  
+            <div class="text-2xl">Question<span v-if="questions.length > 1">s</span></div>
+            <div class="flex flex-col gap-4">
+              <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="p-4 flex gap-4 flex-wrap" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }">
+                <div>{{ question.text }}</div>
+                <div v-if="question.answerType === 'phone'">
+                  <pvInputMask v-model="answers[idx].answer" :disabled="success" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/>
+                  <FieldError :error="formErrors[idx]"></FieldError>
+                </div>
+                <div v-else-if="question.answerType === 'email'">
+                  <pvInputText v-model="answers[idx].answer" :disabled="success" placeholder="youremail@email.com" class="!py-0 h-8"/>
+                  <FieldError :error="formErrors[idx]"></FieldError>
+                  <!-- <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/> -->
+                </div>
+                <div v-else>
+                  <component :is="component[question.answerType]" v-model="answers[idx].answer" :disabled="success" binary :options="question.options" :placeholder="question.placeholder" class="!py-0 h-8"/>
+                </div>
               </div>
             </div>
           </div>
+  
+          <div class="mt-4 flex justify-center">
+            <pvButton  raised :label="'Submit'" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"/>
+          </div>
+        
         </div>
-
-        <div class="mt-4 flex justify-center">
-          <pvButton  raised :label="'Submit'" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"/>
+        <div v-else class="h-full flex flex-col">
+          <div class="text-xl text-center">
+            Thank you<span class="capitalize">{{ person.firstName ? ` ${person.firstName.toLowerCase()}` : `` }}</span> for registering.
+          </div>
+          
+          <div v-if="selectedEvent" class="text-center mt-8 flex flex-col gap-4 flex-1">
+            <div class="text-xl">{{ moment(selectedEvent.eventDate).tz(selectedEvent.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
+            <div>At</div>
+            <div class="ml-4 text-xl whitespace-nowrap mr-4">
+              <div>{{ selectedEvent.locationName }}</div>
+              <div>{{ selectedEvent.address1 }}</div>
+              <div v-if="selectedEvent.address2">{{ selectedEvent.address2 }}</div>
+              <div>{{ selectedEvent.city }}, {{ selectedEvent.state }} {{ selectedEvent.zip }}</div>
+            </div>
+            <div>
+              <Modal :header="eventLocations[0].locationName">
+                <template #trigger="{open}">
+                  <!-- <div @click="open" class="w-32 h-32 bg-red-300">
+                    <GMap :addresses="eventLocations"/>
+                  </div> -->
+                  <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"></pvButton>
+                  <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
+                </template>
+                <template #content="{maximized}">
+                  <div class="w-full" :class="maximized ? 'h-full' : 'h-96'">
+                    <GMap :addresses="eventLocations"/>
+                  </div>
+                </template>
+              </Modal>
+            </div>
+          </div>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -189,7 +223,7 @@ watch(() => props.templateData, () => {
 
 const auth = useAuth()
 
-const selectedEvent = ref(null)
+const selectedEvent = ref(null as any)
 const answers = ref([] as any)
 
 const loading = ref(false)
@@ -333,8 +367,6 @@ const submit = async () => {
   }
   loading.value = false
 }
-
-const arrowDown = ref(false)
 
 
 watch(events, () => {

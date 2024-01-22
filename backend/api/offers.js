@@ -49,7 +49,9 @@ const rsvp = async (req, res) => {
       answerInfo[label] = answer.answer
     })
 
-    const record = await db.records.getById(data.personId)
+    // const record = await db.records.getById(data.personId)
+    // const record = await models.Record.getById(data.personId)
+    const record = await models.Record.findById(data.personId)
     const respondent = db.respondents.createRespondent({
       firstName: record.firstName,
       lastName: record.lastName,
@@ -71,7 +73,8 @@ const rsvp = async (req, res) => {
         ...answerInfo
       }
     })
-    await db.records.deleteRecord(record._id)
+    await models.Record.deleteOne(record)
+    // await db.records.deleteRecord(record._id)
     res.sendStatus(201)
   } catch(err) {
     console.log(err)
