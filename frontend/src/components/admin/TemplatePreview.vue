@@ -2,9 +2,9 @@
   <div v-if="!templateData" class="flex justify-center">
     <VueLoader />
   </div>
-  <div v-else>
-    <OfferLanding :templateData="templateData"/>
-  </div>
+  <!-- <div v-else class=""> -->
+    <OfferLanding v-else :templateData="templateData"/>
+  <!-- </div> -->
 </template>
 
 <script lang="ts" setup>

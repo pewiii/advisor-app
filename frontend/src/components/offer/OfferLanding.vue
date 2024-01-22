@@ -1,4 +1,106 @@
+<!-- <div class="w-screen h-screen fixed" :style="`background-image: url(${headerImage}); background-size: cover;`"> -->
 <template>
+  <div class="min-w-full min-h-full relative flex items-center justify-center" :style="`background-image: url(${headerImage}); background-size: cover;`">
+    <div class="flex min-w-full justify-center flex-wrap">
+
+      <div class="bg-white p-4 bg-opacity-75 max-w-xl">
+        <div class="mb-4 capitalize text-xl flex justify-center font-[500]">
+          <div>
+            Hello {{ person.firstName.toLowerCase() }}
+          </div>
+        </div>
+        <div>
+          <div class="w-32 h-32 bg-stone-500 float-left mr-6"></div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed euismod nisi porta lorem mollis. Volutpat odio facilisis mauris sit. Tellus mauris a diam maecenas sed enim ut sem. Eget felis eget nunc lobortis mattis aliquam. Sed adipiscing diam donec adipiscing tristique risus nec feugiat. Neque laoreet suspendisse interdum consectetur libero id faucibus nisl. At auctor urna nunc id cursus. Amet porttitor eget dolor morbi non arcu risus quis varius. Lorem ipsum dolor sit amet. Viverra ipsum nunc aliquet bibendum enim. Praesent semper feugiat nibh sed pulvinar proin gravida hendrerit lectus. Sed elementum tempus egestas sed sed. Eget est lorem ipsum dolor sit amet consectetur adipiscing. Felis imperdiet proin fermentum leo vel orci. Scelerisque varius morbi enim nunc faucibus a pellentesque.</p>
+        </div>
+      </div>
+
+
+
+
+      <div class="bg-white bg-opacity-90 p-4 lg:max-w-xl w-full">
+        <div class="text-2xl">
+          Registration
+        </div>
+
+        <div class="mt-4">
+          Please select an event
+        </div>
+
+        <div v-if="events" class="flex gap-4 flex-col">
+          <label v-for="(event) in events" :key="event._id" class="flex align-items-center items-center p-4 gap-4 bg-black bg-opacity-40 text-white cursor-pointer" :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
+              <pvRadioButton v-model="selectedEvent" :inputId="event._id" name="dynamic" :value="event"/>
+              <div class="font-semibold opacity-90">{{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
+              <div v-if="eventLocations.length > 1">
+                <div>{{ event.locationName }}</div>
+                <div>{{ event.address1 }}</div>
+                <div v-if="event.address2">{{ event.address2 }}</div>
+                <div>{{ event.city }}, {{ event.state }} {{ event.zip }}</div>
+              </div>
+          </label>        
+        </div>
+
+        <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
+
+          <div class="ml-4 font-semibold text-lg opacity-70 whitespace-nowrap mr-4">
+            <div>{{ eventLocations[0].locationName }}</div>
+            <div>{{ eventLocations[0].address1 }}</div>
+            <div v-if="eventLocations[0].address2">{{ eventLocations[0].address2 }}</div>
+            <div>{{ eventLocations[0].city }}, {{ eventLocations[0].state }} {{ eventLocations[0].zip }}</div>
+          </div>
+
+          <div>
+            <Modal :header="eventLocations[0].locationName">
+              <template #trigger="{open}">
+                <!-- <div @click="open" class="w-32 h-32 bg-red-300">
+                  <GMap :addresses="eventLocations"/>
+                </div> -->
+                <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open"></pvButton>
+                <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
+              </template>
+              <template #content="{maximized}">
+                <div class="w-full" :class="maximized ? 'h-full' : 'h-96'">
+                  <GMap :addresses="eventLocations"/>
+                </div>
+              </template>
+            </Modal>
+          </div>
+        </div>
+
+        <div v-if="questions.length" class="mt-4">
+
+          <div class="text-2xl">Question<span v-if="questions.length > 1">s</span></div>
+          <div class="flex flex-col gap-4">
+            <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="bg-white bg-opacity-20 p-4 flex gap-4 flex-wrap">
+              <div>{{ question.text }}</div>
+              <div v-if="question.answerType === 'phone'">
+                <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/>
+                <FieldError :error="formErrors[idx]"></FieldError>
+              </div>
+              <div v-else-if="question.answerType === 'email'">
+                <pvInputText v-model="answers[idx].answer" placeholder="youremail@email.com" class="!py-0 h-8"/>
+                <FieldError :error="formErrors[idx]"></FieldError>
+                <!-- <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/> -->
+              </div>
+              <div v-else>
+                <component :is="component[question.answerType]" v-model="answers[idx].answer" binary :options="question.options" :placeholder="question.placeholder" class="!py-0 h-8"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 flex justify-center">
+          <pvButton  raised :label="config.submitBtnText" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.submitBtnColor, 'color': config.submitBtnTextColor }"/>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<!-- <template>
   <div class="relative w-full max-h-screen overflow-hidden lg:min-h-screen lg:flex items-center justify-center" :style="{'background-image': `url(${headerImage})`, 'background-size': 'cover', 'background-position': 'center', 'background-attachment': 'fixed' }">
     <div class="flex w-full h-full lg:max-w-2xl ">
       <div class="bg-white p-8" :style="{ 'background-color': `${templateData.config.headerPanelBgColor}`, 'color': `${templateData.config.headerPanelTextColor}` }">
@@ -9,11 +111,7 @@
           {{ config.headerPanelText }}
         </div>
       </div>
-      <!-- <div v-if="arrowDown" class="absolute z-20 bottom-0 mb-8 text-white">
-        <span class="material-icons md-56 font-bold">arrow_downward</span>
-      </div> -->
     </div>
-    <!-- <img :src="headerImage" class="bg-cover w-full"/> -->
   </div>
   <div class="p-20 flex flex-col justify-center items-center" :style="{ 'background-color': `${config.headingSectionBgColor}`, 'color': `${config.headingSectionTextColor}` }">
     <div class="text-center max-w-7xl">
@@ -66,17 +164,21 @@
         </div>
       </div>
     </div>
-    <!-- <img :src="infoImage" class="bg-cover w-full" /> -->
   </div>
-</template>
+</template> -->
 
 <script lang="ts" setup>
-// import image from '@/assets/tempimage.jpg'
 import { ref, onMounted, computed, watch } from 'vue'
+
+// // import image from '@/assets/tempimage.jpg'
+// import { ref, onMounted, computed, watch } from 'vue'
 import topImage from '@/assets/tempimage.jpg'
 import bottomImage from '@/assets/steak.jpg'
 import moment from 'moment-timezone'
 import { useAuth } from '@/stores/auth'
+import GMap from '@/components/common/GMap.vue'
+import Modal from '@/components/common/Modal.vue'
+import FieldError from '@/components/common/FieldError.vue'
 
 const props = defineProps(['templateData'])
 
@@ -91,6 +193,38 @@ const answers = ref([] as any)
 
 const loading = ref(false)
 const success = ref(false)
+
+const isValidEmail = (email: string) => {
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isValidPhoneNumber = (phoneNumber: string) => {
+  // Phone number validation regex without country code
+  const phoneRegex = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+  return phoneRegex.test(phoneNumber);
+};
+
+watch(answers, () => {
+  console.log(answers.value)
+}, { deep: true })
+
+const formErrors = computed(() => {
+  const required = (field: string) => `${field} is required`
+  const result = questions.value.map((question: any, idx: number) => {
+    console.log(question.answerType === 'email')
+    if (answers.value[idx].answer) {
+      if (question.answerType === 'phone' && !isValidPhoneNumber(answers.value[idx].answer)) {
+        return required('Valid phone number')
+      }
+      if (question.answerType === 'email' && !isValidEmail(answers.value[idx].answer)) {
+        return required('Valid email')
+      }
+    }
+  })
+  return result
+})
 
 
 const component = {
@@ -115,9 +249,9 @@ const infoImage = computed(() => {
   return bottomImage
 })
 
-// watch(() => props.templateData, () => {
-//   console.log(props.templateData)
-// }, { deep: true })
+watch(() => props.templateData, () => {
+  console.log(props.templateData)
+}, { deep: true })
 
 const person = computed(() => {
   return props.templateData.person || {
@@ -127,6 +261,23 @@ const person = computed(() => {
 
 const events = computed(() => {
   return props.templateData.events || []
+})
+
+const eventLocations = computed(() => {
+  const locations = new Set()
+  events.value.forEach((event: any) => {
+    const { locationName, address1, address2, city, state, zip } = event
+    locations.add(JSON.stringify({
+      locationName,
+      address1,
+      address2,
+      city,
+      state,
+      zip
+    }))
+  })
+
+  return Array.from(locations.keys()).map((locationJson: any) => JSON.parse(locationJson))
 })
 
 const questions = computed(() => {
@@ -141,23 +292,37 @@ const submitDisabled = computed(() => {
   if (success.value) {
     return true
   }
-  if (answers.value) {
-    for (let i = 0; i < questions.value.length; i++) {
-      const question = questions.value[i]
-      if (question.answerType === 'checkbox' || !answers.value[i]) {
-        continue
-      }
-
-      if (question.answerType === 'number') {
-        if (Object.is(answers.value[i].answer, null)) {
-          return true
-        }
-      } else if (!answers.value[i].answer) {
-        return true
-      }
+  return questions.value.find((question: any, idx: number) => {
+    const answer= answers.value[idx].answer
+    if (question.answerType === 'phone') {
+      return !isValidPhoneNumber(answer)
     }
-  }
-  return false
+    if (question.answerType === 'email') {
+      return !isValidEmail(answer)
+    }
+    if (question.answerType === 'select') {
+      return !answer
+    }
+  })
+
+
+  // if (answers.value) {
+  //   for (let i = 0; i < questions.value.length; i++) {
+  //     const question = questions.value[i]
+  //     if (question.answerType === 'checkbox' || !answers.value[i]) {
+  //       continue
+  //     }
+
+  //     if (question.answerType === 'number') {
+  //       if (Object.is(answers.value[i].answer, null)) {
+  //         return true
+  //       }
+  //     } else if (!answers.value[i].answer) {
+  //       return true
+  //     }
+  //   }
+  // }
+  // return false
 })
 
 const submit = async () => {
@@ -211,23 +376,23 @@ watch(questions, () => {
 
 
 // onMounted(() => {
-  // let interval = null
-  // const timeout = setTimeout(() => {
+//   let interval = null
+//   const timeout = setTimeout(() => {
     
-  //   interval = setInterval(() => {
-  //     arrowDown.value = !arrowDown.value
-  //   }, 1000)
-  // }, 3000);
+//     interval = setInterval(() => {
+//       arrowDown.value = !arrowDown.value
+//     }, 1000)
+//   }, 3000);
 
-  // document.addEventListener('scroll', () => {
-  //   if (timeout) {
-  //     clearTimeout(timeout)
-  //   }
-  //   if (interval) {
-  //     clearInterval(interval)
-  //   }
-  //   arrowDown.value = false
-  // })
+//   document.addEventListener('scroll', () => {
+//     if (timeout) {
+//       clearTimeout(timeout)
+//     }
+//     if (interval) {
+//       clearInterval(interval)
+//     }
+//     arrowDown.value = false
+//   })
 // })
 
 </script>

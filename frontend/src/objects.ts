@@ -48,7 +48,7 @@ const emptyEvent = {
 
 const emptyQuestion = {
   text: '',
-  answerType: 'text',
+  answerType: 'phone',
   options: [],
   label: '',
   placeholder: ''
@@ -98,10 +98,13 @@ const timezones = [
 ]
 
 const questionTypes = [
-  { name: 'Text', value: 'text'},
-  { name: 'Number', value: 'number'},
-  { name: 'Dropdown', value: 'select'},
-  { name: 'Checkbox', value: 'checkbox'},
+  // { name: 'Text', value: 'text'},
+  // { name: 'Number', value: 'number'},
+  { name: 'Phone', value: 'phone', label: false, placeholder: false},
+  { name: 'Email', value: 'email', label: false, placeholder: false},
+  { name: 'Dropdown', value: 'select', label: true, placeholder: false},
+  { name: 'Checkbox', value: 'checkbox', label: true, placeholder: false},
+  { name: 'Text', value: 'text', label: true, placeholder: true},
   // { name: 'Date Picker', value: 'date'},
   // { name: 'Time Picker', value: 'time'},
 ]

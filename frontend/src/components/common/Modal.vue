@@ -1,9 +1,18 @@
 <template>
   <slot name="trigger" :open="open"></slot>
 
-  <pvDialog v-model:visible="showModal" :header="header" :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" maximizable :keepInViewPort="false" :autoZIndex="false" :appendTo="windowArea">
+  <pvDialog 
+  v-model:visible="showModal" 
+  :header="header" 
+  :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" 
+  maximizable 
+  :keepInViewPort="false" 
+  :autoZIndex="false" 
+  :appendTo="windowArea" 
+  @maximize="maximized=true"
+  @unmaximize="maximized=false">
 
-    <slot name="content" :close="close"></slot>
+    <slot name="content" :close="close" :maximized="maximized"></slot>
   </pvDialog>
 </template>
 
@@ -17,6 +26,8 @@ const showModal = ref(false)
 const open = () => {
   showModal.value = true
 }
+
+const maximized = ref(false)
 
 const close = () => {
   showModal.value = false

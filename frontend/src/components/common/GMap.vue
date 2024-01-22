@@ -7,10 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Loader } from "@googlemaps/js-api-loader"
 
-const props = defineProps(['campaign', 'respondent'])
+const props = defineProps(['campaign', 'addresses'])
 
 const mapContainer = ref(null)
 const map = ref(null as any)
@@ -30,11 +30,12 @@ const loader = new Loader({
 
 const loadMarkers = async () => {
   try {
-    if (props.respondent && gmaps.value && map.value) {
+    if (props.addresses.length && gmaps.value && map.value) {
       const geocoder = new gmaps.value.Geocoder()
-      const person = props.respondent
+      const person = props.addresses[0]
       const address = `${person.address1}${person.address2 ? '' : ` ${person.address2}`}, ${person.city} ${person.state} ${person.zip}`
       const { results } = await geocoder.geocode({ address })
+      console.log("HERE")
       console.log(results)
       const location = results[0].geometry.location;
       const latLng = { lat: location.lat(), lng: location.lng() }
@@ -56,21 +57,25 @@ const loadMarkers = async () => {
   }
 }
 
-watch(() => props.respondent, () => {
+watch(() => props.addresses, () => {
   loadMarkers()
-})
+}, { deep: true })
 
-loader.load().then(async () => {
-  if (mapContainer.value) {
-    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-    map.value = new Map(mapContainer.value as HTMLElement, {
-      center: { lat: 27.964157, lng: -82.452606 },
-      zoom: 8,
-      mapTypeId: 'hybrid'
-    });
-    gmaps.value = google.maps
-  }
-});
+onMounted(() => {
+  loader.load().then(async () => {
+    if (mapContainer.value) {
+      const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+      map.value = new Map(mapContainer.value as HTMLElement, {
+        center: { lat: 27.964157, lng: -82.452606 },
+        zoom: 8,
+        mapTypeId: 'hybrid'
+      });
+      gmaps.value = google.maps
+
+      loadMarkers()
+    }
+  });
+})
 
 </script>
 

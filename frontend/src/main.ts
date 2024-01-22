@@ -30,6 +30,7 @@ import Checkbox from 'primevue/checkbox'
 import InlineMessage from 'primevue/inlinemessage'
 import Tooltip from 'primevue/tooltip'
 import Sidebar from 'primevue/sidebar'
+import InputMask from 'primevue/inputmask';
 
 
 // import Row from 'primevue/row'
@@ -67,6 +68,7 @@ app.component('pvRadioButton', RadioButton)
 app.component('pvCheckbox', Checkbox)
 app.component('pvInlineMessage', InlineMessage)
 app.component('pvSidebar', Sidebar)
+app.component('pvInputMask', InputMask)
 
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })

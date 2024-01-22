@@ -54,7 +54,9 @@ const getClient = async (clientId: any) => {
 const submitCampaign = async () => {
   try {
     const data = JSON.parse(JSON.stringify(campaign.value))
-    data.user = auth.user._id
+    if (!data.user) {
+      data.user = auth.user._id
+    }
     if (data.client) {
       data.client = data.client._id
     }
@@ -63,6 +65,24 @@ const submitCampaign = async () => {
     } else {
       delete data.template
     }
+    
+
+    data.questions = data.questions.map((question: any) => {
+      const newQuestion = {
+        ...question
+      }
+      if (newQuestion.answerType === 'phone') {
+        newQuestion.label = 'phone'
+        newQuestion.placeholder = 'Phone Number'
+      }
+      if (newQuestion.answerType === 'email') {
+        newQuestion.label = 'email'
+        newQuestion.placeholder = 'Email'
+      }
+      return newQuestion
+     })
+
+
     const info = {
       path: data._id ? `/admin/campaigns/${data._id}` : '/admin/campaigns',
       title: data._id ? 'Updated' : 'Created',

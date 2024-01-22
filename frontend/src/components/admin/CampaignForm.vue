@@ -302,7 +302,7 @@
                   <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="objects.questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
                 </div>
               </div>
-              <div class="md:pl-4 flex-1">
+              <div class="md:pl-4 flex-1" v-if="getQuestionType(campaign.questions[idx].answerType).label">
                 <label :for="`question-${idx}-placeholder`" class="">
                   Label
                   <FieldError :error="formErrors.questions[idx].label" />
@@ -311,7 +311,7 @@
                   <pvInputText :id="`question-${idx}-label`" v-model="campaign.questions[idx].label" placeholder="Label" size="small" class="w-full h-9"/>
                 </div>
               </div>
-              <div class="md:pl-4 flex-1" v-if="question.answerType !== 'select' && question.answerType !== 'checkbox'">
+              <div class="md:pl-4 flex-1" v-if="getQuestionType(campaign.questions[idx].answerType).placeholder">
                 <label :for="`question-${idx}-placeholder`" class="">
                   Placeholder Text
                 </label>
@@ -351,8 +351,10 @@
         <template #trigger="{open}">
           <pvButton v-ripple class="p-ripple" label="Preview" icon="pi pi-web" iconPos="right" severity="warning" @click="open" raised :disabled="!Boolean(campaign.template)"/>
         </template>
-        <template #content>
-          <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
+        <template #content="{maximized}">
+          <!-- <div :class="maximized ? 'h-screen' : ''"> -->
+            <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
+          <!-- </div> -->
         </template>
       </Modal>
       <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
@@ -407,6 +409,9 @@ const fileExpired = computed(() => {
 const nonUniqueTitles = {} as any
 const uniqueTitles = {} as any
 
+const getQuestionType = (answerType: any) => {
+  return objects.questionTypes.find(questionType => questionType.value === answerType) || { label: false, placeholder: false}
+}
 
 
 // validation
@@ -431,10 +436,11 @@ watch(campaign, async (newCampaign, oldCampaign) => {
   })
   const labels = [] as string[]
   const questions = campaign.value.questions.map((question: any) => {
+    console.log(getQuestionType(question.answerType))
     const result = {
       ...question.text ? {} : { text: required('Question')},
       ...question.answerType ? {} : { answerType: required('Answer type')},
-      ...question.label ? {} : { label: required('Label')},
+      ...getQuestionType(question.answerType).label && !question.label ? { label: required('Label')} : {},
       // ...labels.includes(question.label) ? { label: 'Label must be unique' } : {}
     }
     if (labels.includes(question.label)) {
@@ -560,8 +566,13 @@ const removeFile = async () => {
 
 </script>
 
-<style >
+<style scoped>
   .campaign-dropdown span {
     padding-top: .3rem !important;
   }
+
+.max-height-preview {
+  max-height: 80vh; /* Adjust the value as needed */
+  overflow-y: auto; /* Add scrollbars if content exceeds the maximum height */
+}
 </style>
