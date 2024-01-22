@@ -1,9 +1,9 @@
 <!-- <div class="w-screen h-screen fixed" :style="`background-image: url(${headerImage}); background-size: cover;`"> -->
 <template>
-  <div class="min-w-full min-h-full relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
+  <div class="min-w-full min-h-screen relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
     <div class="flex min-w-full justify-center flex-wrap" style="{}">
 
-      <div class="p-4 max-w-xl" :style="{color: textColor, backgroundColor: firstPanelColor}">
+      <div class="p-4 max-w-xl" :style="{color: config.firstPanelTextColor, backgroundColor: config.firstPanelColor}">
         <div class="mb-4 capitalize text-xl flex justify-center font-[500]">
           <div>
             Hello {{ person.firstName.toLowerCase() }}
@@ -21,7 +21,7 @@
 
 
 
-      <div class="p-4 lg:max-w-xl w-full" :style="{color: textColor, backgroundColor: secondPanelColor}">
+      <div class="p-4 lg:max-w-xl w-full" :style="{color: config.secondPanelTextColor, backgroundColor: config.secondPanelColor }">
         <div class="text-2xl">
           Registration
         </div>
@@ -31,7 +31,7 @@
         </div>
 
         <div v-if="events" class="flex gap-4 flex-col">
-          <label v-for="(event) in events" :key="event._id" class="flex align-items-center items-center p-4 gap-4 bg-black bg-opacity-40 text-white cursor-pointer" :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
+          <label v-for="(event) in events" :key="event._id" class="flex align-items-center items-center p-4 gap-4 cursor-pointer" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }" :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
               <pvRadioButton v-model="selectedEvent" :inputId="event._id" name="dynamic" :value="event"/>
               <div class="font-semibold opacity-90">{{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
               <div v-if="eventLocations.length > 1">
@@ -58,7 +58,7 @@
                 <!-- <div @click="open" class="w-32 h-32 bg-red-300">
                   <GMap :addresses="eventLocations"/>
                 </div> -->
-                <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open"></pvButton>
+                <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map" @click="open" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"></pvButton>
                 <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
               </template>
               <template #content="{maximized}">
@@ -74,7 +74,7 @@
 
           <div class="text-2xl">Question<span v-if="questions.length > 1">s</span></div>
           <div class="flex flex-col gap-4">
-            <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="bg-white bg-opacity-20 p-4 flex gap-4 flex-wrap">
+            <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="p-4 flex gap-4 flex-wrap" :style="{backgroundColor: config.optionBgColor, color: config.optionTextColor }">
               <div>{{ question.text }}</div>
               <div v-if="question.answerType === 'phone'">
                 <pvInputMask v-model="answers[idx].answer" mask="(999) 999-9999" class="!py-0 h-8" placeholder="(999) 999-999"/>
@@ -93,7 +93,7 @@
         </div>
 
         <div class="mt-4 flex justify-center">
-          <pvButton  raised :label="config.submitBtnText" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.submitBtnColor, 'color': config.submitBtnTextColor }"/>
+          <pvButton  raised :label="'Submit'" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }"/>
         </div>
 
 
@@ -243,27 +243,6 @@ const panelImage = computed(() => {
     return props.templateData.config.panelImage.url
   }
   return ''
-})
-
-const textColor = computed(() => {
-  if (props.templateData.config) {
-    return props.templateData.config.panelTextColor
-  }
-  return '#000'
-})
-
-const firstPanelColor = computed(() => {
-  if (props.templateData.config) {
-    return props.templateData.config.firstPanelColor
-  }
-  return '#fff'
-})
-
-const secondPanelColor = computed(() => {
-  if (props.templateData.config) {
-    return props.templateData.config.secondPanelColor
-  }
-  return '#fff'
 })
 
 const person = computed(() => {

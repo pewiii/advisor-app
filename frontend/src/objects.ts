@@ -60,9 +60,15 @@ const emptyTemplate = {
     backgroundImage: null,
     panelImage: null,
     firstPanelColor: '#fefefebd',
+    firstPanelTextColor: '#000',
     secondPanelColor: '#fefefebd',
-    panelTextColor: '#000',
+    secondPanelTextColor: '#000',
     panelText: 'Dui ut ornare lectus sit amet est. Id aliquet risus feugiat in ante metus dictum. Bibendum neque egestas congue quisque egestas. Habitasse platea dictumst vestibulum rhoncus est pellentesque. Est placerat in egestas erat imperdiet sed. Lacus viverra vitae congue eu. Sit amet risus nullam eget felis eget nunc. At augue eget arcu dictum varius duis at consectetur. Velit dignissim sodales ut eu. Senectus et netus et malesuada fames ac turpis egestas. Viverra nam libero justo laoreet sit.',
+    btnColor: '#2176aeff',
+    btnTextColor: '#fff',
+    optionBgColor: '#fff',
+    optionTextColor: '#000'
+
     // headerImage: null,
     // headerPanelBgColor: '#fefefebd',
     // headerPanelTextColor: '#000',

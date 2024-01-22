@@ -55,10 +55,10 @@
 
               <div class="md:pl-4">
                   <label for="client-first" class="">
-                  Paragraph
+                  Paragraph Text
                 </label>
                 <div class="pl-4">
-                  <Modal :header="'Paragraph'">
+                  <Modal :header="'Paragraph Text'">
                     <template v-slot:trigger="{open}">
                       <pvButton label="Set Text" outlined raised @click="open"/>
                     </template>
@@ -71,34 +71,34 @@
 
               
 
-              <div class="md:pl-4">
-                <label for="client-first" class="">
-                  Text Color
-                </label>
-                <div class="pl-4">
-                  <Modal :header="'Text Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
-                    </template>
-                    <template v-slot:content>
-                      <ColorPicker :color="template.config.panelTextColor" @color-change="(color: any) => template.config.panelTextColor = color.colors.hex" class=""/>
-                    </template>
-                  </Modal>
-                </div>
-              </div>
-
-
+              
+              
               <div class="md:pl-4">
                 <label for="client-first" class="">
                   Panel 1 Coler
                 </label>
                 <div class="pl-4">
-                  <Modal :header="'Panel Color'" :size="'small'">
+                  <Modal :header="'Panel 1 Color'" :size="'small'">
                     <template v-slot:trigger="{open}">
                       <pvButton label="Choose" outlined raised @click="open"/>
                     </template>
                     <template v-slot:content>
                       <ColorPicker :color="template.config.firstPanelColor" @color-change="(color: any) => template.config.firstPanelColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Panel 1 Text Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Panel 1 Text Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.firstPanelTextColor" @color-change="(color: any) => template.config.firstPanelTextColor = color.colors.hex" class=""/>
                     </template>
                   </Modal>
                 </div>
@@ -109,7 +109,7 @@
                   Panel 2 Coler
                 </label>
                 <div class="pl-4">
-                  <Modal :header="'Panel Color'" :size="'small'">
+                  <Modal :header="'Panel 2 Color'" :size="'small'">
                     <template v-slot:trigger="{open}">
                       <pvButton label="Choose" outlined raised @click="open"/>
                     </template>
@@ -119,6 +119,91 @@
                   </Modal>
                 </div>
               </div>
+
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Panel 2 Text Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Panel 2 Texts Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.secondPanelTextColor" @color-change="(color: any) => template.config.secondPanelTextColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Button Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Button Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.btnColor" @color-change="(color: any) => template.config.btnColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Button Text Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Button Text Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.btnTextColor" @color-change="(color: any) => template.config.btnTextColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Option Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Option Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.optionBgColor" @color-change="(color: any) => template.config.optionBgColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Option Text Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Option Text Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.optionTextColor" @color-change="(color: any) => template.config.optionTextColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+
 
 
 
@@ -406,21 +491,21 @@ const previewCampaign = {
   events: [
     {
       locationName: 'Location Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'State',
-      zip: 'Zip Code',
+      address1: '12405 73rd Ct N',
+      address2: '',
+      city: 'Largo',
+      state: 'FL',
+      zip: '33773',
       eventDate: '2024-01-31T05:00:00.000Z',
       timezone: "America/New_York"
     },
     {
       locationName: 'Location Name',
-      address1: 'Address 1',
-      address2: 'Address 2',
-      city: 'City',
-      state: 'State',
-      zip: 'Zip Code',
+      address1: '12405 73rd Ct N',
+      address2: '',
+      city: 'Largo',
+      state: 'FL',
+      zip: '33773',
       eventDate: '2024-02-12T16:00:00.000Z',
       timezone: "America/New_York"
     }
