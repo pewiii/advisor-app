@@ -1,16 +1,19 @@
 <!-- <div class="w-screen h-screen fixed" :style="`background-image: url(${headerImage}); background-size: cover;`"> -->
 <template>
-  <div class="min-w-full min-h-full relative flex items-center justify-center" :style="`background-image: url(${headerImage}); background-size: cover;`">
-    <div class="flex min-w-full justify-center flex-wrap">
+  <div class="min-w-full min-h-full relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
+    <div class="flex min-w-full justify-center flex-wrap" style="{}">
 
-      <div class="bg-white p-4 bg-opacity-75 max-w-xl">
+      <div class="p-4 max-w-xl" :style="{color: textColor, backgroundColor: firstPanelColor}">
         <div class="mb-4 capitalize text-xl flex justify-center font-[500]">
           <div>
             Hello {{ person.firstName.toLowerCase() }}
           </div>
         </div>
         <div>
-          <div class="w-32 h-32 bg-stone-500 float-left mr-6"></div>
+          <!-- <div class="w-32 h-32 bg-stone-500 float-left mr-6"></div> -->
+          <div v-if="panelImage" class="float-left mr-4">
+            <img :src="panelImage" width="200" height="200"/>
+          </div>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed euismod nisi porta lorem mollis. Volutpat odio facilisis mauris sit. Tellus mauris a diam maecenas sed enim ut sem. Eget felis eget nunc lobortis mattis aliquam. Sed adipiscing diam donec adipiscing tristique risus nec feugiat. Neque laoreet suspendisse interdum consectetur libero id faucibus nisl. At auctor urna nunc id cursus. Amet porttitor eget dolor morbi non arcu risus quis varius. Lorem ipsum dolor sit amet. Viverra ipsum nunc aliquet bibendum enim. Praesent semper feugiat nibh sed pulvinar proin gravida hendrerit lectus. Sed elementum tempus egestas sed sed. Eget est lorem ipsum dolor sit amet consectetur adipiscing. Felis imperdiet proin fermentum leo vel orci. Scelerisque varius morbi enim nunc faucibus a pellentesque.</p>
         </div>
       </div>
@@ -18,7 +21,7 @@
 
 
 
-      <div class="bg-white bg-opacity-90 p-4 lg:max-w-xl w-full">
+      <div class="p-4 lg:max-w-xl w-full" :style="{color: textColor, backgroundColor: secondPanelColor}">
         <div class="text-2xl">
           Registration
         </div>
@@ -172,8 +175,6 @@ import { ref, onMounted, computed, watch } from 'vue'
 
 // // import image from '@/assets/tempimage.jpg'
 // import { ref, onMounted, computed, watch } from 'vue'
-import topImage from '@/assets/tempimage.jpg'
-import bottomImage from '@/assets/steak.jpg'
 import moment from 'moment-timezone'
 import { useAuth } from '@/stores/auth'
 import GMap from '@/components/common/GMap.vue'
@@ -182,9 +183,9 @@ import FieldError from '@/components/common/FieldError.vue'
 
 const props = defineProps(['templateData'])
 
-onMounted(() => {
+watch(() => props.templateData, () => {
   console.log(props.templateData)
-})
+}, { deep: true, immediate: true })
 
 const auth = useAuth()
 
@@ -206,14 +207,10 @@ const isValidPhoneNumber = (phoneNumber: string) => {
   return phoneRegex.test(phoneNumber);
 };
 
-watch(answers, () => {
-  console.log(answers.value)
-}, { deep: true })
 
 const formErrors = computed(() => {
   const required = (field: string) => `${field} is required`
   const result = questions.value.map((question: any, idx: number) => {
-    console.log(question.answerType === 'email')
     if (answers.value[idx].answer) {
       if (question.answerType === 'phone' && !isValidPhoneNumber(answers.value[idx].answer)) {
         return required('Valid phone number')
@@ -234,24 +231,40 @@ const component = {
   'number': 'pvInputNumber'
 } as any
 
-const headerImage = computed(() => {
-  if (props.templateData.config && props.templateData.config.headerImage) {
-    console.log(props.templateData.config.headerImage.url)
-    return props.templateData.config.headerImage.url
+const backgroundImage = computed(() => {
+  if (props.templateData.config && props.templateData.config.backgroundImage) {
+    return props.templateData.config.backgroundImage.url
   }
-  return topImage
+  return ''
 })
 
-const infoImage = computed(() => {
-  if (props.templateData.config && props.templateData.config.infoImage) {
-    return props.templateData.config.infoImage.url
+const panelImage = computed(() => {
+  if (props.templateData.config && props.templateData.config.panelImage) {
+    return props.templateData.config.panelImage.url
   }
-  return bottomImage
+  return ''
 })
 
-watch(() => props.templateData, () => {
-  console.log(props.templateData)
-}, { deep: true })
+const textColor = computed(() => {
+  if (props.templateData.config) {
+    return props.templateData.config.panelTextColor
+  }
+  return '#000'
+})
+
+const firstPanelColor = computed(() => {
+  if (props.templateData.config) {
+    return props.templateData.config.firstPanelColor
+  }
+  return '#fff'
+})
+
+const secondPanelColor = computed(() => {
+  if (props.templateData.config) {
+    return props.templateData.config.secondPanelColor
+  }
+  return '#fff'
+})
 
 const person = computed(() => {
   return props.templateData.person || {
@@ -326,8 +339,6 @@ const submitDisabled = computed(() => {
 })
 
 const submit = async () => {
-  console.log(answers.value)
-  console.log(submitDisabled.value)
   if (!person.value._id) return
   loading.value = true
   const data = {

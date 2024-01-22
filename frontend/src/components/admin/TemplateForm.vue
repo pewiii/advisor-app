@@ -30,9 +30,104 @@
               </div>
               <div class="material-icons md-30">settings</div>
             </div>
+
+            <div class="flex flex-wrap gap-4">
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Background Image
+                </label>
+                <div class="pl-4">
+                  <ImageSelect v-model="template.config.backgroundImage"/>
+                </div>
+              </div>
+  
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Paragraph Image
+                </label>
+                <div class="pl-4">
+                  <ImageSelect v-model="template.config.panelImage"/>
+                </div>
+              </div>
+
+              
+
+
+              <div class="md:pl-4">
+                  <label for="client-first" class="">
+                  Paragraph
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Paragraph'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Set Text" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <pvTextArea v-model="template.config.panelText" class="w-full h-80"/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+              
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Text Color
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Text Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.panelTextColor" @color-change="(color: any) => template.config.panelTextColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Panel Coler
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Panel Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.firstPanelColor" @color-change="(color: any) => template.config.firstPanelColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+              <div class="md:pl-4">
+                <label for="client-first" class="">
+                  Panel Coler
+                </label>
+                <div class="pl-4">
+                  <Modal :header="'Panel Color'" :size="'small'">
+                    <template v-slot:trigger="{open}">
+                      <pvButton label="Choose" outlined raised @click="open"/>
+                    </template>
+                    <template v-slot:content>
+                      <ColorPicker :color="template.config.secondPanelColor" @color-change="(color: any) => template.config.secondPanelColor = color.colors.hex" class=""/>
+                    </template>
+                  </Modal>
+                </div>
+              </div>
+
+
+
+            </div>
+
+
   
             <!-- Top Section -->
-            <div class="font-semibold text-gray-700">Top Section</div>
+            <!-- <div class="font-semibold text-gray-700">Top Section</div>
             <div class="flex flex-wrap gap-4">
               <div class="md:pl-4">
                 <label for="client-first" class="">
@@ -87,10 +182,10 @@
                   </Modal>
                 </div>
               </div>
-            </div>
+            </div> -->
   
             <!-- Center Section -->
-            <div class="font-semibold text-gray-700 mt-4">Center Section</div>
+            <!-- <div class="font-semibold text-gray-700 mt-4">Center Section</div>
             <div class="flex flex-wrap gap-4">
               <div class="md:pl-4">
                 <label for="client-first" class="">
@@ -152,10 +247,10 @@
                   </Modal>
                 </div>
               </div>
-            </div>
+            </div> -->
   
             <!-- Bottom Section -->
-            <div class="font-semibold text-gray-700 mt-4">Bottom Section</div>
+            <!-- <div class="font-semibold text-gray-700 mt-4">Bottom Section</div>
             <div class="flex flex-wrap gap-4">
               <div class="md:pl-4">
                 <label for="client-first" class="">
@@ -270,8 +365,8 @@
                   </Modal>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> -->
+          </div> 
         </template>
       </Modal>
       
@@ -280,8 +375,9 @@
         <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors" />
       </div>
     </div>
-
-    <TemplatePreview :template="template" />
+    <div class="h-screen relative">
+      <TemplatePreview :template="template" />
+    </div>
   </form>
 </template>
 

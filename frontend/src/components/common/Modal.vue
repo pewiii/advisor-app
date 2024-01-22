@@ -7,7 +7,6 @@
   :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" 
   maximizable 
   :keepInViewPort="false" 
-  :autoZIndex="false" 
   :appendTo="windowArea" 
   @maximize="maximized=true"
   @unmaximize="maximized=false">

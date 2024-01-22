@@ -29,7 +29,7 @@
   </div> -->
   <template>
     <!-- Navbar start -->
-    <nav class="w-screen bg-primary p-4 xl:px-20 flex justify-around z-50 transition ease-in-out duration-500">
+    <nav class="w-screen bg-primary p-4 xl:px-20 z-5 flex justify-around transition ease-in-out duration-500">
       <!-- Logo start -->
       <div class="flex-col justify-center w-full mt-2">
         <p class="tracking-widest font-extrabold text-2xl lg:text-3xl text-white lg:hidden xl:block">PACK<span class="text-cyan-400">THEM</span>IN</p>
@@ -45,7 +45,7 @@
       <!-- Menu content start -->
       <div 
       ref="menu" 
-      class="absolute justify-end z-50 left-0 top-1 right-0 translate-y-16 bg-opacity-90 bg-primary lg:bg-none lg:bg-opacity-0 shadow hidden lg:flex flex-col gap-4 items-center p-4 lg:flex-row lg:static lg:shadow-none lg:translate-y-0 text-white" 
+      class="absolute justify-end z-10 left-0 top-1 right-0 translate-y-16 bg-opacity-90 bg-primary lg:bg-none lg:bg-opacity-0 shadow hidden lg:flex flex-col gap-4 items-center p-4 lg:flex-row lg:static lg:shadow-none lg:translate-y-0 text-white" 
       role="menu" 
       aria-expanded="false"
       >
