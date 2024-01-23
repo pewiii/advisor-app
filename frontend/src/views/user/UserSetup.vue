@@ -72,7 +72,7 @@ const passwordMatch = ref('')
 const submit = async () => {
   loading.value = true
   try {
-    const res = await auth.api.post(`/clients/setup/${clientId}/${token}`, { password: password.value, passwordMatch: passwordMatch.value })
+    const res = await auth.api.post(`/client/setup/${clientId}/${token}`, { password: password.value, passwordMatch: passwordMatch.value })
     success.value = true
   } catch(err) {
     error.value = true
@@ -83,7 +83,7 @@ const submit = async () => {
 
 onMounted(async () => {
   try {
-    const res = await auth.api.get(`/clients/setup/${clientId}/${token}`)
+    const res = await auth.api.get(`/client/setup/${clientId}/${token}`)
     client.value = res.data
   } catch(err: any) {
     console.log(err.message)

@@ -96,11 +96,11 @@ app.post('/login', auth.login)
 // app.get('/templates', auth.verifyToken, api.templates.getList)
 
 
-app.get('/clients/setup/:clientId/:resetToken', api.client.setup.getSetupClient)
-app.post('/clients/setup/:clientId/:resetToken', api.client.setup.setupClient)
+app.get('/client/setup/:clientId/:resetToken', api.client.setup.getSetupClient)
+app.post('/client/setup/:clientId/:resetToken', api.client.setup.setupClient)
 
 
-// app.get('/client/campaigns', auth.verifyToken, api.campaigns.getClientCampaigns)
+app.get('/client/campaigns', auth.verifyToken, api.client.campaigns.getList)
 
 
 app.post('/offer-code', api.offers.handleOfferCode)
