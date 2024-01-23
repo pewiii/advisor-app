@@ -3,7 +3,7 @@
   <div class="min-w-full min-h-screen  relative flex items-center justify-center" :style="backgroundImage && `background-image: url(${backgroundImage}); background-size: cover;`">
     <div class="flex min-w-full justify-center flex-wrap" style="{}">
 
-      <div class="p-8 max-w-xl" :style="{color: config.firstPanelTextColor, backgroundColor: config.firstPanelColor}">
+      <div class="p-8 lg:max-w-xl w-full" :style="{color: config.firstPanelTextColor, backgroundColor: config.firstPanelColor}">
         <div class="mb-4 capitalize text-xl flex justify-center font-[500]">
           <div>
             Hello {{ person.firstName.toLowerCase() }}
