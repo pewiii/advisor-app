@@ -26,7 +26,6 @@ import { userRoutes } from './user'
 
 import { useAuth } from '@/stores/auth'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,6 +41,9 @@ const router = createRouter({
       path: '/offer',
       name: 'offer',
       beforeEnter() {
+        if (window.location.hostname === 'packthemin.com') {
+          return '/'
+        }
         document.title='RSVP'
       },
       component: () => import('@/views/offer/OfferView.vue'),
@@ -59,7 +61,7 @@ const router = createRouter({
     },
   ]
 })
-    
+
 // router.beforeEach(async (to, from) => {
 //   const auth = useAuthStore()
 //   const name = to.name?.toString() || ''
