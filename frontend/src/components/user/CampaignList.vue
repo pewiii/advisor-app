@@ -119,7 +119,7 @@ const getCampaigns = async () => {
     // const res = await auth.api.get('/client/campaigns')
     const res = await auth.api.get(
       `/client/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    console.log(res.data)
+    console.log(res.data.paginatedResults)
     campaigns.value = res.data.data
     totalRecords.value = res.data.total
   } catch(err) {

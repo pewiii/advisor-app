@@ -1,4 +1,7 @@
 import models from '../../db/models.js'
+import mongoose from 'mongoose'
+import moment from 'moment-timezone'
+
 
 const getList = async (req, res) => {
   try {
@@ -7,12 +10,11 @@ const getList = async (req, res) => {
     const order = parseInt(sortOrder, 10);
     const limit = parseInt(perPage, 10);
     const skip = page * limit;
-    
-    const userId = req.user._id; // Assuming user object has _id property
-    
-    const query = {
-      client: userId, // Include the client's _id in the query
-    };
+
+    console.log(req.user)
+    const currentDate = moment().utc().toDate()
+    const id = new mongoose.Types.ObjectId(req.user.userId)
+    const query = { client: id };
 
     if (search) {
       query.$or = [
@@ -20,24 +22,56 @@ const getList = async (req, res) => {
       ];
     }
 
+    // const paginatedResults = await models.Campaign.find({client: req.user.userId})
+    // console.log(paginatedResults)
+    // const totalCount = paginatedResults.length
+    // const [paginatedResults, totalCount] = await Promise.all([models.Campaign.findMany({client: id}), models.Campaign.findMany({client: id}).count()])
     const [paginatedResults, totalCount] = await Promise.all([
       models.Campaign.aggregate([
         {
           $lookup: {
-            from: 'clients',
-            localField: 'client',
-            foreignField: '_id',
-            as: 'client',
+            from: 'respondents',
+            localField: '_id',
+            foreignField: 'campaign',
+            as: 'respondents',
+          },
+        },
+        {
+          $lookup: {
+            from: 'records',
+            localField: '_id',
+            foreignField: 'campaign',
+            as: 'records',
+          },
+        },
+        {
+          $addFields: {
+            status: {
+              $cond: {
+                if: {
+                  $gt: [
+                    {
+                      $size: {
+                        $filter: {
+                          input: '$events',
+                          as: 'event',
+                          cond: { $gt: ['$$event.eventDate', currentDate] },
+                        },
+                      },
+                    },
+                    0, // Check if there are events in the future
+                  ],
+                },
+                then: 'active', // Set to "active" if there are future events
+                else: 'inactive', // Set to "complete" if there are no future events
+              },
+            },
+            reach: { $size: '$records' }, // Add the 'reach' field counting records
           },
         },
         {
           $project: {
-            title: 1,
-            updatedAt: 1,
-            createdAt: 1,
-            'client.fullName': 1,
-            'client.company': 1,
-            'client._id': 1,
+            records: 0, // Exclude the 'records' field
           },
         },
         {
@@ -56,9 +90,9 @@ const getList = async (req, res) => {
       models.Campaign.countDocuments(query).exec(),
     ]);
 
-    for (let i = 0; i < paginatedResults.length; i++) {
-      paginatedResults[i].client = paginatedResults[i].client[0];
-    }
+    // for (let i = 0; i < paginatedResults.length; i++) {
+    //   paginatedResults[i].client = paginatedResults[i].client[0];
+    // }
 
     res.json({
       paginatedResults,
@@ -74,6 +108,7 @@ const getList = async (req, res) => {
     res.sendStatus(500);
   }
 };
+
 
 export default {
   getList
