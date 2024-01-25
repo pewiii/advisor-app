@@ -25,13 +25,11 @@
 			</a>
 
 			<a href="#services-section" class="menuitem" @click="showNav && navToggle()">
-				<p class="mx-4">Explore</p>
+				<p class="mx-4">Services</p>
 			</a>
 
 			<a href="#contact-section" @click="showNav && navToggle()">
-				<button class="btn">
-					Contact us
-				</button>
+				<p class="mx-4">Contact Us</p>
 			</a>
 
 			<RouterLink :to="{ name: 'user-login' }" class="btn">
