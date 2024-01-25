@@ -1,6 +1,6 @@
 <template>
   <div class="shadow-lg p-4 bg-white">
-    <TemplateForm v-model="template" @onCancel="cancel" @onSubmit="submitTemplate"/>
+    <TemplateForm v-model="template" @onCancel="cancel" @onSubmit="submitTemplate" />
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const getTemplate = async (templateId: any) => {
   try {
     const res = await auth.api.get(`admin/templates/${templateId}`)
     template.value = res.data
-  } catch(err) {
+  } catch (err) {
     error.value = true
   }
 }
@@ -42,6 +42,24 @@ const submitTemplate = async () => {
     const data = JSON.parse(JSON.stringify(template.value))
     data.user = auth.user
     console.log(data)
+
+
+    data.config.questions = data.config.questions.map((question: any) => {
+      const newQuestion = {
+        ...question
+      }
+      if (newQuestion.answerType === 'phone') {
+        newQuestion.label = 'phone'
+        newQuestion.placeholder = 'Phone Number'
+      }
+      if (newQuestion.answerType === 'email') {
+        newQuestion.label = 'email'
+        newQuestion.placeholder = 'Email'
+      }
+      return newQuestion
+    })
+
+
     const info = {
       path: data._id ? `/admin/templates/${data._id}` : '/admin/templates',
       title: data._id ? 'Updated' : 'Created',
@@ -59,7 +77,7 @@ const submitTemplate = async () => {
     }
     getTemplate(res.data._id)
 
-  } catch(err: any) {
+  } catch (err: any) {
     console.log(err.message)
   }
 }

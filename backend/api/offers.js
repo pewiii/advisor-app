@@ -19,7 +19,7 @@ const handleOfferCode = async (req, res) => {
           firstName: record.firstName,
           _id: record._id
         },
-        questions: campaign.questions,
+        // questions: campaign.questions,
         events: campaign.events,
       })
     } else {
@@ -34,8 +34,8 @@ const handleOfferCode = async (req, res) => {
 const rsvp = async (req, res) => {
   const data = req.body
   console.log(data)
-  
-  try {    
+
+  try {
     const answerInfo = {}
     let infoCount = 1
     data.answers.forEach(answer => {

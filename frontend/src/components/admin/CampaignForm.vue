@@ -247,111 +247,12 @@
       </div>
     </div>
 
-    <div class="border-t-2 pt-4 border-b-2 pb-4">
-      <div class="flex items-center justify-between text-primary font-semibold">
-        <div class="flex gap-2">
-            <div class="text-lg">
-              Questions
-            </div>
-            <div class="material-icons md-30">question_mark</div>
-          </div>
-        <div>
-            <pvButton v-ripple class="p-ripple" raised @click="addQuestion" size="small" icon="pi pi-plus" iconPos="right" label="Add Question" outlined />
-          </div>
-      </div>
-      <div>
-        <div v-for="(question, idx) in campaign.questions" class="mt-4 bg-gray-100" :key="`campaign-question-${idx}`">
-          <div class="text-slate-600 flex justify-between bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50" @click="expandQuestion(question)">
-              <div class="flex gap-2">
-                <div class="font-semibold">
-                  Question {{ idx + 1 }}
-                </div>
-                <div v-if="campaign.questions.length" class="flex cursor-pointer font-bold text-primary">
-                  <div v-if="expandedQuestions.includes(question)" class="flex">
-                    <div class="flex items-center justify-center">Collapse</div>
-                    <span class="material-icons">expand_less</span>
-                  </div>
-                  <div v-else class="flex">
-                    <div class="flex items-center justify-center">Expand</div>
-                    <span class="material-icons">expand_more</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex gap-2">
-                <pvButton v-ripple class="p-ripple h-7" icon="pi pi-copy" v-tooltip.top="'Clone Question'" @click="cloneQuestion(question)"></pvButton>
-                <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete Question'" @click="removeQuestion(question)"></pvButton>
-              </div>
-            </div>
-          <div v-if="expandedQuestions.includes(question)" class="bg-gray-100 pr-4 pb-2">
-            <div class="md:pl-4">
-              <label :for="`question-${idx}-text`" class="">
-                Question
-                <FieldError :error="formErrors.questions[idx].text" />
-              </label>
-              <div class="pl-2">
-                <pvInputText :id="`question-${idx}-text`" v-model="campaign.questions[idx].text" placeholder="Question Text" size="small" class="w-full h-9"/>
-              </div>
-            </div>
-            <div class="flex flex-col md:flex-row">
-              <div class="md:pl-4 flex-1">
-                <label :for="`question-${idx}-answertype`" class="">
-                  Answer Type
-                  <FieldError :error="formErrors.questions[idx].answerType" />
-                </label>
-                <div class="pl-2">
-                  <pvDropdown :id="`question-${idx}-answertype`" v-model="campaign.questions[idx].answerType" :options="objects.questionTypes" optionLabel="name" optionValue="value" class="w-full h-9"/>
-                </div>
-              </div>
-              <div class="md:pl-4 flex-1" v-if="getQuestionType(campaign.questions[idx].answerType).label">
-                <label :for="`question-${idx}-placeholder`" class="">
-                  Label
-                  <FieldError :error="formErrors.questions[idx].label" />
-                </label>
-                <div class="pl-2">
-                  <pvInputText :id="`question-${idx}-label`" v-model="campaign.questions[idx].label" placeholder="Label" size="small" class="w-full h-9"/>
-                </div>
-              </div>
-              <div class="md:pl-4 flex-1" v-if="getQuestionType(campaign.questions[idx].answerType).placeholder">
-                <label :for="`question-${idx}-placeholder`" class="">
-                  Placeholder Text
-                </label>
-                <div class="pl-2">
-                  <pvInputText :id="`question-${idx}-placeholder`" v-model="campaign.questions[idx].placeholder" placeholder="Placeholder" size="small" class="w-full h-9"/>
-                </div>
-              </div>
-            </div>
-            <div v-if="question.answerType === 'select'" class="w-full md:pl-8">
-              <div class="flex">
-                <label class="label mt-2 mr-2">Options:</label>
-                <div class="">
-                  <pvButton v-ripple @click="question.options.push('')" size="small" icon="pi pi-plus" iconPos="right" rounded class="p-ripple !h-7 !w-7 mt-1" />
-                </div>
-              </div>
-              <div class="md:pl-4 w-full" v-for="(option, opIdx) in question.options" :key="`campaign-queston-${idx}-option-${opIdx}`">
-                <div class="flex justify-between h-8 mt-2">
-                  <label :for="`question-${idx}-option-${opIdx}`" class="">
-                    Option {{ opIdx + 1 }}
-                  </label>
-                  <!-- <div class="material-icons text-slate-600 hover:text-red-600 cursor-pointer" @click="removeOption(question.options, idx)">delete</div> -->
-                  <pvButton severity="danger" text v-ripple class="p-ripple h-6" icon="pi pi-delete-left" v-tooltip.top="'Delete Option'" @click="removeOption(question.options, idx)"></pvButton>
-                </div>
-                <div class="pl-2 md:flex w-full">
-                  <pvInputText :id="`event-${idx}-address1`" v-model="campaign.questions[idx].options[opIdx]" placeholder="Dropdown Option" class="w-full h-9"/>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
     <div class="flex justify-center mt-16 gap-4 flex-wrap">
       <Modal :header="'Landing Preview'">
         <template #trigger="{open}">
           <pvButton v-ripple class="p-ripple" label="Preview" icon="pi pi-web" iconPos="right" severity="warning" @click="open" raised :disabled="!Boolean(campaign.template)"/>
         </template>
-        <template #content="{maximized}">
+        <template #content="{}">
           <!-- <div :class="maximized ? 'h-screen' : ''"> -->
             <TemplatePreview :template="campaign.template" :previewCampaign="campaign"/>
           <!-- </div> -->
@@ -383,7 +284,7 @@ const emit = defineEmits(['update:campaign', 'onSubmit', 'onCancel'])
 
 const auth = useAuth()
 const expandedEvents = ref([] as any[])
-const expandedQuestions = ref([] as any[])
+// const expandedQuestions = ref([] as any[])
 
 const campaign = computed({
   get() {
@@ -409,10 +310,6 @@ const fileExpired = computed(() => {
 const nonUniqueTitles = {} as any
 const uniqueTitles = {} as any
 
-const getQuestionType = (answerType: any) => {
-  return objects.questionTypes.find(questionType => questionType.value === answerType) || { label: false, placeholder: false}
-}
-
 
 // validation
 const formErrors = ref({} as any)
@@ -434,21 +331,6 @@ watch(campaign, async (newCampaign, oldCampaign) => {
       ...event.timezone ? {} : { timezone: required('Timezone')}
     }
   })
-  const labels = [] as string[]
-  const questions = campaign.value.questions.map((question: any) => {
-    console.log(getQuestionType(question.answerType))
-    const result = {
-      ...question.text ? {} : { text: required('Question')},
-      ...question.answerType ? {} : { answerType: required('Answer type')},
-      ...getQuestionType(question.answerType).label && !question.label ? { label: required('Label')} : {},
-      // ...labels.includes(question.label) ? { label: 'Label must be unique' } : {}
-    }
-    if (labels.includes(question.label)) {
-      result.label = 'Label must be unique'
-    }
-    labels.push(question.label)
-    return result
-  })
 
   if (campaign.value.title && !uniqueTitles[campaign.value.title]) {
     try {
@@ -461,7 +343,7 @@ watch(campaign, async (newCampaign, oldCampaign) => {
     } catch(err) {
       console.log(err)
     }
-    
+
   }
 
   if (nonUniqueTitles[campaign.value.title]) {
@@ -469,10 +351,8 @@ watch(campaign, async (newCampaign, oldCampaign) => {
   }
 
   const hasEventErrors = events.some((event: any) => Object.keys(event).length)
-  const hasQuestionErrors = questions.some((question: any) => Object.keys(question).length)
-  errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors || hasQuestionErrors
+  errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors
   errors.events = events
-  errors.questions = questions
   formErrors.value = errors
 }, { deep: true, immediate: true })
 
@@ -514,37 +394,6 @@ const cloneEvent = (event: any) => {
   delete newEvent._id
   campaign.value.events.push(newEvent)
   expandEvent(newEvent)
-}
-
-const cloneQuestion = (question: any) => {
-  const newQuestion = { ...question, options: [...question.options] }
-  delete newQuestion._id
-  campaign.value.questions.push(newQuestion)
-  expandQuestion(newQuestion)
-}
-
-const expandQuestion = (question: any) => {
-  if (expandedQuestions.value.includes(question)) {
-    expandedQuestions.value = expandedQuestions.value.filter(expandedQuestion => expandedQuestion !== question)
-  } else {
-    expandedQuestions.value.push(question)
-  }
-}
-const addQuestion = () => {
-  const question = { ...objects.emptyQuestion, options: [] }
-  campaign.value.questions.push(question)
-  expandQuestion(question)
-}
-const removeQuestion = (question: any) => {
-  campaign.value.questions = campaign.value.questions.filter((campaignQuestion: any) => campaignQuestion !== question)
-}
-const removeOption = (options: string[], idx: number) => {
-  if (idx >= 0 && idx < options.length) {
-    options.splice(idx, 1)
-  } else {
-    console.error('Invalid index. Index must be within the range of the array.')
-  }
-  return options
 }
 
 const removeFile = async () => {

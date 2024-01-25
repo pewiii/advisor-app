@@ -234,13 +234,13 @@ const eventSchema = new mongoose.Schema({
   }
 })
 
-const questionSchema = new mongoose.Schema({
-  text: String,
-  answerType: String,
-  placeholder: String,
-  label: String,
-  options: [String]  
-})
+// const questionSchema = new mongoose.Schema({
+//   text: String,
+//   answerType: String,
+//   placeholder: String,
+//   label: String,
+//   options: [String]
+// })
 
 
 const campaignSchema = new mongoose.Schema({
@@ -260,7 +260,7 @@ const campaignSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Template'
   },
-  questions: [questionSchema],
+  // questions: [questionSchema],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

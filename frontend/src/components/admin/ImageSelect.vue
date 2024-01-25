@@ -1,40 +1,41 @@
 <template>
   <Modal :header="'Image Select'">
     <template v-slot:trigger="{ open }">
-      <pvButton label="Select" @click="open" raised outlined icon="pi pi-image" iconPos="right" size="small"/>
+      <pvButton label="Select" @click="open" raised outlined icon="pi pi-image" iconPos="right" size="small" />
     </template>
     <template v-slot:content>
 
-      <pvGalleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images" :responsiveOptions="responsiveOptions" :numVisible="7"
-        containerStyle="max-width: 850px" :circular="true" :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
+      <pvGalleria v-model:activeIndex="activeIndex" v-model:visible="displayCustom" :value="images"
+        :responsiveOptions="responsiveOptions" :numVisible="7" containerStyle="max-width: 50vh" :circular="true"
+        :fullScreen="true" :showItemNavigators="true" :showThumbnails="false">
         <template #header>
           <div class="flex justify-center mb-4 gap-8">
-            <pvButton label="Delete Image" severity="danger" @click="deleteImage"/>
-            <pvButton label="Use Image" @click="selectImage"/>
+            <pvButton label="Delete Image" severity="danger" @click="deleteImage" />
+            <pvButton label="Use Image" @click="selectImage" />
           </div>
         </template>
         <template #item="slotProps">
-            <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="width: 100%; display: block" />
+          <img :src="slotProps.item.url" :alt="slotProps.item.alt" style="width: 100%; display: block" />
         </template>
       </pvGalleria>
 
 
       <div v-if="images" class="flex flex-wrap gap-4">
-          <div v-for="(image, index) of images" :key="index" class="w-48 h-48">
-              <img :src="image.url" :alt="image.alt" @click="imageClick(index)" class="cursor-pointer" />
-          </div>
+        <div v-for="(image, index) of images" :key="index" class="w-48 h-48">
+          <img :src="image.url" :alt="image.alt" @click="imageClick(index)" class="cursor-pointer" />
+        </div>
       </div>
 
       <div class="">
         <div>
           <label></label>
           <input id="choose_file" ref="imageUpload" @change="handleFileChange" type="file" accept="image/*" hidden>
-          <pvButton v-ripple class="p-ripple whitespace-nowrap" @click="chooseFiles()" raised label="Add Image" icon="pi pi-file" iconPos="right" outlined size="small" text/>
+          <pvButton v-ripple class="p-ripple whitespace-nowrap" @click="chooseFiles()" raised label="Add Image"
+            icon="pi pi-file" iconPos="right" outlined size="small" text />
         </div>
       </div>
     </template>
   </Modal>
-
 </template>
 
 <script lang="ts" setup>
@@ -66,16 +67,16 @@ const imageClick = (idx: number) => {
 
 const responsiveOptions = [
   {
-      breakpoint: '1024px',
-      numVisible: 5
+    breakpoint: '1024px',
+    numVisible: 5
   },
   {
-      breakpoint: '768px',
-      numVisible: 3
+    breakpoint: '768px',
+    numVisible: 3
   },
   {
-      breakpoint: '560px',
-      numVisible: 1
+    breakpoint: '560px',
+    numVisible: 1
   }
 ]
 
@@ -106,11 +107,11 @@ const uploadFile = async (file: any) => {
     formData.append('file', file)
     const res = await auth.api.post('/uploads/image/add', formData, {
       headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        'Content-Type': 'multipart/form-data'
+      }
     })
-    images.value = [ res.data, ...images.value]
-  } catch(err: any) {
+    images.value = [res.data, ...images.value]
+  } catch (err: any) {
     console.log(err)
   }
 }
@@ -128,12 +129,12 @@ const handleFileChange = async (e: Event) => {
     if (inputEl.files && inputEl.files[0]) {
       await uploadFile(inputEl.files[0])
       notify({
-      title: 'Image File',
-      text: 'File uploaded successfully',
-      type: 'success'
+        title: 'Image File',
+        text: 'File uploaded successfully',
+        type: 'success'
       })
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
   loading.value = false

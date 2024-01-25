@@ -65,22 +65,22 @@ const submitCampaign = async () => {
     } else {
       delete data.template
     }
-    
 
-    data.questions = data.questions.map((question: any) => {
-      const newQuestion = {
-        ...question
-      }
-      if (newQuestion.answerType === 'phone') {
-        newQuestion.label = 'phone'
-        newQuestion.placeholder = 'Phone Number'
-      }
-      if (newQuestion.answerType === 'email') {
-        newQuestion.label = 'email'
-        newQuestion.placeholder = 'Email'
-      }
-      return newQuestion
-     })
+
+    // data.questions = data.questions.map((question: any) => {
+    //   const newQuestion = {
+    //     ...question
+    //   }
+    //   if (newQuestion.answerType === 'phone') {
+    //     newQuestion.label = 'phone'
+    //     newQuestion.placeholder = 'Phone Number'
+    //   }
+    //   if (newQuestion.answerType === 'email') {
+    //     newQuestion.label = 'email'
+    //     newQuestion.placeholder = 'Email'
+    //   }
+    //   return newQuestion
+    // })
 
 
     const info = {
@@ -95,12 +95,12 @@ const submitCampaign = async () => {
       text: info.text,
       type: 'success'
     })
-    
+
     if (route.name === 'admin-campaigns-add') {
       router.replace({ name: 'admin-campaigns-edit', params: { campaignId: res.data._id } })
     }
     getCampaign(res.data._id)
-    
+
   } catch(err: any) {
     console.log(err)
   }

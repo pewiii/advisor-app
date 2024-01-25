@@ -27,7 +27,7 @@ const emptyCampaign = {
   // extraQuestions: [],
   user: '',
   events: [] as any[],
-  questions: [] as any[],
+  // questions: [] as any[],
   file: null
   // files: null as any
 }
@@ -67,7 +67,8 @@ const emptyTemplate = {
     btnColor: '#2176aeff',
     btnTextColor: '#fff',
     optionBgColor: '#fff',
-    optionTextColor: '#000'
+    optionTextColor: '#000',
+    questions: [] as any[],
 
     // headerImage: null,
     // headerPanelBgColor: '#fefefebd',

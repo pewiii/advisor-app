@@ -15,11 +15,9 @@ import LoginNav from '@/components/LoginNav.vue'
 const auth = useAuth()
 
 const login = async (credentials: { email: string, password: string }) => {
-  try {
-    await auth.login(credentials, 'admin')
+  await auth.login(credentials, 'admin')
+  if(auth.user && auth.isAdmin) {
     router.push({ name: 'admin-campaigns' })
-  } catch(err: any) {
-    console.log(err.message)
   }
 }
 

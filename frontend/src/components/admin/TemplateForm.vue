@@ -2,8 +2,9 @@
   <form class="">
     <div class="flex justify-between mb-4">
       <Modal :header="'Edit Template'">
-        <template #trigger="{open}">
-          <pvButton v-ripple class="p-ripple" label="Edit" icon="pi pi-web" iconPos="right" severity="warning" @click="open" raised/>
+        <template #trigger="{ open }">
+          <pvButton v-ripple class="p-ripple" label="Edit" icon="pi pi-web" iconPos="right" severity="warning"
+            @click="open" raised />
         </template>
         <template #content>
           <div>
@@ -16,10 +17,11 @@
             <div class="md:pl-4">
               <label for="template-title" class="">
                 Unique Title
-                <FieldError :error="formErrors.title"></FieldError>
+                <FieldError :error="formErrors.title" class="relative" />
               </label>
               <div class="pl-2">
-                <pvInputText id="template-title" v-model="template.title" placeholder="Template Title" class="w-full h-9"/>
+                <pvInputText id="template-title" v-model="template.title" placeholder="Template Title"
+                  class="w-full h-9" />
               </div>
             </div>
           </div>
@@ -37,53 +39,54 @@
                   Background Image
                 </label>
                 <div class="pl-4">
-                  <ImageSelect v-model="template.config.backgroundImage"/>
+                  <ImageSelect v-model="template.config.backgroundImage" />
                 </div>
               </div>
-  
+
               <div class="md:pl-4">
                 <label for="client-first" class="">
                   Paragraph Image
                 </label>
                 <div class="pl-4">
-                  <ImageSelect v-model="template.config.panelImage"/>
+                  <ImageSelect v-model="template.config.panelImage" />
                 </div>
               </div>
 
-              
+
 
 
               <div class="md:pl-4">
-                  <label for="client-first" class="">
+                <label for="client-first" class="">
                   Paragraph Text
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Paragraph Text'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Set Text" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Set Text" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <pvTextArea v-model="template.config.panelText" class="w-full h-80"/>
+                      <pvTextArea v-model="template.config.panelText" class="w-full h-80" />
                     </template>
                   </Modal>
                 </div>
               </div>
 
-              
 
-              
-              
+
+
+
               <div class="md:pl-4">
                 <label for="client-first" class="">
                   Panel 1 Coler
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel 1 Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.firstPanelColor" @color-change="(color: any) => template.config.firstPanelColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.firstPanelColor"
+                        @color-change="(color: any) => template.config.firstPanelColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -94,11 +97,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel 1 Text Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.firstPanelTextColor" @color-change="(color: any) => template.config.firstPanelTextColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.firstPanelTextColor"
+                        @color-change="(color: any) => template.config.firstPanelTextColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -110,11 +114,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel 2 Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.secondPanelColor" @color-change="(color: any) => template.config.secondPanelColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.secondPanelColor"
+                        @color-change="(color: any) => template.config.secondPanelColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -127,11 +132,13 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Panel 2 Texts Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.secondPanelTextColor" @color-change="(color: any) => template.config.secondPanelTextColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.secondPanelTextColor"
+                        @color-change="(color: any) => template.config.secondPanelTextColor = color.colors.hex"
+                        class="" />
                     </template>
                   </Modal>
                 </div>
@@ -144,11 +151,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Button Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.btnColor" @color-change="(color: any) => template.config.btnColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.btnColor"
+                        @color-change="(color: any) => template.config.btnColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -161,11 +169,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Button Text Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.btnTextColor" @color-change="(color: any) => template.config.btnTextColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.btnTextColor"
+                        @color-change="(color: any) => template.config.btnTextColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -177,11 +186,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Option Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.optionBgColor" @color-change="(color: any) => template.config.optionBgColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.optionBgColor"
+                        @color-change="(color: any) => template.config.optionBgColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -193,11 +203,12 @@
                 </label>
                 <div class="pl-4">
                   <Modal :header="'Option Text Color'" :size="'small'">
-                    <template v-slot:trigger="{open}">
-                      <pvButton label="Choose" outlined raised @click="open"/>
+                    <template v-slot:trigger="{ open }">
+                      <pvButton label="Choose" outlined raised @click="open" />
                     </template>
                     <template v-slot:content>
-                      <ColorPicker :color="template.config.optionTextColor" @color-change="(color: any) => template.config.optionTextColor = color.colors.hex" class=""/>
+                      <ColorPicker :color="template.config.optionTextColor"
+                        @color-change="(color: any) => template.config.optionTextColor = color.colors.hex" class="" />
                     </template>
                   </Modal>
                 </div>
@@ -207,10 +218,128 @@
 
 
 
+
+
+            </div>
+
+            <div class="border-t-2 pt-4 border-b-2 pb-4 mt-4">
+              <div class="flex items-center justify-between text-primary font-semibold">
+                <div class="flex gap-2">
+                  <div class="text-lg">
+                    Questions
+                  </div>
+                  <div class="material-icons md-30">question_mark</div>
+                </div>
+                <div>
+                  <pvButton v-ripple class="p-ripple" raised @click="addQuestion" size="small" icon="pi pi-plus"
+                    iconPos="right" label="Add Question" outlined />
+                </div>
+              </div>
+              <div>
+                <div v-for="(question, idx) in template.config.questions" class="mt-4 bg-gray-100"
+                  :key="`template-question-${idx}`">
+                  <div
+                    class="text-slate-600 flex justify-between bg-primary bg-opacity-20 p-1 hover:bg-opacity-30 border-1 border-primary border-opacity-50"
+                    @click="expandQuestion(question)">
+                    <div class="flex gap-2">
+                      <div class="font-semibold">
+                        Question {{ idx + 1 }}
+                      </div>
+                      <div v-if="template.config.questions.length" class="flex cursor-pointer font-bold text-primary">
+                        <div v-if="expandedQuestions.includes(question)" class="flex">
+                          <div class="flex items-center justify-center">Collapse</div>
+                          <span class="material-icons">expand_less</span>
+                        </div>
+                        <div v-else class="flex">
+                          <div class="flex items-center justify-center">Expand</div>
+                          <span class="material-icons">expand_more</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <pvButton v-ripple class="p-ripple h-7" icon="pi pi-copy" v-tooltip.top="'Clone Question'"
+                        @click="cloneQuestion(question)"></pvButton>
+                      <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left"
+                        v-tooltip.top="'Delete Question'" @click="removeQuestion(question)"></pvButton>
+                    </div>
+                  </div>
+                  <div v-if="expandedQuestions.includes(question)" class="bg-gray-100 pr-4 pb-2">
+                    <div class="md:pl-4">
+                      <label :for="`question-${idx}-text`" class="">
+                        Question
+                        <FieldError :error="formErrors.questions[idx].text" class="relative" />
+                      </label>
+                      <div class="pl-2">
+                        <pvInputText :id="`question-${idx}-text`" v-model="template.config.questions[idx].text"
+                          placeholder="Question Text" size="small" class="w-full h-9" />
+                      </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                      <div class="md:pl-4 flex-1">
+                        <label :for="`question-${idx}-answertype`" class="">
+                          Answer Type
+                          <FieldError :error="formErrors.questions[idx].answerType" class="relative" />
+                        </label>
+                        <div class="pl-2">
+                          <pvDropdown :id="`question-${idx}-answertype`"
+                            v-model="template.config.questions[idx].answerType" :options="objects.questionTypes"
+                            optionLabel="name" optionValue="value" class="w-full h-9 relative" />
+                        </div>
+                      </div>
+                      <div class="md:pl-4 flex-1" v-if="getQuestionType(template.config.questions[idx].answerType).label">
+                        <label :for="`question-${idx}-placeholder`" class="">
+                          Label
+                          <FieldError :error="formErrors.questions[idx].label" class="relative" />
+                        </label>
+                        <div class="pl-2">
+                          <pvInputText :id="`question-${idx}-label`" v-model="template.config.questions[idx].label"
+                            placeholder="Label" size="small" class="w-full h-9" />
+                        </div>
+                      </div>
+                      <div class="md:pl-4 flex-1"
+                        v-if="getQuestionType(template.config.questions[idx].answerType).placeholder">
+                        <label :for="`question-${idx}-placeholder`" class="">
+                          Placeholder Text
+                        </label>
+                        <div class="pl-2">
+                          <pvInputText :id="`question-${idx}-placeholder`"
+                            v-model="template.config.questions[idx].placeholder" placeholder="Placeholder" size="small"
+                            class="w-full h-9" />
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="question.answerType === 'select'" class="w-full md:pl-8">
+                      <div class="flex">
+                        <label class="label mt-2 mr-2">Options:</label>
+                        <div class="">
+                          <pvButton v-ripple @click="question.options.push('')" size="small" icon="pi pi-plus"
+                            iconPos="right" rounded class="p-ripple !h-7 !w-7 mt-1" />
+                        </div>
+                      </div>
+                      <div class="md:pl-4 w-full" v-for="(option, opIdx) in question.options"
+                        :key="`template-queston-${idx}-option-${opIdx}`">
+                        <div class="flex justify-between h-8 mt-2">
+                          <label :for="`question-${idx}-option-${opIdx}`" class="">
+                            Option {{ opIdx + 1 }}
+                          </label>
+                          <!-- <div class="material-icons text-slate-600 hover:text-red-600 cursor-pointer" @click="removeOption(question.options, idx)">delete</div> -->
+                          <pvButton severity="danger" text v-ripple class="p-ripple h-6" icon="pi pi-delete-left"
+                            v-tooltip.top="'Delete Option'" @click="removeOption(question.options, idx)"></pvButton>
+                        </div>
+                        <div class="pl-2 md:flex w-full">
+                          <pvInputText :id="`event-${idx}-address1`"
+                            v-model="template.config.questions[idx].options[opIdx]" placeholder="Dropdown Option"
+                            class="w-full h-9" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
 
-  
             <!-- Top Section -->
             <!-- <div class="font-semibold text-gray-700">Top Section</div>
             <div class="flex flex-wrap gap-4">
@@ -268,7 +397,7 @@
                 </div>
               </div>
             </div> -->
-  
+
             <!-- Center Section -->
             <!-- <div class="font-semibold text-gray-700 mt-4">Center Section</div>
             <div class="flex flex-wrap gap-4">
@@ -333,7 +462,7 @@
                 </div>
               </div>
             </div> -->
-  
+
             <!-- Bottom Section -->
             <!-- <div class="font-semibold text-gray-700 mt-4">Bottom Section</div>
             <div class="flex flex-wrap gap-4">
@@ -359,7 +488,7 @@
                     </template>
                   </Modal>
                 </div>
-              </div>        
+              </div>
               <div class="md:pl-4">
                 <label for="client-first" class="">
                   Panel Coler
@@ -451,13 +580,15 @@
                 </div>
               </div>
             </div> -->
-          </div> 
+          </div>
         </template>
       </Modal>
-      
+
       <div class="flex gap-4">
-        <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary" @click="emit('onCancel')" raised />
-        <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')" raised :disabled="formErrors.hasErrors" />
+        <pvButton v-ripple class="p-ripple" label="Back" icon="pi pi-arrow-left" iconPos="right" severity="secondary"
+          @click="emit('onCancel')" raised />
+        <pvButton v-ripple class="p-ripple" label="Save" icon="pi pi-check" iconPos="right" @click="emit('onSubmit')"
+          raised :disabled="formErrors.hasErrors" />
       </div>
     </div>
     <div class="h-screen relative">
@@ -473,6 +604,7 @@ import ImageSelect from '@/components/admin/ImageSelect.vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
 import FieldError from '@/components/common/FieldError.vue'
 import TemplatePreview from '@/components/admin/TemplatePreview.vue'
+import objects from '@/objects'
 
 const props = defineProps(['modelValue'])
 
@@ -512,19 +644,19 @@ const previewCampaign = {
   ],
   questions: [
     {
-        "text": "Are you bringing a guest?",
-        "answerType": "select",
-        "placeholder": "",
-        "label": "guest",
-        "options": [
-            "Yes",
-            "No"
-        ],
+      "text": "Are you bringing a guest?",
+      "answerType": "select",
+      "placeholder": "",
+      "label": "guest",
+      "options": [
+        "Yes",
+        "No"
+      ],
     },
     {
-        "text": "What is your phone number?",
-        "answerType": "phone",
-        "options": [],
+      "text": "What is your phone number?",
+      "answerType": "phone",
+      "options": [],
     }
   ],
 }
@@ -536,14 +668,71 @@ watch(template, () => {
   let errors = {
     ...template.value.title ? {} : { title: required('Title') }
   } as any;
-  errors.hasErrors = Boolean(Object.keys(errors).length)
+
+  const labels = [] as string[]
+  const questions = template.value.config.questions.map((question: any) => {
+    console.log(getQuestionType(question.answerType))
+    const result = {
+      ...question.text ? {} : { text: required('Question') },
+      ...question.answerType ? {} : { answerType: required('Answer type') },
+      ...getQuestionType(question.answerType).label && !question.label ? { label: required('Label') } : {},
+      // ...labels.includes(question.label) ? { label: 'Label must be unique' } : {}
+    }
+    if (labels.includes(question.label)) {
+      result.label = 'Label must be unique'
+    }
+    labels.push(question.label)
+    return result
+  })
+
+  const hasQuestionErrors = questions.some((question: any) => Object.keys(question).length)
+  errors.hasErrors = Boolean(Object.keys(errors).length) || hasQuestionErrors
+  // errors.hasErrors = Boolean(Object.keys(errors).length)
+  errors.questions = questions
   formErrors.value = errors
 }, { deep: true, immediate: true })
 
+const expandedQuestions = ref([] as any[])
+
+const cloneQuestion = (question: any) => {
+  const newQuestion = { ...question, options: [...question.options] }
+  delete newQuestion._id
+  template.value.config.questions.push(newQuestion)
+  expandQuestion(newQuestion)
+}
+
+const expandQuestion = (question: any) => {
+  if (expandedQuestions.value.includes(question)) {
+    expandedQuestions.value = expandedQuestions.value.filter(expandedQuestion => expandedQuestion !== question)
+  } else {
+    expandedQuestions.value.push(question)
+  }
+}
+
+const addQuestion = () => {
+  const question = { ...objects.emptyQuestion, options: [] }
+  template.value.config.questions.push(question)
+  expandQuestion(question)
+}
+const removeQuestion = (question: any) => {
+  template.value.config.questions = template.value.config.questions.filter((templateQuestion: any) => templateQuestion !== question)
+}
+
+const removeOption = (options: string[], idx: number) => {
+  if (idx >= 0 && idx < options.length) {
+    options.splice(idx, 1)
+  } else {
+    console.error('Invalid index. Index must be within the range of the array.')
+  }
+  return options
+}
+
+const getQuestionType = (answerType: any) => {
+  return objects.questionTypes.find(questionType => questionType.value === answerType) || { label: false, placeholder: false }
+}
+
 </script>
 
-<style scoped>
-  input {
-    @apply px-4 bg-gray-100 hover:bg-white
-  }
-</style>
+<style scoped>input {
+  @apply px-4 bg-gray-100 hover:bg-white
+}</style>
