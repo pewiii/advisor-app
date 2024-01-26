@@ -63,7 +63,21 @@
             </pvDataTable>
           </div>
       </template>
+      <template #footer>
+        <div class="h-10 flex justify-around md:justify-between items-center" >
+          <div class="hidden md:block">
+            Total Campaigns: {{ totalRecords }}
+          </div>
+          <div class="">
+            <pvPaginator ref="campaignPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" />
+          </div>
+          <!-- <div class="md:hidden">
+            <pvPaginator ref="campaignPaginator" :rows="perPage" :totalRecords="totalRecords" template="PrevPageLink CurrentPageReport NextPageLink" @page="handlePage" />
+          </div> -->
+        </div>
+      </template>
     </pvDataTable>
+
   </div>
 </template>
 
@@ -78,12 +92,13 @@ const props = defineProps(['selectedCampaign', 'selectedRespondent', 'search'])
 
 const emit = defineEmits(['update:selectedCampaign', 'update:selectedRespondent'])
 
-const loading = ref(false)
+const campaignPaginator = ref(null as any)
 const campaigns = ref([])
-
+const loading = ref(false)
 const page = ref(0)
 const perPage = ref(5)
 const totalRecords = ref(0)
+const deleteLoading = ref(false)
 const sortField = ref('updatedAt')
 const sortOrder = ref(-1)
 
@@ -119,13 +134,19 @@ const getCampaigns = async () => {
     // const res = await auth.api.get('/client/campaigns')
     const res = await auth.api.get(
       `/client/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    console.log(res.data.paginatedResults)
-    campaigns.value = res.data.data
-    totalRecords.value = res.data.total
+    console.log(res.data)
+    campaigns.value = res.data.paginatedResults
+    totalRecords.value = res.data.totalCount
   } catch(err) {
     console.log(err)
   }
   loading.value = false
+}
+
+const handlePage = (pagination: any) => {
+  perPage.value = pagination.rows
+  page.value = pagination.page
+  getCampaigns()
 }
 
 
