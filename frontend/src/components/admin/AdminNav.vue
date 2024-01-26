@@ -76,8 +76,8 @@
           <UserMenu />
         </div>
 
-			<!-- <RouterLink :to="{ name: 'user-login' }" class="btn">
-          <a href="#user-login" class="nav-btn">Log In</a>
+			<!-- <RouterLink :to="{ name: 'client-login' }" class="btn">
+          <a href="#client-login" class="nav-btn">Log In</a>
       </RouterLink> -->
 			<!-- Links end -->
 		</div>

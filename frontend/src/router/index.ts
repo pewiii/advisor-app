@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { adminRoutes } from './admin'
 import { homeRoutes } from './home'
-import { userRoutes } from './user'
+import { clientRoutes } from './client'
 // import ClientView from '@/views/client/ClientView.vue'
 // import HomeView from '@/views/HomeView.vue'
 // import DashboardView from '@/views/user/DashboardView.vue'
@@ -31,7 +31,7 @@ const router = createRouter({
   routes: [
     ...homeRoutes,
     ...adminRoutes,
-    ...userRoutes,
+    ...clientRoutes,
       //   {
       //     path: 'dashboard',
       //     name: 'dashboard',
@@ -57,7 +57,7 @@ const router = createRouter({
           auth.logout()
         }
       },
-      component: () => import('@/views/user/UserSetup.vue')
+      component: () => import('@/views/client/ClientSetup.vue')
     },
   ]
 })

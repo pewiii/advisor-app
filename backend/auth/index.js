@@ -130,7 +130,7 @@ const login = async (req, res) => {
         email: client.email,
         firstName: client.firstName,
         _id: client._id,
-        userType: 'user',
+        userType: 'client',
         superUser: false
       }
     })

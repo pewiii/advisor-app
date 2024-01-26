@@ -71,12 +71,12 @@ export const useAuth = defineStore('auth', () => {
     }
   }
 
-  const login = async (credentials: { email: string; password: string }, userType: 'admin' | 'user') => {
+  const login = async (credentials: { email: string; password: string }, userType: 'admin' | 'client') => {
     reset()
     try {
       const loginPath = {
         admin: '/admin/login',
-        user: '/login'
+        client: '/login'
       }
       const res = await api.value.post(loginPath[userType], credentials)
       setAuthHeader(res.data.token)

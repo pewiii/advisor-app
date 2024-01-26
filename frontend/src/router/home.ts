@@ -13,8 +13,8 @@ export const homeRoutes = [
   },
   {
     path: '/login',
-    name: 'user-login',
-    component: () => import('@/views/user/UserLogin.vue'),
+    name: 'client-login',
+    component: () => import('@/views/client/ClientLogin.vue'),
   },
   {
     path: '/login-admin',

@@ -14,7 +14,7 @@
           <p>Password created Successfully</p>
         </div>
         <div class="mt-8 text-end">
-          <RouterLink :to="{ name: 'user-login' }">
+          <RouterLink :to="{ name: 'client-login' }">
             <button class="w-full btn">Login</button>
           </RouterLink>
         </div>

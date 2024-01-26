@@ -7,7 +7,7 @@
     </div>
     <div class="flex gap-4 items-center">
       <nav class="p-2 flex gap-4">
-        <RouterLink :to="{ name: 'admin-login' }" v-if="route.name === 'user-login'">
+        <RouterLink :to="{ name: 'admin-login' }" v-if="route.name === 'client-login'">
           <a href="#admin-login" class="nav-btn">Admin</a>
         </RouterLink>
         <RouterLink :to="{ name: 'home' }">

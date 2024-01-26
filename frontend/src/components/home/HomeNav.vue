@@ -7,8 +7,8 @@
     </div>
     <div class="flex gap-4 items-center">
       <nav class="p-2 flex gap-4">
-        <RouterLink :to="{ name: 'user-login' }">
-          <a href="#user-login" class="nav-btn">Log In</a>
+        <RouterLink :to="{ name: 'client-login' }">
+          <a href="#client-login" class="nav-btn">Log In</a>
         </RouterLink>
       </nav>
     </div>
