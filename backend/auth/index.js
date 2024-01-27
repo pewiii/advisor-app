@@ -131,7 +131,8 @@ const login = async (req, res) => {
         firstName: client.firstName,
         _id: client._id,
         userType: 'client',
-        superUser: false
+        superUser: false,
+        config: client.config
       }
     })
   } catch(err) {

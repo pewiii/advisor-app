@@ -1,7 +1,6 @@
 <template>
-  <div class="h-full w-full dark:text-white flex flex-col justify-between">
-    <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :value="campaigns" dataKey="_id"
-          @rowExpand="onRowExpand" @rowCollapse="onRowCollapse" tableStyle="" :unstyled="true" class="client-table">
+  <div class="h-full w-full dark:text-white flex flex-col justify-between" v-if="auth.user">
+    <pvDataTable v-model:selection="selectedCampaign" selectionMode="single" :rowClass="rowClass" :pt="dataTablePassthrough" :value="campaigns" :dataKey="(campaign: any) => (campaign._id)" :unstyled="true">
       <!-- <template #header>
           <div class="flex flex-wrap justify-content-end gap-2">
           </div>
@@ -46,11 +45,11 @@
     </pvDataTable>
 
 
-    <div class="flex table-paginator justify-evenly text-cyan-500 mb-3">
-      <div class="">
+    <div class="flex justify-evenly text-cyan-500 mb-3 paginator items-center">
+      <div class="hidden sm:block lg:hidden xl:block">
         Total: {{ totalRecords }}
       </div>
-        <pvPaginator ref="campaignPaginator" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage" :unstyled="true"/>
+        <pvPaginator ref="campaignPaginator" :pt="theme.paginatorPassthrough" class="paginator-element" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage"/>
     </div>
   </div>
 </template>
@@ -58,20 +57,158 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch, computed } from 'vue';
 import { useAuth } from '@/stores/auth';
+import { useTheme } from '@/stores/theme';
 import format from 'date-fns/format';
+import { storeToRefs } from 'pinia';
 
 const auth = useAuth()
+const theme = useTheme()
 
 const props = defineProps(['modelValue', 'selectedRespondent', 'search'])
-
 const emit = defineEmits(['update:modelValue'])
+
+
+
+const { config } = storeToRefs(theme)
+
+const dataTablePassthrough = computed(() => {
+  console.log(config.value.primaryColor)
+  return {
+    root: {
+      class: `pt-4 px-4` // changed color from cyan to green
+    },
+    // rowExpansion: {
+    //   class: `!bg-red-800`
+    // },
+    // tbody: {
+    //   class: '!bg-none'
+    // },
+    // table: {
+    //   class: '!border-separate',
+    // },
+    table: {
+      class: `w-full text-${config.value.primaryColor}-500`
+    },
+    header: {
+      class: 'text-left'
+    },
+    // bodyRow: {
+    //   class: `hover:bg-${config.value.primaryColor}-600 !bg-opacity-10 ${selectedCampaign.value._id === }`
+    // },
+    rowHighlight: {
+      class: `bg-red-500`
+    },
+    // rowGroup: {
+    //   selection: {
+    //     class: `bg-red-300`
+    //   }
+    // },
+    column: {
+      root: {
+      },
+      headerCell: {
+        class: 'text-left px-2'
+      },
+      bodyCell: {
+        class: `px-2`
+      }
+    },
+  //   row: {
+  //     root: {
+  //       class: '!bg-red-200'
+  //     },
+  //     hooks: {
+  //       selected: {
+  //         class: '!bg-green-500'
+  //       }
+  //     }
+  //     // root: {
+  //     // }
+  //   },
+  //   column: {
+  //     root: {
+  //       class: '!bg-red-500'
+  //     },
+  //     headerCell: {
+  //       class: '!dark:bg-red-500'
+  //     },
+  //     bodyCell: {
+  //       class: `bg-none`
+  //     }
+  //   },
+  }
+})
+
+
+const rowClass = (row: any) => {
+  console.log(row === selectedCampaign.value)
+  if (row === selectedCampaign.value) {
+    console.log(config.value.primaryColor)
+    return `!bg-${config.value.primaryColor}-500 text-stone-950`
+    // return `!bg-${config.value.primaryColor}-500`
+  }
+  return `cursor-pointer hover:bg-${config.value.primaryColor}-600 !bg-opacity-10`
+}
+
+
+// <tbody role="rowgroup" data-pc-section="tbody" class=""><!----><tr class="" tabindex="-1" role="row" aria-selected="true" data-pc-section="bodyrow" data-p-selectable-row="true" data-p-highlight="true" draggable="false"><td class="!text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->Test Campaign 2</td><td class="hidden md:block !text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->0</td><td class="!text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-editable-column="false" data-p-cell-editing="false"><!---->0</td><td class="hidden md:block !text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->active</td></tr><!----><!----><!----><tr class="" tabindex="-1" role="row" aria-selected="false" data-pc-section="bodyrow" data-p-selectable-row="true" data-p-highlight="false"><td class="!text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->Test Campaign</td><td class="hidden md:block !text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->7708</td><td class="!text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-editable-column="false" data-p-cell-editing="false"><!---->1</td><td class="hidden md:block !text-cyan-500 !bg-none" role="cell" data-pc-section="bodycell" data-pc-name="bodycell" data-p-selection-column="false" data-p-cell-editing="false"><!---->active</td></tr><!----><!----></tbody>
+
+
+
+// const columnPassthrough = computed(() => {
+//   return {
+//     root: {
+//       class: '!bg-none' // changed color from none to gray
+//     },
+//     headerCell: {
+//       class: '!bg-none !text-cyan-500' // changed color from none to gray
+//     },
+//     bodyCell: {
+//       class: `!text-cyan-500 !bg-none`
+//     }
+//   }
+// })
+
+
+// const dataTablePassthrough = computed(() => {
+//   return {
+//     root: {
+//       class: `!text-cyan-500`
+//       // class: 'bg-white'
+//     },
+//     rowgroup: {
+//       class: '!bg-red-500',
+//       root: {
+//         class: '!bg-red-500'
+//       }
+//     },
+//     headerCell: {
+//       class: '!bg-red-500',
+//       root: {
+//         class: '!bg-red-500'
+//       }
+//     },
+        
+
+//   }
+// })
+
+// const columnPassthrough = computed(() => {
+//   return {
+//     root: {
+//       class: '!bg-none'
+//     },
+//   }
+// })
+
+
 
 
 const loading = ref(false)
 const campaigns = ref([])
 
 const page = ref(0)
-const perPage = ref(5)
+const perPage = ref(10)
 const totalRecords = ref(0)
 const sortField = ref('updatedAt')
 const sortOrder = ref(-1)
@@ -106,7 +243,6 @@ const getCampaigns = async () => {
     // const res = await auth.api.get('/client/campaigns')
     const res = await auth.api.get(
       `/client/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    console.log(res.data.paginatedResults)
     campaigns.value = res.data.paginatedResults
     if (!selectedCampaign.value && res.data.paginatedResults.length > 0) {
       selectedCampaign.value = res.data.paginatedResults[0]
@@ -139,7 +275,7 @@ onMounted(getCampaigns)
 </script>
 
 <style scoped>
-.client-table {
+/* .client-table {
   @apply w-full pt-3
 }
 
@@ -155,35 +291,12 @@ onMounted(getCampaigns)
   @apply hover:dark:bg-cyan-950 hover:bg-cyan-100 cursor-pointer;
 }
 
-/* .client-table >>> tbody >>> tr {
-  @apply hover:bg-cyan-800;
-} */
-
 .client-table >>> td {
   @apply text-center dark:text-cyan-600;
 }
 
 .client-table >>> tr[data-p-highlight="true"] {
   @apply bg-cyan-100 dark:bg-cyan-950;
-}
-
-.table-paginator >>> div[data-pc-name="paginator"] {
-  @apply flex justify-between gap-2;
-}
-
-.table-paginator >>> ul {
-  @apply text-red-300
-  
-}
-
-.table-paginator >>> li[data-p-highlight="true"] {
-  @apply text-red-500 cursor-pointer
-}
-
-body > div:nth-child(3) {
-  @apply !bg-red-500 text-red-500
-}
-
-/* <div data-pc-section="wrapper" style="max-height: 200px;"><ul id="pv_id_2_list" class="" role="listbox" data-pc-section="list"><li id="pv_id_2_0" role="option" aria-label="5" aria-selected="true" aria-disabled="false" aria-setsize="4" aria-posinset="1" data-p-highlight="true" data-p-focused="false" data-p-disabled="false" data-pc-section="item" data-pd-ripple="true">5<span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></li><li id="pv_id_2_1" role="option" aria-label="10" aria-selected="false" aria-disabled="false" aria-setsize="4" aria-posinset="2" data-p-highlight="false" data-p-focused="false" data-p-disabled="false" data-pc-section="item" data-pd-ripple="true">10<span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root" style="height: 24px; width: 24px; top: -12px; left: -7.4375px;"></span></li><li id="pv_id_2_2" role="option" aria-label="20" aria-selected="false" aria-disabled="false" aria-setsize="4" aria-posinset="3" data-p-highlight="false" data-p-focused="false" data-p-disabled="false" data-pc-section="item" data-pd-ripple="true">20<span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></li><li id="pv_id_2_3" role="option" aria-label="50" aria-selected="false" aria-disabled="false" aria-setsize="4" aria-posinset="4" data-p-highlight="false" data-p-focused="false" data-p-disabled="false" data-pc-section="item" data-pd-ripple="true">50<span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></li><!----></ul></div> */
+} */
 
 </style>

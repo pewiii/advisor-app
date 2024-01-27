@@ -6,10 +6,16 @@ export const clientRoutes = [
     component: () => import('@/views/client/ClientDashboard.vue'),
     beforeEnter: () => {
       const auth = useAuth()
-      if(auth.user.userType !== 'client') {
+      if(!auth.user || auth.user.userType !== 'client') {
         return { name: 'home' }
       }
     },
-    children: []
+    children: [
+      {
+        path: 'clientDashboard',
+        name: 'client-overview',
+        component: () => import('@/views/client/ClientOverview.vue'),
+      }
+    ]
   },
 ]

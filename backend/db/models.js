@@ -85,6 +85,16 @@ const clientSchema = new mongoose.Schema({
   },
   emailSentAt: {
     type: Date
+  },
+  config: {
+    theme: {
+      type: String,
+      default: 'light'
+    },
+    primaryColor: {
+      type: String,
+      default: 'cyan'
+    },
   }
 }, { timestamps: true })
 

@@ -7,6 +7,7 @@
       <div class="text-center" @click="showSidebar = true" v-if="!showSidebar">
         <span class="pi pi-arrow-right" style="font-size: 1.5rem"></span>
       </div>
+      <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :class="`text-${theme.config.primaryColor}-400`">THEM</span>IN</p>
     </div>
 
     <div ref="sidebar" class="col-span-1 md:row-span-2 bg-gray-100 text-primary dark:text-cyan-500 pt-1 md:order-first dark:bg-stone-950 border-r-1 dark:border-cyan-950 left-0" :class="showSidebar ? '' : 'absolute h-full sidebar-collapse'" @mouseenter="showHideSidebar = true" @mouseleave="showHideSidebar = false">
@@ -15,17 +16,25 @@
         <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-300" :class="showHideSidebar ? 'opacity-75' : 'opacity-50'" style="font-size: 1.5rem"></span>
       </div>
       <div class="p-8">
-        <ul>
-          <li>Item 1</li>
-          <li>Item 2</li>
-          <li>Item 3</li>
-          <li>Item 4</li>
+        <ul class="text-stone-500 font-semibold flex flex-col gap-2 text-center">
+          <RouterLink :to="{ name: 'client-overview' }">
+            <li class="border-stone-700 rounded hover:text-cyan-600">Overview</li>
+          </RouterLink>
+          <RouterLink :to="'login'">
+            <li class="border-stone-700 rounded hover:text-cyan-600">Item 2</li>
+          </RouterLink>
+          <RouterLink :to="'login'">
+            <li class="border-stone-700 rounded hover:text-cyan-600">Item 3</li>
+          </RouterLink>
+          <RouterLink :to="'login'">
+            <li class="border-stone-700 rounded hover:text-cyan-600">Item 4</li>
+          </RouterLink>
         </ul>
       </div>
     </div>
 
-
-    <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-6">
+    <RouterView />
+    <!-- <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-6">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
         <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
         <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
@@ -35,7 +44,7 @@
         <CampaignList v-model="selectedCampaign" :search="search" />
       </div>
       <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
-    </div>
+    </div> -->
 
 
   </div>
@@ -71,13 +80,14 @@ import { ref } from 'vue'
 import CampaignList from '@/components/client/CampaignList.vue'
 // import RespondentView from '@/components/client/RespondentView.vue'
 // import ClientNav from '@/components/client/ClientNav.vue'
+import { useTheme } from '@/stores/theme';
 
 const selectedCampaign = ref(null)
 // const selectedRespondent = ref(null)
 
 // const auth = useAuth()
 
-
+const theme = useTheme()
 const search = ref('')
 
 const showSidebar = ref(true)
@@ -95,7 +105,8 @@ const sidebar = ref(null as any)
 //     }
 //   }
 // }
-
+// const color = 'red'
+const activeStyle = `text-red-500`
 
 </script>
 
@@ -150,5 +161,9 @@ const sidebar = ref(null as any)
 .panel {
   @apply shadow-md rounded-md;
 }
+
+/* .router-link-active {
+  @apply v-bind(activeStyle) ;
+} */
 
 </style>

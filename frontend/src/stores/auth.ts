@@ -13,7 +13,6 @@ export const useAuth = defineStore('auth', () => {
 
   const user = ref(null as any)
   const error = ref(null)
-  
 
   const reset = () => {
     api.value = axios.create({ baseURL: API_URL })
@@ -110,6 +109,6 @@ export const useAuth = defineStore('auth', () => {
     init,
     api,
     isAuthenticated,
-    isAdmin
+    isAdmin,
    }
 })
