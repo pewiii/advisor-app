@@ -1,6 +1,7 @@
 import models from '../../db/models.js'
 import mongoose from 'mongoose'
 import moment from 'moment-timezone'
+import time from '../helpers/time.js'
 
 
 const getList = async (req, res) => {
@@ -11,7 +12,6 @@ const getList = async (req, res) => {
     const limit = parseInt(perPage, 10);
     const skip = page * limit;
 
-    console.log(req.user)
     const currentDate = moment().utc().toDate()
     const id = new mongoose.Types.ObjectId(req.user.userId)
     const query = { client: id };
@@ -94,8 +94,13 @@ const getList = async (req, res) => {
     //   paginatedResults[i].client = paginatedResults[i].client[0];
     // }
 
+    
+
     res.json({
-      paginatedResults,
+      paginatedResults: paginatedResults.map(campaign => {
+        campaign.events = time.eventsToDateTime(campaign.events)
+        return campaign
+      }),
       totalCount,
       page,
       perPage,

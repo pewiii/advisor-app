@@ -1,14 +1,16 @@
 <template>
     <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-6">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800"></div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800"></div>
       </div>
-      <div class="col-span-12 lg:col-span-6 row-span-2 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
-      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100">
+      <div class="col-span-12 lg:col-span-6 row-span-2 bg-white panel dark:bg-stone-800"></div>
+      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800">
         <CampaignList v-model="selectedCampaign" :search="search" />
       </div>
-      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800">
+        <RespondentList v-if="selectedCampaign" v-model="selectedRespondent" :search="search" :campaign="selectedCampaign"/>
+      </div>
     </div>
 </template>
 
@@ -20,16 +22,19 @@ import { ref } from 'vue'
 // import { useAuth } from '@/stores/auth'
 // import GMap from '@/components/common/GMap.vue'
 import CampaignList from '@/components/client/CampaignList.vue'
+import RespondentList from '@/components/client/RespondentList.vue'
 // import RespondentView from '@/components/client/RespondentView.vue'
 // import ClientNav from '@/components/client/ClientNav.vue'
-import { useTheme } from '@/stores/theme';
+import { useSettings } from '@/stores/settings';
+import { storeToRefs } from 'pinia';
 
 const selectedCampaign = ref(null)
-// const selectedRespondent = ref(null)
+const selectedRespondent = ref(null)
 
 // const auth = useAuth()
 
-const theme = useTheme()
+const { colors, theme } = storeToRefs(useSettings())
+
 const search = ref('')
 
 const showSidebar = ref(true)
@@ -49,6 +54,8 @@ const sidebar = ref(null as any)
 // }
 
 
+// const primaryColorAlpha = ref(`${colors..value}00`)
+// console.log(primaryColorAlpha.value)
 </script>
 
 <style scoped>
@@ -100,7 +107,12 @@ const sidebar = ref(null as any)
 
 
 .panel {
+  border: 1px solid v-bind('colors.primaryAlpha0');
   @apply shadow-md rounded-md;
+}
+
+.panel:hover {
+  border: 1px solid v-bind('colors.primaryAlpha4');
 }
 
 </style>

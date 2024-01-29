@@ -1,33 +1,44 @@
 <template>
   <div class="min-h-screen grid w-full dark:bg-stone-950" :class="showSidebar ? 'grid-cols-custom grid-rows-custom-sidebar' : 'grid-cols-1 grid-rows-custom-nosidebar'">
 
-    <div class="bg-primary text-white dark:bg-stone-950 border-b-1 dark:border-cyan-950 pl-1 dark:text-cyan-500 items-center flex">
+    <div class="bg-stone-200 text-white dark:bg-stone-900 pr-6 items-center flex topbar justify-between">
       <!-- <div @click="showSidebar = true" v-if="!showSidebar" class="ml-4 pi pi-arrow-right">Show</div> -->
       <!-- <pvButton class="h-8 !text-cyan-500" icon="pi pi-arrow-right" outlined raised v-if="!showSidebar" @click="showSidebar = true"/> -->
-      <div class="text-center" @click="showSidebar = true" v-if="!showSidebar">
-        <span class="pi pi-arrow-right" style="font-size: 1.5rem"></span>
+      <div class="flex items-center">
+              <!-- <div class="text-right p-2 rounded-md cursor-pointer" @click="showSidebar = false">
+        <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-200 sidebar-close-open opacity-75"></span>
+      </div> -->
+        <div class="text-center cursor-pointer flex items-center justify-center px-2 bg-stone-100 dark:bg-stone-800 sidepanel-tab" @click="showSidebar = !showSidebar">
+          <span class="pi sidebar-close-open" :class="showSidebar ? 'pi-arrow-left' : 'pi-arrow-right'"></span>
+        </div>
+        <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :style="`color: ${colors.primary}`">THEM</span>IN</p>
       </div>
-      <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :class="`text-${theme.config.primaryColor}-400`">THEM</span>IN</p>
+      <div class="flex gap-4">
+        <div @click="theme === 'dark' ? settings.setTheme('light') : settings.setTheme('dark')" class="cursor-pointer">Theme</div>
+        <div class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-stone-900 bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 cursor-pointer" :style="{ border: `1px solid ${colors.primary}`}">
+          <div class="pi pi-user" :style="{ fontSize: '1rem', color: colors.primary}"></div>
+        </div>
+      </div>
     </div>
 
-    <div ref="sidebar" class="col-span-1 md:row-span-2 bg-gray-100 text-primary dark:text-cyan-500 pt-1 md:order-first dark:bg-stone-950 border-r-1 dark:border-cyan-950 left-0" :class="showSidebar ? '' : 'absolute h-full sidebar-collapse'" @mouseenter="showHideSidebar = true" @mouseleave="showHideSidebar = false">
+    <div ref="sidebar" class="col-span-1 md:row-span-2 bg-stone-100 pt-1 md:order-first dark:bg-stone-800 sidebar left-0" :class="showSidebar ? '' : 'absolute h-full sidebar-collapse'" @mouseenter="showHideSidebar = true" @mouseleave="showHideSidebar = false">
       <!-- <pvButton class="h-8 !text-cyan-500" icon="pi pi-arrow-left" raised @click="showSidebar = false"/> -->
-      <div class="text-right p-2 rounded-md" @click="showSidebar = false">
-        <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-300" :class="showHideSidebar ? 'opacity-75' : 'opacity-50'" style="font-size: 1.5rem"></span>
-      </div>
+      <!-- <div class="text-right p-2 rounded-md cursor-pointer" @click="showSidebar = false">
+        <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-200 sidebar-close-open opacity-75"></span>
+      </div> -->
       <div class="p-8">
-        <ul class="text-stone-500 font-semibold flex flex-col gap-2 text-center">
-          <RouterLink :to="{ name: 'client-overview' }">
-            <li class="border-stone-700 rounded hover:text-cyan-600">Overview</li>
+        <ul class="text-stone-500 font-semibold flex flex-col gap-2 text-right">
+          <RouterLink :to="{ name: 'client-overview' }" class="router-link">
+            <li class="border-stone-700 rounded">Overview</li>
           </RouterLink>
-          <RouterLink :to="'login'">
-            <li class="border-stone-700 rounded hover:text-cyan-600">Item 2</li>
+          <RouterLink :to="'/login'" class="router-link">
+            <li class="border-stone-700 rounded">Item 2</li>
           </RouterLink>
-          <RouterLink :to="'login'">
-            <li class="border-stone-700 rounded hover:text-cyan-600">Item 3</li>
+          <RouterLink :to="'/login'" class="router-link">
+            <li class="border-stone-700 rounded">Item 3</li>
           </RouterLink>
-          <RouterLink :to="'login'">
-            <li class="border-stone-700 rounded hover:text-cyan-600">Item 4</li>
+          <RouterLink :to="'/login'" class="router-link">
+            <li class="border-stone-700 rounded">Item 4</li>
           </RouterLink>
         </ul>
       </div>
@@ -52,7 +63,7 @@
   <div class="p-8 grid grid-cols-6 flex-wrap gap-4">
     <div class="bg-white col-span-3 p-4 flex h-80 justify-center">
       <PieChart :element="'pie-1'" :title="'Net Worth'"/>
-      <div class="h-full bg-gray-100 w-1"></div>
+      <div class="h-full bg-stone-100 w-1"></div>
       <PieChart :element="'pie-2'" :title="'Wealth Rating'"/>
     </div>
     <div class="bg-white col-span-3 p-4 h-80">
@@ -71,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 // import NavBar from '@/components/common/NavBar.vue'
 // import PieChart from '@/components/client/PieChart.vue'
 // import AreaChart from '@/components/client/AreaChart.vue'
@@ -80,19 +91,38 @@ import { ref } from 'vue'
 import CampaignList from '@/components/client/CampaignList.vue'
 // import RespondentView from '@/components/client/RespondentView.vue'
 // import ClientNav from '@/components/client/ClientNav.vue'
-import { useTheme } from '@/stores/theme';
+import { useSettings } from '@/stores/settings';
+import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 const selectedCampaign = ref(null)
 // const selectedRespondent = ref(null)
 
 // const auth = useAuth()
 
-const theme = useTheme()
+
+const settings = useSettings()
+
+const { theme, colors } = storeToRefs(settings)
 const search = ref('')
+const route = useRoute()
 
 const showSidebar = ref(true)
 const showHideSidebar = ref(false)
 const sidebar = ref(null as any)
+
+// const getNavStyle = (routeName: string) => {
+//   if (routeName === route.name) {
+//     return {
+//       color: theme.primaryColor
+//     }
+//   }
+//   return {
+//     hover: {
+//       color: theme.primaryColor
+//     }
+//   }
+// }
 
 // const toggleSidebar = () => {
 //   if (sidebar.value) {
@@ -106,7 +136,9 @@ const sidebar = ref(null as any)
 //   }
 // }
 // const color = 'red'
-const activeStyle = `text-red-500`
+
+// document.documentElement.classList.toggle('dark', dark);
+
 
 </script>
 
@@ -157,13 +189,91 @@ const activeStyle = `text-red-500`
   transition: left 2s ease-out
 }
 
-
 .panel {
   @apply shadow-md rounded-md;
 }
 
-/* .router-link-active {
-  @apply v-bind(activeStyle) ;
-} */
+.router-link-active {
+  color: v-bind('colors.primary');
+}
+
+.router-link:hover {
+  color: v-bind('colors.primary');
+}
+
+.sidebar-close-open {
+  font-size: 1.5rem;
+  color: v-bind('colors.primary');
+}
+
+.sidebar-close-open:hover {
+  opacity: 100;
+}
+
+.sidepanel-tab {
+  margin-left: -1px;
+  margin-top: -1px;
+  border-color: v-bind('colors.primaryAlpha3');
+  border-width: 0px 1px 1px 0px;
+  height: 3rem;
+}
+
+.sidepanel-tab:hover {
+  background-color: v-bind('colors.primaryAlpha3');
+}
+
+.sidebar {
+  border-right: 1px solid v-bind('colors.primaryAlpha3');
+}
+
+.topbar {
+  border-bottom: 1px solid v-bind('colors.primaryAlpha3');
+}
+
+div >>> table {
+  color: v-bind('colors.primary');
+  text-align: left;
+  @apply w-full mt-2;
+}
+
+div >>> tbody tr[data-p-highlight="false"]:hover {
+  background-color: v-bind('colors.primaryAlpha2');
+  cursor: pointer;
+}
+
+div >>> thead {
+  border-width: 0px 0px 2px 0px;
+  border-color: v-bind('colors.primaryAlpha3');
+}
+
+div >>> .p-column-header-content {
+  @apply flex gap-2 items-center;
+}
+
+div >>> .p-column-header-content span[data-pc-section="sort"] {
+  color: v-bind('colors.primaryAlpha6');
+  cursor: pointer;
+}
+
+div >>> .p-column-header-content span[data-pc-section="sort"]:hover {
+  color: v-bind('colors.primary');
+}
+
+div >>> td, div >>> th {
+  @apply py-1 px-2;
+}
+
+div >>> tr[data-p-highlight="true"] {
+  background-color: v-bind('colors.primaryAlpha8');
+  @apply text-stone-900 font-semibold;
+}
+
+div >>> .p-paginator {
+  background-color: v-bind('colors.primaryAlpha0');
+}
+
+div >>> .p-paginator .p-paginator-first, div >>> .p-paginator-last, div >>> .p-paginator-prev, div >>> .p-paginator-next, div >>> .p-paginator-current {
+  color: v-bind('colors.primary');
+}
 
 </style>

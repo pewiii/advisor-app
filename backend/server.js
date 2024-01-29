@@ -102,6 +102,8 @@ app.post('/client/setup/:clientId/:resetToken', api.client.setup.setupClient)
 
 app.get('/client/campaigns', auth.verifyToken, api.client.campaigns.getList)
 
+app.get('/client/respondents/:campaignId', auth.verifyToken, api.client.respondents.getList)
+
 
 app.post('/offer-code', api.offers.handleOfferCode)
 app.post('/rsvp', api.offers.rsvp)

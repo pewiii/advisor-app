@@ -17,7 +17,7 @@ const router = useRouter()
 const login = async (credentials: { email: string, password: string }) => {
   try {
     await auth.login(credentials, 'client')
-    router.push({ name: 'client' })
+    router.push({ name: 'client-overview' })
   } catch(err: any) {
     console.log(err.message)
   }
