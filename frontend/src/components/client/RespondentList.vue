@@ -2,12 +2,21 @@
 
 <div class="h-full w-full dark:text-white flex flex-col justify-between client-table" v-if="auth.user">
   <pvDataTable v-model:selection="selectedRespondent" selectionMode="single" :value="respondents" :dataKey="(respondent: any) => (respondent._id)" :sort="sort" :unstyled="true">
-    <pvColumn field="firstName" header="First Name" sortable class="capitalize" #body="{data}">{{ data.firstName.toLowerCase() }}</pvColumn>
-    <pvColumn field="lastName" header="Last Name" sortable class="capitalize" #body="{data}">{{ data.lastName.toLowerCase() }}</pvColumn>
+    <pvColumn field="firstName" header="First Name" sortable class="capitalize">
+      <template #body="{data}">
+        {{ data.firstName.toLowerCase() }}
+      </template>
+    </pvColumn>
+    <pvColumn field="lastName" header="Last Name" sortable class="capitalize">
+      <template #body="{data}">
+        {{ data.lastName.toLowerCase() }}
+      </template>
+    </pvColumn>
     <pvColumn field="status" header="Status" sortable></pvColumn>
-    <pvColumn field="event" header="Event" sortable #body="{data}">
-      {{ moment(`${events[data.event].date} ${events[data.event].time}`, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY @   h:mm a') }}
-
+    <pvColumn field="event" header="Event" sortable>
+      <template #body="{data}">
+        {{ moment(`${events[data.event].date} ${events[data.event].time}`, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY @   h:mm a') }}
+      </template>
       <!-- {{ moment(event[data.event]?.date).format('MM/DD/YYYY') }} - {{ moment(event[data.event]?.time) }} -->
     </pvColumn>
   </pvDataTable>
@@ -49,7 +58,7 @@ const selectedRespondent = computed({
 
 
 const eventDate = (eventId: string) => {
-  const event = events[eventId]
+  const event = events.value[eventId]
   // console.log(eventId)
   if (event) {
 

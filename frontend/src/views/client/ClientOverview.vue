@@ -33,7 +33,7 @@ const selectedRespondent = ref(null)
 
 // const auth = useAuth()
 
-const { colors, theme } = storeToRefs(useSettings())
+const { color, theme } = storeToRefs(useSettings())
 
 const search = ref('')
 
@@ -54,7 +54,7 @@ const sidebar = ref(null as any)
 // }
 
 
-// const primaryColorAlpha = ref(`${colors..value}00`)
+// const primaryColorAlpha = ref(`${color..value}00`)
 // console.log(primaryColorAlpha.value)
 </script>
 
@@ -65,7 +65,7 @@ const sidebar = ref(null as any)
 
 /* .grid-rows-2-custom {
   grid-template-rows: 3rem 1fr;
-  
+
 }
 .grid-cols-2-custom {
   grid-template-columns: max-content 1fr
@@ -107,12 +107,12 @@ const sidebar = ref(null as any)
 
 
 .panel {
-  border: 1px solid v-bind('colors.primaryAlpha0');
+  border: 1px solid v-bind('color.primaryAlpha0');
   @apply shadow-md rounded-md;
 }
 
 .panel:hover {
-  border: 1px solid v-bind('colors.primaryAlpha4');
+  border: 1px solid v-bind('color.primaryAlpha4');
 }
 
 </style>

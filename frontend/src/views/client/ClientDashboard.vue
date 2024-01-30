@@ -10,18 +10,23 @@
         <div class="text-center cursor-pointer flex items-center justify-center px-2 bg-stone-100 dark:bg-stone-800 sidepanel-tab" @click="showSidebar = !showSidebar">
           <span class="pi sidebar-close-open" :class="showSidebar ? 'pi-arrow-left' : 'pi-arrow-right'"></span>
         </div>
-        <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :style="`color: ${colors.primary}`">THEM</span>IN</p>
+        <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :style="`color: ${color.primary}`">THEM</span>IN</p>
       </div>
       <div class="flex gap-4">
         <div>
           <pvSidebar v-model:visible="sidebarVisible" header="Sidebar" position="right" class="" :pt="sidebarPassthrough">
             <div class="flex flex-col gap-4">
               <div>{{ auth.user.email }}</div>
+
               <div>
-                <p>Theme</p>
-                <div class="flex flex-wrap gap-3">
-                  <div v-for="mode in ([ 'dark', 'light', 'os' ])" :key="`setting-${mode}`" class="flex align-items-center">
-                    <pvRadioButton v-model="theme" :pt="getRadioPassthrough(mode)" inputId="setting-dark" name="theme" :value="mode" />
+                <div class="flex items-center gap-2">
+                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <p>Theme</p>
+                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                </div>
+                <div class="flex flex-wrap gap-3 mt-2 justify-center">
+                  <div v-for="mode in ([ 'Dark', 'Light', 'OS' ])" :key="`setting-${mode}`" class="flex align-items-center">
+                    <pvRadioButton v-model="theme" :pt="getRadioPassthrough(mode)" inputId="setting-dark" name="theme" :value="mode.toLowerCase()" />
                     <label :for="`setting-${mode}`" class="ml-2">{{ mode }}</label>
                   </div>
                   <!-- <div class="flex align-items-center">
@@ -39,16 +44,25 @@
               </div>
               </div>
               <div class="">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <div class="flex items-center gap-2">
+                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <p>Color</p>
+                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <div v-for="colorChoice in settings.colorChoices" :key="`setting-${colorChoice}`">
+                    <div class="w-8 h-8 hover:border-2 cursor-pointer" :style="{ backgroundColor: colorChoice }" @click="settings.setColor(colorChoice)"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </pvSidebar>
           <div
           class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-stone-900 bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 cursor-pointer"
-          :style="{ border: `1px solid ${colors.primary}`}"
+          :style="{ border: `1px solid ${color.primary}`}"
           @click="sidebarVisible = true"
           >
-            <div class="pi pi-user" :style="{ fontSize: '1rem', color: colors.primary}"></div>
+            <div class="pi pi-user" :style="{ fontSize: '1rem', color: color.primary}"></div>
           </div>
         </div>
       </div>
@@ -138,7 +152,7 @@ const sidebarVisible = ref(true)
 
 const settings = useSettings()
 const auth = useAuth()
-const { theme, colors, isDark } = storeToRefs(settings)
+const { theme, color, isDark } = storeToRefs(settings)
 const search = ref('')
 const route = useRoute()
 
@@ -155,7 +169,7 @@ const sidebarPassthrough = ref({
     class: 'text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800'
   },
   closeButton: {
-    style: `color: ${colors.value.primary}`
+    style: `color: ${color.value.primary}`
   }
 })
 
@@ -164,21 +178,20 @@ const getRadioPassthrough = (mode: string) => {
     input: {
       class: isDark.value ? '!bg-stone-600' : '',
       style: {
-        borderColor: theme.value === mode ? colors.value.primary : '',
-
+        borderColor: theme.value === mode ? color.value.primary : '',
       }
     },
     icon: {
       style: {
-        // backgroundColor: colors.value.primary,
-        backgroundColor: 'red',
+        backgroundColor: color.value.primary,
+        // backgroundColor: 'red',
         shadow: 'none'
       },
     },
     box: {
       style: {
-        // color: colors.value.primary,
-        // backgroundColor: colors.value.primary,
+        // color: color.value.primary,
+        // backgroundColor: color.value.primary,
       }
     }
   }
@@ -197,7 +210,7 @@ const getRadioPassthrough = (mode: string) => {
 //     },
 //     icon: {
 //       style: {
-//         backgroundColor: colors.value.primary,
+//         backgroundColor: color.value.primary,
 //       }
 //     },
 //     box: {
@@ -292,16 +305,16 @@ const getRadioPassthrough = (mode: string) => {
 }
 
 .router-link-active {
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
 }
 
 .router-link:hover {
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
 }
 
 .sidebar-close-open {
   font-size: 1.5rem;
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
 }
 
 .sidebar-close-open:hover {
@@ -311,38 +324,38 @@ const getRadioPassthrough = (mode: string) => {
 .sidepanel-tab {
   margin-left: -1px;
   margin-top: -1px;
-  border-color: v-bind('colors.primaryAlpha3');
+  border-color: v-bind('color.primaryAlpha3');
   border-width: 0px 1px 1px 0px;
   height: 3rem;
 }
 
 .sidepanel-tab:hover {
-  background-color: v-bind('colors.primaryAlpha3');
+  background-color: v-bind('color.primaryAlpha3');
 }
 
 .sidebar {
-  border-right: 1px solid v-bind('colors.primaryAlpha3');
+  border-right: 1px solid v-bind('color.primaryAlpha3');
 }
 
 .topbar {
-  border-bottom: 1px solid v-bind('colors.primaryAlpha3');
+  border-bottom: 1px solid v-bind('color.primaryAlpha3');
 }
 
 
 div >>> table {
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
   text-align: left;
   @apply w-full mt-2;
 }
 
 div >>> tbody tr[data-p-highlight="false"]:hover {
-  background-color: v-bind('colors.primaryAlpha2');
+  background-color: v-bind('color.primaryAlpha2');
   cursor: pointer;
 }
 
 div >>> thead {
   border-width: 0px 0px 2px 0px;
-  border-color: v-bind('colors.primaryAlpha3');
+  border-color: v-bind('color.primaryAlpha3');
 }
 
 div >>> .p-column-header-content {
@@ -350,12 +363,12 @@ div >>> .p-column-header-content {
 }
 
 div >>> .p-column-header-content span[data-pc-section="sort"] {
-  color: v-bind('colors.primaryAlpha6');
+  color: v-bind('color.primaryAlpha6');
   cursor: pointer;
 }
 
 div >>> .p-column-header-content span[data-pc-section="sort"]:hover {
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
 }
 
 div >>> td, div >>> th {
@@ -363,16 +376,16 @@ div >>> td, div >>> th {
 }
 
 div >>> tr[data-p-highlight="true"] {
-  background-color: v-bind('colors.primaryAlpha8');
+  background-color: v-bind('color.primaryAlpha8');
   @apply text-stone-900 font-semibold;
 }
 
 div >>> .p-paginator {
-  background-color: v-bind('colors.primaryAlpha0');
+  background-color: v-bind('color.primaryAlpha0');
 }
 
 div >>> .p-paginator .p-paginator-first, div >>> .p-paginator-last, div >>> .p-paginator-prev, div >>> .p-paginator-next, div >>> .p-paginator-current {
-  color: v-bind('colors.primary');
+  color: v-bind('color.primary');
 }
 
 </style>

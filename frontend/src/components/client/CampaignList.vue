@@ -45,11 +45,11 @@
     </pvDataTable>
 
 
-    <div class="flex justify-evenly text-cyan-500 mb-3 paginator items-center">
+    <div class="flex justify-evenly mb-3 paginator items-center" :style="{ color: color.primary}">
       <div class="hidden sm:block lg:hidden xl:block">
         Total: {{ totalRecords }}
       </div>
-        <pvPaginator ref="campaignPaginator" :pt="theme.paginatorPassthrough" class="paginator-element" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage"/>
+        <pvPaginator ref="campaignPaginator" :pt="settings.paginatorPassthrough" class="paginator-element" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage"/>
     </div>
   </div>
 </template>
@@ -62,7 +62,9 @@ import format from 'date-fns/format';
 import { storeToRefs } from 'pinia';
 
 const auth = useAuth()
-const { theme, colors } = storeToRefs(useSettings())
+
+const settings = useSettings()
+const { theme, color } = storeToRefs(settings)
 
 const props = defineProps(['modelValue', 'selectedRespondent', 'search'])
 const emit = defineEmits(['update:modelValue'])
