@@ -26,7 +26,12 @@ export const useSettings = defineStore('settings', () => {
   //   user.value.config.primaryColor = primaryColor
   // }
 
-  const config = computed(() => user.value.config)
+  const config = computed(() => { 
+    if (user.value && user.value.config) {
+      return user.value.config
+    }
+    return { theme: 'light', primaryColor: '#0284c7' }
+  })
 
   const theme = computed({
     get() {

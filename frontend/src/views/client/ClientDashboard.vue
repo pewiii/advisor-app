@@ -14,10 +14,15 @@
       </div>
       <div class="flex gap-4">
         <div>
-          <pvSidebar v-model:visible="sidebarVisible" header="Sidebar" position="right" class="" :pt="sidebarPassthrough">
-            <div class="flex flex-col gap-4">
-              <div>{{ auth.user.email }}</div>
-
+          <pvSidebar v-model:visible="sidebarVisible" position="right" class="" :pt="getSidebarPassthrough()">
+            <template #header>
+              {{ auth.user && auth.user.email }}
+            </template>
+            <div class="flex flex-col gap-4 text-stone-600 dark:text-stone-400">
+              <div class="text-center">
+                <!-- <div>{{ auth.user && auth.user.email }}</div> -->
+                <div class="mt-2 user-logout cursor-pointer" @click="logout">Log Out <span class="pi pi-sign-out ml-2"></span></div>
+              </div>
               <div>
                 <div class="flex items-center gap-2">
                   <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
@@ -25,14 +30,14 @@
                   <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
                 </div>
                 <div class="flex flex-wrap gap-3 mt-2 justify-center">
-                  <div v-for="mode in ([ 'Dark', 'Light', 'OS' ])" :key="`setting-${mode}`" class="flex align-items-center">
-                    <pvRadioButton v-model="theme" :pt="getRadioPassthrough(mode)" inputId="setting-dark" name="theme" :value="mode.toLowerCase()" />
-                    <label :for="`setting-${mode}`" class="ml-2">{{ mode }}</label>
+                  <div v-for="mode in ([ 'dark', 'light', 'os' ])" :key="`setting-${mode}`" class="flex align-items-center">
+                    <pvRadioButton v-model="theme" :pt="getRadioPassthrough(mode)" :inputId="`setting-${mode}`" name="theme" :value="mode" />
+                    <label :for="`setting-${mode}`" class="ml-2 capitalize">{{ mode === 'os' ? 'OS' : mode }}</label>
                   </div>
                   <!-- <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-dark" name="theme" value="dark" />
                       <label for="setting-dark" class="ml-2">Dark</label>
-                  </div>
+                  </div>text-stone-600 dark:text-stone-400 
                   <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-light" name="theme" value="light" />
                       <label for="setting-light" class="ml-2">Light</label>
@@ -139,7 +144,7 @@ import CampaignList from '@/components/client/CampaignList.vue'
 // import RespondentView from '@/components/client/RespondentView.vue'
 // import ClientNav from '@/components/client/ClientNav.vue'
 import { useSettings } from '@/stores/settings';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useAuth } from '@/stores/auth';
 
@@ -155,6 +160,7 @@ const auth = useAuth()
 const { theme, color, isDark } = storeToRefs(settings)
 const search = ref('')
 const route = useRoute()
+const router = useRouter()
 
 const showSidebar = ref(true)
 const showHideSidebar = ref(false)
@@ -164,14 +170,23 @@ watch(isDark, () => {
   console.log(isDark.value)
 })
 
-const sidebarPassthrough = ref({
-  root: {
-    class: 'text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800'
-  },
-  closeButton: {
-    style: `color: ${color.value.primary}`
+const getSidebarPassthrough = () => {
+  return {
+    root: {
+      class: 'bg-stone-100 dark:bg-stone-800'
+    },
+    header: {
+      style: `color: ${color.value.primary}`,
+      class: 'text-lg'
+    },
+    closeButton: {
+      style: `color: ${color.value.primary}`
+    }
   }
-})
+}
+
+// const sidebarPassthrough = ref({
+// })
 
 const getRadioPassthrough = (mode: string) => {
   return {
@@ -195,6 +210,12 @@ const getRadioPassthrough = (mode: string) => {
       }
     }
   }
+}
+
+const logout = () => {
+  auth.logout()
+  router.push({ name: 'home' })
+  // router.go(0)
 }
 
 // const radioPassthrough = computed(() => {
@@ -387,5 +408,14 @@ div >>> .p-paginator {
 div >>> .p-paginator .p-paginator-first, div >>> .p-paginator-last, div >>> .p-paginator-prev, div >>> .p-paginator-next, div >>> .p-paginator-current {
   color: v-bind('color.primary');
 }
+
+/* .user-logout {
+  color: v-bind('color.primary');
+  cursor: pointer;
+} */
+
+</style>
+
+<style>
 
 </style>
