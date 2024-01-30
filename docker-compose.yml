@@ -19,20 +19,23 @@ services:
 
   frontend:
     container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: docker/dev/Dockerfile
+    image: node:18
+    # build:
+      # context: ./frontend
+      # dockerfile: docker/dev/Dockerfile
     working_dir: /app
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      # - /app/node_modules:./frontend/node_modules
+      - ./frontend/node_modules:/app/node_modules
     ports:
       - ${FRONTEND_PORT}:${FRONTEND_PORT}
     depends_on:
       - backend
     environment:
-      VITE_APP_API_URL: ${API_URL}  
+      VITE_APP_API_URL: ${API_URL}
       PORT: ${FRONTEND_PORT}
+    command: /bin/bash -c "npm install && npm run dev"
     # env_file:
     #   - .env
 

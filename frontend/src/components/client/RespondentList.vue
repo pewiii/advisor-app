@@ -7,11 +7,11 @@
     <pvColumn field="status" header="Status" sortable></pvColumn>
     <pvColumn field="event" header="Event" sortable #body="{data}">
       {{ moment(`${events[data.event].date} ${events[data.event].time}`, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY @   h:mm a') }}
-      
+
       <!-- {{ moment(event[data.event]?.date).format('MM/DD/YYYY') }} - {{ moment(event[data.event]?.time) }} -->
     </pvColumn>
   </pvDataTable>
-</div>  
+</div>
 
 
 </template>
@@ -50,12 +50,8 @@ const selectedRespondent = computed({
 
 const eventDate = (eventId: string) => {
   const event = events[eventId]
-  console.log(eventId)
-  console.log("HERE")
+  // console.log(eventId)
   if (event) {
-
-    console.log(event.date)
-    console.log(event.time)
 
     // return moment(event.date).format('MM/DD/YYYY')
   }
@@ -66,7 +62,6 @@ const getRespondents = async () => {
   try {
     const res = await auth.api.get(
       `/client/respondents/${props.campaign._id}?earch=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
-    console.log(res.data.paginatedResults)
     respondents.value = res.data.paginatedResults
     if (!selectedRespondent.value && res.data.paginatedResults.length > 0) {
       selectedRespondent.value = res.data.paginatedResults[0]

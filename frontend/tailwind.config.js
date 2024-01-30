@@ -20,20 +20,20 @@ export default {
         "3/4": "3/4vh"
       },
       backgroundColor: {
-        "primary": "rgb(33,118,174)",
-        "secondary": "rgb(113,105,122)"
+        "primary": "#2176ae",
+        "secondary": "#71697a"
       },
       textColor: {
-        "primary": "rgb(33,118,174)",
-        "secondary": "rgb(113,105,122)"
+        "primary": "#2176ae",
+        "secondary": "#71697a"
       },
       borderColor: {
-        "primary": "rgb(33,118,174)",
-        "secondary": "rgb(113,105,122)"
+        "primary": "#2176ae",
+        "secondary": "#71697a"
       },
       outlineColor: {
-        "primary": "rgb(33,118,174)",
-        "secondary": "rgb(113,105,122)"
+        "primary": "#2176ae",
+        "secondary": "#71697a"
       }
     },
     container: {

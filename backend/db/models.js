@@ -89,11 +89,12 @@ const clientSchema = new mongoose.Schema({
   config: {
     theme: {
       type: String,
-      default: 'light'
+      default: 'os',
+      enum: ['light', 'dark', 'os']
     },
     primaryColor: {
       type: String,
-      default: 'cyan'
+      default: '#2176ae'
     },
   }
 }, { timestamps: true })

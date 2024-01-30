@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen grid w-full dark:bg-stone-950" :class="showSidebar ? 'grid-cols-custom grid-rows-custom-sidebar' : 'grid-cols-1 grid-rows-custom-nosidebar'">
-
     <div class="bg-stone-200 text-white dark:bg-stone-900 pr-6 items-center flex topbar justify-between">
       <!-- <div @click="showSidebar = true" v-if="!showSidebar" class="ml-4 pi pi-arrow-right">Show</div> -->
       <!-- <pvButton class="h-8 !text-cyan-500" icon="pi pi-arrow-right" outlined raised v-if="!showSidebar" @click="showSidebar = true"/> -->
@@ -14,9 +13,43 @@
         <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :style="`color: ${colors.primary}`">THEM</span>IN</p>
       </div>
       <div class="flex gap-4">
-        <div @click="theme === 'dark' ? settings.setTheme('light') : settings.setTheme('dark')" class="cursor-pointer">Theme</div>
-        <div class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-stone-900 bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 cursor-pointer" :style="{ border: `1px solid ${colors.primary}`}">
-          <div class="pi pi-user" :style="{ fontSize: '1rem', color: colors.primary}"></div>
+        <div>
+          <pvSidebar v-model:visible="sidebarVisible" header="Sidebar" position="right" class="" :pt="sidebarPassthrough">
+            <div class="flex flex-col gap-4">
+              <div>{{ auth.user.email }}</div>
+              <div>
+                <p>Theme</p>
+                <div class="flex flex-wrap gap-3">
+                  <div v-for="mode in ([ 'dark', 'light', 'os' ])" :key="`setting-${mode}`" class="flex align-items-center">
+                    <pvRadioButton v-model="theme" :pt="getRadioPassthrough(mode)" inputId="setting-dark" name="theme" :value="mode" />
+                    <label :for="`setting-${mode}`" class="ml-2">{{ mode }}</label>
+                  </div>
+                  <!-- <div class="flex align-items-center">
+                      <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-dark" name="theme" value="dark" />
+                      <label for="setting-dark" class="ml-2">Dark</label>
+                  </div>
+                  <div class="flex align-items-center">
+                      <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-light" name="theme" value="light" />
+                      <label for="setting-light" class="ml-2">Light</label>
+                  </div>
+                  <div class="flex align-items-center">
+                      <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-os" name="theme" value="os" />
+                      <label for="setting-os" class="ml-2">OS</label>
+                  </div> -->
+              </div>
+              </div>
+              <div class="">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              </div>
+            </div>
+          </pvSidebar>
+          <div
+          class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-stone-900 bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 cursor-pointer"
+          :style="{ border: `1px solid ${colors.primary}`}"
+          @click="sidebarVisible = true"
+          >
+            <div class="pi pi-user" :style="{ fontSize: '1rem', color: colors.primary}"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -82,7 +115,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 // import NavBar from '@/components/common/NavBar.vue'
 // import PieChart from '@/components/client/PieChart.vue'
 // import AreaChart from '@/components/client/AreaChart.vue'
@@ -94,22 +127,87 @@ import CampaignList from '@/components/client/CampaignList.vue'
 import { useSettings } from '@/stores/settings';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import { useAuth } from '@/stores/auth';
 
 const selectedCampaign = ref(null)
 // const selectedRespondent = ref(null)
 
 // const auth = useAuth()
 
+const sidebarVisible = ref(true)
 
 const settings = useSettings()
-
-const { theme, colors } = storeToRefs(settings)
+const auth = useAuth()
+const { theme, colors, isDark } = storeToRefs(settings)
 const search = ref('')
 const route = useRoute()
 
 const showSidebar = ref(true)
 const showHideSidebar = ref(false)
 const sidebar = ref(null as any)
+
+watch(isDark, () => {
+  console.log(isDark.value)
+})
+
+const sidebarPassthrough = ref({
+  root: {
+    class: 'text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800'
+  },
+  closeButton: {
+    style: `color: ${colors.value.primary}`
+  }
+})
+
+const getRadioPassthrough = (mode: string) => {
+  return {
+    input: {
+      class: isDark.value ? '!bg-stone-600' : '',
+      style: {
+        borderColor: theme.value === mode ? colors.value.primary : '',
+
+      }
+    },
+    icon: {
+      style: {
+        // backgroundColor: colors.value.primary,
+        backgroundColor: 'red',
+        shadow: 'none'
+      },
+    },
+    box: {
+      style: {
+        // color: colors.value.primary,
+        // backgroundColor: colors.value.primary,
+      }
+    }
+  }
+}
+
+// const radioPassthrough = computed(() => {
+//   return {
+//     input: ({ props }: { props: any }) => {
+//       console.log(props.modelValue)
+//       return {
+//         class: isDark.value ? '!bg-stone-600' : '',
+//         style: {
+//           borderColor: props.modelValue === theme.value ? 'red' : ''
+//         }
+//       }
+//     },
+//     icon: {
+//       style: {
+//         backgroundColor: colors.value.primary,
+//       }
+//     },
+//     box: {
+//       style: {
+//         color: 'red',
+//         backgroundColor: 'red',
+//       }
+//     }
+//   }
+// })
 
 // const getNavStyle = (routeName: string) => {
 //   if (routeName === route.name) {
@@ -149,7 +247,7 @@ const sidebar = ref(null as any)
 
 /* .grid-rows-2-custom {
   grid-template-rows: 3rem 1fr;
-  
+
 }
 .grid-cols-2-custom {
   grid-template-columns: max-content 1fr
@@ -229,6 +327,7 @@ const sidebar = ref(null as any)
 .topbar {
   border-bottom: 1px solid v-bind('colors.primaryAlpha3');
 }
+
 
 div >>> table {
   color: v-bind('colors.primary');

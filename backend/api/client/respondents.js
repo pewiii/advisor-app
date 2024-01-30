@@ -10,16 +10,14 @@ const getList = async (req, res) => {
     const limit = parseInt(perPage, 10);
     const order = parseInt(sortOrder, 10);
     const skip = page * limit;
-    console.log(campaignId)
     const query = { campaign: campaignId };
 
     const campaign = await models.Campaign.findById(campaignId)
-    console.log(campaign)
 
-    if (campaign.client.toString() !== userId.toString()) { 
-      return res.sendStatus(401) 
+    if (campaign.client.toString() !== userId.toString()) {
+      return res.sendStatus(401)
     }
-    
+
     if (search) {
       query.$or = [
         { 'firstName': { $regex: search, $options: 'i' } },

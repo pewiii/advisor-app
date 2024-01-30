@@ -182,7 +182,7 @@ const emit = defineEmits(['update:modelValue'])
 //         class: '!bg-red-500'
 //       }
 //     },
-        
+
 
 //   }
 // })
@@ -227,9 +227,9 @@ const sort = (e: any) => {
   getCampaigns()
 }
 
-watch(selectedCampaign, () => {
-  console.log(selectedCampaign.value)
-}, { deep: true })
+// watch(selectedCampaign, () => {
+//   console.log(selectedCampaign.value)
+// }, { deep: true })
 
 const handlePage = (pagination: any) => {
   perPage.value = pagination.rows

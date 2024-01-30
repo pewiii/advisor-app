@@ -18,61 +18,100 @@ export const useSettings = defineStore('settings', () => {
   //   return { theme: darkPreferred ? 'dark' : 'light', primaryColor: '#0284c7' }
   // })
 
+  // const setTheme = (theme: string) => {
+  //   user.value.config.theme = theme
+  // }
+
+  // const setPrimaryColor = (primaryColor: string) => {
+  //   user.value.config.primaryColor = primaryColor
+  // }
+
   const config = computed(() => user.value.config)
 
-  const theme = computed(() => {
-    const darkPreferred = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return config.value ? config.value.theme : darkPreferred ? 'dark' : 'light'
+  const theme = computed({
+    get() {
+      return config.value.theme
+      // const darkPreferred = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      // if (config.value.theme === 'os') {
+      //   return darkPreferred ? 'dark' : 'light'
+      // }
+      // return config.value.theme
+    },
+    set(theme: string) {
+      user.value.config.theme = theme
+    }
   })
 
-  const colors = computed(() => {
-
-
-    const primaryColor = config.value && config.value.primaryColor ? config.value.primaryColor : '#0284c7'
-
-    console.log(primaryColor)
-    return {
-      primary: primaryColor,
-      primaryAlpha0: primaryColor + '00',
-      primaryAlpha1: primaryColor + '1a',
-      primaryAlpha2: primaryColor + '33',
-      primaryAlpha3: primaryColor + '4d',
-      primaryAlpha4: primaryColor + '66',
-      primaryAlpha5: primaryColor + '80',
-      primaryAlpha6: primaryColor + '99',
-      primaryAlpha7: primaryColor + 'b3',
-      primaryAlpha8: primaryColor + 'cc',
-      primaryAlpha9: primaryColor + 'e6',
-      primaryAlpha10: primaryColor + 'ff',
+  const colors = computed({
+    get() {
+      const primaryColor = config.value.primaryColor
+      return {
+        primary: primaryColor,
+        primaryAlpha0: primaryColor + '00',
+        primaryAlpha1: primaryColor + '1a',
+        primaryAlpha2: primaryColor + '33',
+        primaryAlpha3: primaryColor + '4d',
+        primaryAlpha4: primaryColor + '66',
+        primaryAlpha5: primaryColor + '80',
+        primaryAlpha6: primaryColor + '99',
+        primaryAlpha7: primaryColor + 'b3',
+        primaryAlpha8: primaryColor + 'cc',
+        primaryAlpha9: primaryColor + 'e6',
+        primaryAlpha10: primaryColor + 'ff',
+      }
+    },
+    set(color) {
+      user.value.config.primaryColor = color
     }
-    })
+  })
 
+
+  // const colors = computed({
+  //   get() {
+  //     const primaryColor = config.value.primaryColor
+  //     return {
+  //       primary: primaryColor,
+  //       primaryAlpha0: primaryColor + '00',
+  //       primaryAlpha1: primaryColor + '1a',
+  //       primaryAlpha2: primaryColor + '33',
+  //       primaryAlpha3: primaryColor + '4d',
+  //       primaryAlpha4: primaryColor + '66',
+  //       primaryAlpha5: primaryColor + '80',
+  //       primaryAlpha6: primaryColor + '99',
+  //       primaryAlpha7: primaryColor + 'b3',
+  //       primaryAlpha8: primaryColor + 'cc',
+  //       primaryAlpha9: primaryColor + 'e6',
+  //       primaryAlpha10: primaryColor + 'ff',
+  //     }
+  //   },
+  //   set(color: string) {
+  //     user.value.config.primaryColor = color
+  //   }
+  // })
 
   const paginatorPassthrough = computed(() => {
     const color = config.value.primaryColor
     return componentPassthrough.createPaginatorPassthrough(color)
   })
 
-  const setTheme = (theme: string) => {
-    // user.value.config.theme = theme
-    // console.log(user.value.config)
-    if (!user.value.config) {
-      user.value.config = {}
-    }
-    user.value.config = {
-      ...user.value.config,
-      theme
-    }
-    console.log(user.value)
+  const isDark = ref(false)
+
+  const setDark = (dark: boolean) => {
+    document.documentElement.classList.toggle('dark', dark);
+    isDark.value = dark
   }
 
-  const setPrimaryColor = (primaryColor: string) => {
-    user.value.config.primaryColor = primaryColor
-  }
+  const osHandler = (e: any) => { setDark(e.matches) }
 
   watch(theme, (newTheme) => {
-    const dark = newTheme === 'dark'
-    document.documentElement.classList.toggle('dark', dark);
+    const dark = newTheme === 'dark' || (newTheme === 'os' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    if (newTheme === 'os') {
+      mediaQuery.addEventListener('change', osHandler)
+    } else {
+      mediaQuery.removeEventListener('change', osHandler)
+    }
+    setDark(dark)
   }, { immediate: true})
 
 
@@ -80,8 +119,7 @@ export const useSettings = defineStore('settings', () => {
     theme,
     colors,
     paginatorPassthrough,
-    setTheme,
-    setPrimaryColor
+    isDark
   }
 
 })

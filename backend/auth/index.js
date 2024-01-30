@@ -124,6 +124,7 @@ const login = async (req, res) => {
       return res.sendStatus(401)
     }
     const token = generateToken(client)
+    console.log(client)
     res.send({
       token,
       user: {
