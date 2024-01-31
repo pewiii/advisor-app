@@ -153,7 +153,7 @@ const selectedCampaign = ref(null)
 
 // const auth = useAuth()
 
-const sidebarVisible = ref(true)
+const sidebarVisible = ref(false)
 
 const settings = useSettings()
 const auth = useAuth()
