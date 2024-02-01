@@ -16,6 +16,7 @@
     "@googlemaps/js-api-loader": "^1.16.2",
     "@kyvg/vue3-notification": "^3.0.2",
     "axios": "^1.5.1",
+    "chart.js": "^4.4.1",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "date-time-format-timezone": "^1.0.22",

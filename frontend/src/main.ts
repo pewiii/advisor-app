@@ -32,6 +32,7 @@ import Tooltip from 'primevue/tooltip'
 import Sidebar from 'primevue/sidebar'
 import InputMask from 'primevue/inputmask';
 import Divider from 'primevue/divider';
+import Chart from 'primevue/chart';
 
 
 // import Row from 'primevue/row'
@@ -71,6 +72,7 @@ app.component('pvInlineMessage', InlineMessage)
 app.component('pvSidebar', Sidebar)
 app.component('pvInputMask', InputMask)
 app.component('pvDivider', Divider)
+app.component('pvChart', Chart)
 
 
 const modules: {[key: string]: any} = import.meta.glob("@/components/dynamic/**/*.vue", { eager: true })

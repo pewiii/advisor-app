@@ -15,7 +15,7 @@
     <pvColumn field="status" header="Status" sortable></pvColumn>
     <pvColumn field="event" header="Event" sortable>
       <template #body="{data}">
-        {{ moment(`${events[data.event].date} ${events[data.event].time}`, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY @   h:mm a') }}
+        {{ events[data.event] && moment(`${events[data.event].date} ${events[data.event].time}`, 'YYYY-MM-DD HH:mm').format('MM/DD/YYYY @   h:mm a') }}
       </template>
       <!-- {{ moment(event[data.event]?.date).format('MM/DD/YYYY') }} - {{ moment(event[data.event]?.time) }} -->
     </pvColumn>
@@ -90,10 +90,9 @@ watch(() => props.campaign, () => {
   props.campaign.events.forEach((event: any) => {
     events.value[event._id] = event
   })
-  console.log('events', events.value)
   respondents.value = []
   getRespondents()
-})
+}, { immediate: true  })
 
 
 onMounted(getRespondents)

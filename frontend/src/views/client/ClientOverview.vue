@@ -1,8 +1,12 @@
 <template>
     <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-6">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800"></div>
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800"></div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800">
+          <PieChart />
+        </div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800">
+          <PieChart />
+        </div>
       </div>
       <div class="col-span-12 lg:col-span-6 row-span-2 bg-white panel dark:bg-stone-800">
         <PersonInfo v-if="selectedRespondent" :person="selectedRespondent" />
@@ -26,6 +30,7 @@ import { ref, watch } from 'vue'
 import CampaignList from '@/components/client/CampaignList.vue'
 import RespondentList from '@/components/client/RespondentList.vue'
 import PersonInfo from '@/components/client/PersonInfo.vue'
+import PieChart from '@/components/client/PieChart.vue'
 // import RespondentView from '@/components/client/RespondentView.vue'
 // import ClientNav from '@/components/client/ClientNav.vue'
 import { useSettings } from '@/stores/settings';
@@ -34,10 +39,10 @@ import { storeToRefs } from 'pinia';
 const selectedCampaign = ref(null)
 const selectedRespondent = ref(null)
 
-watch(selectedRespondent, () => {
-  console.log(selectedRespondent.value)
+// watch(selectedRespondent, () => {
+//   console.log(selectedRespondent.value)
 
-})
+// })
 
 // const auth = useAuth()
 

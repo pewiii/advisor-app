@@ -37,7 +37,7 @@
                   <!-- <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-dark" name="theme" value="dark" />
                       <label for="setting-dark" class="ml-2">Dark</label>
-                  </div>text-stone-600 dark:text-stone-400 
+                  </div>text-stone-600 dark:text-stone-400
                   <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-light" name="theme" value="light" />
                       <label for="setting-light" class="ml-2">Light</label>
@@ -165,10 +165,6 @@ const router = useRouter()
 const showSidebar = ref(true)
 const showHideSidebar = ref(false)
 const sidebar = ref(null as any)
-
-watch(isDark, () => {
-  console.log(isDark.value)
-})
 
 const getSidebarPassthrough = () => {
   return {
