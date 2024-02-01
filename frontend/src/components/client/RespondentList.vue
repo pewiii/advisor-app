@@ -30,13 +30,22 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useAuth } from '@/stores/auth';
 import moment from 'moment'
 
-const props = defineProps(['modelValue', 'campaign', 'search'])
+const props = defineProps(['modelValue', 'respondentList', 'campaign', 'search'])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'update:respondentList'])
 
 const auth = useAuth()
-const respondents = ref([])
+// const respondents = ref([])
 const loading = ref(true)
+
+const respondents = computed({
+  get() {
+    return props.respondentList
+  },
+  set(respondents: any) {
+    emit('update:respondentList', respondents)
+  }
+})
 
 const page = ref(0)
 const perPage = ref(10)
@@ -91,6 +100,7 @@ watch(() => props.campaign, () => {
     events.value[event._id] = event
   })
   respondents.value = []
+  selectedRespondent.value = null
   getRespondents()
 }, { immediate: true  })
 
