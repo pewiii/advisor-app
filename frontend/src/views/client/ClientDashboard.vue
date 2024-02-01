@@ -14,7 +14,7 @@
       </div>
       <div class="flex gap-4">
         <div>
-          <pvSidebar v-model:visible="sidebarVisible" position="right" class="" :pt="getSidebarPassthrough()">
+          <pvSidebar v-model:visible="sidebarVisible" position="right" class="" :pt="sidebarPassthrough">
             <template #header>
               {{ auth.user && auth.user.email }}
             </template>
@@ -166,10 +166,10 @@ const showSidebar = ref(true)
 const showHideSidebar = ref(false)
 const sidebar = ref(null as any)
 
-const getSidebarPassthrough = () => {
+const sidebarPassthrough = computed(() => {
   return {
     root: {
-      class: 'bg-stone-100 dark:bg-stone-800'
+      class: `${isDark.value ? '' : '!'}bg-stone-200 dark:bg-stone-800 !bg-opacity-20 !backdrop-filter !backdrop-blur-md`
     },
     header: {
       style: `color: ${color.value.primary}`,
@@ -179,7 +179,22 @@ const getSidebarPassthrough = () => {
       style: `color: ${color.value.primary}`
     }
   }
-}
+})
+
+// const getSidebarPassthrough = () => {
+//   return {
+//     root: {
+//       class: 'bg-stone-100 dark:bg-stone-800'
+//     },
+//     header: {
+//       style: `color: ${color.value.primary}`,
+//       class: 'text-lg'
+//     },
+//     closeButton: {
+//       style: `color: ${color.value.primary}`
+//     }
+//   }
+// }
 
 // const sidebarPassthrough = ref({
 // })

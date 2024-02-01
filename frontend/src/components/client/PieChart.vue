@@ -1,7 +1,7 @@
 
 <template>
-  <div class="card flex justify-content-center p-4">
-      <pvChart type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" :pt="{ root: { canvas: 'text-white '}}" />
+  <div class="card flex justify-center p-4">
+      <pvChart type="pie" :data="chartData" :options="chartOptions" class="" :pt="{root: { class: 'flex justify-center'}}" />
   </div>
 </template>
 
@@ -46,15 +46,15 @@ const chartData = computed(() => {
       return props.respondents.filter((respondent: any) => respondent.extraInfo[props.field] === label).length;
   });
   
-  const documentStyle = getComputedStyle(document.body);
+  // const documentStyle = getComputedStyle(document.body);
 
   return {
       labels,
       datasets: [
           {
               data,
-              backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--gray-500')],
-              hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--gray-400')]
+              // backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--gray-500')],
+              // hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--gray-400')]
           }
       ]
   };
@@ -74,7 +74,8 @@ const chartOptions = computed(() => {
                   usePointStyle: true,
                   color: color.value.primary,
                   font: { size: 14 }
-              }
+              },
+              position: 'right',
           }
       }
   };

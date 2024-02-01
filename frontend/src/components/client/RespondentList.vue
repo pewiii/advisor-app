@@ -20,6 +20,13 @@
       <!-- {{ moment(event[data.event]?.date).format('MM/DD/YYYY') }} - {{ moment(event[data.event]?.time) }} -->
     </pvColumn>
   </pvDataTable>
+
+  <div class="flex justify-evenly mb-3 paginator items-center" :style="{ color: color.primary}">
+      <div class="hidden sm:block lg:hidden xl:block">
+        Total: {{ totalRecords }}
+      </div>
+        <pvPaginator ref="campaignPaginator" :pt="settings.paginatorPassthrough" class="paginator-element" :rows="perPage" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="totalRecords" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink" @page="handlePage"/>
+    </div>
 </div>
 
 
@@ -29,6 +36,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useAuth } from '@/stores/auth';
 import moment from 'moment'
+import { useSettings } from '@/stores/settings';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps(['modelValue', 'respondentList', 'campaign', 'search'])
 
@@ -46,6 +55,10 @@ const respondents = computed({
     emit('update:respondentList', respondents)
   }
 })
+
+const settings = useSettings()
+
+const { color } = storeToRefs(settings)
 
 const page = ref(0)
 const perPage = ref(10)
@@ -76,6 +89,7 @@ const eventDate = (eventId: string) => {
 }
 
 const getRespondents = async () => {
+  console.log('fetcing respondents')
   loading.value = true
   try {
     const res = await auth.api.get(
@@ -103,6 +117,13 @@ watch(() => props.campaign, () => {
   selectedRespondent.value = null
   getRespondents()
 }, { immediate: true  })
+
+
+const handlePage = (pagination: any) => {
+  perPage.value = pagination.rows
+  page.value = pagination.page
+  getRespondents()
+}
 
 
 onMounted(getRespondents)
