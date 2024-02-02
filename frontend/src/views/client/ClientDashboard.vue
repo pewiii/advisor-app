@@ -78,8 +78,8 @@
       <!-- <div class="text-right p-2 rounded-md cursor-pointer" @click="showSidebar = false">
         <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-200 sidebar-close-open opacity-75"></span>
       </div> -->
-      <div class="p-8">
-        <ul class="text-gray-500 font-semibold flex flex-col gap-2 text-right">
+      <div class="p-4 md:p-8">
+        <ul class="text-gray-500 font-semibold flex md:flex-col text-right justify-end gap-4">
           <RouterLink :to="{ name: 'client-overview' }" class="router-link">
             <li class="border-gray-700 rounded">Overview</li>
           </RouterLink>
