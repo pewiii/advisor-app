@@ -1,7 +1,7 @@
 
 <template>
   <div class="card flex justify-center p-4">
-      <pvChart type="pie" :data="chartData" :options="chartOptions" class="" :pt="{root: { class: 'flex justify-center'}}" />
+      <pvChart type="pie" :data="chartData" :options="chartOptions" class="" :pt="{root: { class: 'flex justify-center'}, canvas: { class: ''}}" />
   </div>
 </template>
 
@@ -10,7 +10,9 @@ import { ref, onMounted, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettings } from "@/stores/settings";
 
-const { isDark, color } = storeToRefs(useSettings());
+const settings = useSettings()
+
+const { isDark, color, colorChoices } = storeToRefs(settings);
 
 const props = defineProps({
   respondents: {
@@ -39,13 +41,13 @@ const chartData = computed(() => {
         labelSet.add(respondent.extraInfo[props.field]);
       }
   });
-  
+
   const labels = Array.from(labelSet);
-  
+
   const data = labels.map((label) => {
       return props.respondents.filter((respondent: any) => respondent.extraInfo[props.field] === label).length;
   });
-  
+
   // const documentStyle = getComputedStyle(document.body);
 
   return {
@@ -53,7 +55,8 @@ const chartData = computed(() => {
       datasets: [
           {
               data,
-              // backgroundColor: [documentStyle.getPropertyValue('--cyan-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--gray-500')],
+              backgroundColor: settings.similarColors(color.value.primary)
+              // backgroundColor: colorChoices.value.map(color => color+'bf'),
               // hoverBackgroundColor: [documentStyle.getPropertyValue('--cyan-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--gray-400')]
           }
       ]
@@ -68,14 +71,15 @@ const chartOptions = computed(() => {
                   display: chartData.value.labels.length > 0,
                   text: props.title,
                   color: isDark ? '#71717a' : '#404040',
-                  font: { weight: 'bold', size: 15 }
+                  font: { weight: 'bold', size: 15 },
+
               },
               labels: {
                   usePointStyle: true,
                   color: color.value.primary,
                   font: { size: 14 }
               },
-              position: 'right',
+              position: 'top',
           }
       }
   };
@@ -89,16 +93,16 @@ const chartOptions = computed(() => {
 //           labelSet.add(respondent.extraInfo[props.field]);
 //         }
 //     });
-    
+
 //     const labels = Array.from(labelSet);
-    
+
 //     const data = labels.map((label) => {
 //         return props.respondents.filter((respondent: any) => respondent.extraInfo[props.field] === label).length;
 //     });
-    
+
 //     chartData.value = setChartData(labels, data);
 //     chartOptions.value = setChartOptions();
-  
+
 //   }, { deep: true, immediate: true });
 
 // })

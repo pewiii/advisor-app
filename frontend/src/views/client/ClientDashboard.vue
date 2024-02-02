@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen grid w-full dark:bg-stone-950" :class="showSidebar ? 'grid-cols-custom grid-rows-custom-sidebar' : 'grid-cols-1 grid-rows-custom-nosidebar'">
-    <div class="bg-stone-200 text-white dark:bg-stone-900 pr-6 items-center flex topbar justify-between">
+  <div class="min-h-screen grid w-full dark:bg-gray-950" :class="showSidebar ? 'grid-cols-custom grid-rows-custom-sidebar' : 'grid-cols-1 grid-rows-custom-nosidebar'">
+    <div class="bg-gray-200 text-white dark:bg-gray-900 pr-6 items-center flex topbar justify-between">
       <!-- <div @click="showSidebar = true" v-if="!showSidebar" class="ml-4 pi pi-arrow-right">Show</div> -->
       <!-- <pvButton class="h-8 !text-cyan-500" icon="pi pi-arrow-right" outlined raised v-if="!showSidebar" @click="showSidebar = true"/> -->
       <div class="flex items-center">
               <!-- <div class="text-right p-2 rounded-md cursor-pointer" @click="showSidebar = false">
         <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-200 sidebar-close-open opacity-75"></span>
       </div> -->
-        <div class="text-center cursor-pointer flex items-center justify-center px-2 bg-stone-100 dark:bg-stone-800 sidepanel-tab" @click="showSidebar = !showSidebar">
+        <div class="text-center cursor-pointer flex items-center justify-center px-2 bg-gray-100 dark:bg-gray-800 sidepanel-tab" @click="showSidebar = !showSidebar">
           <span class="pi sidebar-close-open" :class="showSidebar ? 'pi-arrow-left' : 'pi-arrow-right'"></span>
         </div>
-        <p class="ml-10 tracking-widest font-extrabold text-3xl text-stone-400 dark:text-stone-600">PACK<span :style="`color: ${color.primary}`">THEM</span>IN</p>
+        <p class="ml-10 tracking-widest font-extrabold text-3xl text-gray-400 dark:text-gray-600">PACK<span :style="`color: ${color.primary}`">THEM</span>IN</p>
       </div>
       <div class="flex gap-4">
         <div>
@@ -18,16 +18,16 @@
             <template #header>
               {{ auth.user && auth.user.email }}
             </template>
-            <div class="flex flex-col gap-4 text-stone-600 dark:text-stone-400">
+            <div class="flex flex-col gap-4 text-gray-600 dark:text-gray-400">
               <div class="text-center">
                 <!-- <div>{{ auth.user && auth.user.email }}</div> -->
                 <div class="mt-2 user-logout cursor-pointer" @click="logout">Log Out <span class="pi pi-sign-out ml-2"></span></div>
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <div class="bg-gray-300 dark:bg-gray-600 w-full" :style="{ height: '2px' }"></div>
                   <p>Theme</p>
-                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <div class="bg-gray-300 dark:bg-gray-600 w-full" :style="{ height: '2px' }"></div>
                 </div>
                 <div class="flex flex-wrap gap-3 mt-2 justify-center">
                   <div v-for="mode in ([ 'dark', 'light', 'os' ])" :key="`setting-${mode}`" class="flex align-items-center">
@@ -37,7 +37,7 @@
                   <!-- <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-dark" name="theme" value="dark" />
                       <label for="setting-dark" class="ml-2">Dark</label>
-                  </div>text-stone-600 dark:text-stone-400
+                  </div>text-gray-600 dark:text-gray-400
                   <div class="flex align-items-center">
                       <pvRadioButton v-model="theme" :pt="radioPassthrough" inputId="setting-light" name="theme" value="light" />
                       <label for="setting-light" class="ml-2">Light</label>
@@ -50,9 +50,9 @@
               </div>
               <div class="">
                 <div class="flex items-center gap-2">
-                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <div class="bg-gray-300 dark:bg-gray-600 w-full" :style="{ height: '2px' }"></div>
                   <p>Color</p>
-                  <div class="bg-stone-300 dark:bg-stone-600 w-full" :style="{ height: '2px' }"></div>
+                  <div class="bg-gray-300 dark:bg-gray-600 w-full" :style="{ height: '2px' }"></div>
                 </div>
                 <div class="flex flex-wrap gap-2 mt-2">
                   <div v-for="colorChoice in settings.colorChoices" :key="`setting-${colorChoice}`">
@@ -63,7 +63,7 @@
             </div>
           </pvSidebar>
           <div
-          class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-stone-900 bg-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 cursor-pointer"
+          class="w-8 h-8 rounded-full flex justify-center items-center dark:bg-gray-900 bg-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer"
           :style="{ border: `1px solid ${color.primary}`}"
           @click="sidebarVisible = true"
           >
@@ -73,24 +73,24 @@
       </div>
     </div>
 
-    <div ref="sidebar" class="col-span-1 md:row-span-2 bg-stone-100 pt-1 md:order-first dark:bg-stone-800 sidebar left-0" :class="showSidebar ? '' : 'absolute h-full sidebar-collapse'" @mouseenter="showHideSidebar = true" @mouseleave="showHideSidebar = false">
+    <div ref="sidebar" class="col-span-1 md:row-span-2 bg-gray-100 pt-1 md:order-first dark:bg-gray-800 sidebar left-0" :class="showSidebar ? '' : 'absolute h-full sidebar-collapse'" @mouseenter="showHideSidebar = true" @mouseleave="showHideSidebar = false">
       <!-- <pvButton class="h-8 !text-cyan-500" icon="pi pi-arrow-left" raised @click="showSidebar = false"/> -->
       <!-- <div class="text-right p-2 rounded-md cursor-pointer" @click="showSidebar = false">
         <span class="pi pi-arrow-left hover:opacity-100 transition-opacity duration-200 sidebar-close-open opacity-75"></span>
       </div> -->
       <div class="p-8">
-        <ul class="text-stone-500 font-semibold flex flex-col gap-2 text-right">
+        <ul class="text-gray-500 font-semibold flex flex-col gap-2 text-right">
           <RouterLink :to="{ name: 'client-overview' }" class="router-link">
-            <li class="border-stone-700 rounded">Overview</li>
+            <li class="border-gray-700 rounded">Overview</li>
           </RouterLink>
           <RouterLink :to="'/login'" class="router-link">
-            <li class="border-stone-700 rounded">Item 2</li>
+            <li class="border-gray-700 rounded">Item 2</li>
           </RouterLink>
           <RouterLink :to="'/login'" class="router-link">
-            <li class="border-stone-700 rounded">Item 3</li>
+            <li class="border-gray-700 rounded">Item 3</li>
           </RouterLink>
           <RouterLink :to="'/login'" class="router-link">
-            <li class="border-stone-700 rounded">Item 4</li>
+            <li class="border-gray-700 rounded">Item 4</li>
           </RouterLink>
         </ul>
       </div>
@@ -99,14 +99,14 @@
     <RouterView />
     <!-- <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-6">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
-        <div class="col-span-1 row-span-1 panel bg-white dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-gray-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+        <div class="col-span-1 row-span-1 panel bg-white dark:bg-gray-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
       </div>
-      <div class="col-span-12 lg:col-span-6 row-span-2 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
-      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100">
+      <div class="col-span-12 lg:col-span-6 row-span-2 bg-white panel dark:bg-gray-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-gray-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100">
         <CampaignList v-model="selectedCampaign" :search="search" />
       </div>
-      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-stone-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
+      <div class="col-span-12 lg:col-span-6 row-span-4 bg-white panel dark:bg-gray-800 border-1 border-cyan-900 border-opacity-0 hover:border-opacity-100"></div>
     </div> -->
 
 
@@ -115,7 +115,7 @@
   <div class="p-8 grid grid-cols-6 flex-wrap gap-4">
     <div class="bg-white col-span-3 p-4 flex h-80 justify-center">
       <PieChart :element="'pie-1'" :title="'Net Worth'"/>
-      <div class="h-full bg-stone-100 w-1"></div>
+      <div class="h-full bg-gray-100 w-1"></div>
       <PieChart :element="'pie-2'" :title="'Wealth Rating'"/>
     </div>
     <div class="bg-white col-span-3 p-4 h-80">
@@ -169,7 +169,7 @@ const sidebar = ref(null as any)
 const sidebarPassthrough = computed(() => {
   return {
     root: {
-      class: `${isDark.value ? '' : '!'}bg-stone-200 dark:bg-stone-800 !bg-opacity-20 !backdrop-filter !backdrop-blur-md`
+      class: `${isDark.value ? '' : '!'}bg-gray-200 dark:bg-gray-800 !bg-opacity-20 !backdrop-filter !backdrop-blur-md`
     },
     header: {
       style: `color: ${color.value.primary}`,
@@ -184,7 +184,7 @@ const sidebarPassthrough = computed(() => {
 // const getSidebarPassthrough = () => {
 //   return {
 //     root: {
-//       class: 'bg-stone-100 dark:bg-stone-800'
+//       class: 'bg-gray-100 dark:bg-gray-800'
 //     },
 //     header: {
 //       style: `color: ${color.value.primary}`,
@@ -202,7 +202,7 @@ const sidebarPassthrough = computed(() => {
 const getRadioPassthrough = (mode: string) => {
   return {
     input: {
-      class: isDark.value ? '!bg-stone-600' : '',
+      class: isDark.value ? '!bg-gray-600' : '',
       style: {
         borderColor: theme.value === mode ? color.value.primary : '',
       }
@@ -234,7 +234,7 @@ const logout = () => {
 //     input: ({ props }: { props: any }) => {
 //       console.log(props.modelValue)
 //       return {
-//         class: isDark.value ? '!bg-stone-600' : '',
+//         class: isDark.value ? '!bg-gray-600' : '',
 //         style: {
 //           borderColor: props.modelValue === theme.value ? 'red' : ''
 //         }
@@ -375,9 +375,9 @@ const logout = () => {
 
 
 div >>> table {
-  color: v-bind('color.primary');
+  /* color: v-bind('color.primary'); */
   text-align: left;
-  @apply w-full mt-2;
+  @apply w-full mt-2 dark:text-gray-300;
 }
 
 div >>> tbody tr[data-p-highlight="false"]:hover {
@@ -409,7 +409,7 @@ div >>> td, div >>> th {
 
 div >>> tr[data-p-highlight="true"] {
   background-color: v-bind('color.primaryAlpha8');
-  @apply text-stone-900 font-semibold;
+  @apply text-gray-900 font-semibold;
 }
 
 div >>> .p-paginator {

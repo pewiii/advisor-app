@@ -26,7 +26,7 @@ export const useSettings = defineStore('settings', () => {
   //   user.value.config.primaryColor = primaryColor
   // }
 
-  const config = computed(() => { 
+  const config = computed(() => {
     if (user.value && user.value.config) {
       return user.value.config
     }
@@ -118,42 +118,96 @@ export const useSettings = defineStore('settings', () => {
     setDark(dark)
   }, { immediate: true})
 
-  const colorChoices = [
-    '#ef4444',
-    '#f97316',
-    '#f59e0b',
-    '#eab308',
-    '#84cc16',
-    '#22c55e',
-    '#10b981',
-    '#14b8a6',
-    '#06b6d4',
-    '#0ea5e9',
-    '#3b82f6',
-    '#6366f1',
-    '#8b5cf6',
-    '#a855f7',
-    '#d946ef',
-    '#ec4899',
-    '#f43f5e',
-    // '#dc2626',
-    // '#ea580c',
-    // '#d97706',
-    // '#ca8a04',
-    // '#65a30d',
-    // '#16a34a',
-    // '#059669',
-    // '#0d9488',
-    // '#0891b2',
-    // '#0284c7',
-    // '#2563eb',
-    // '#4f46e5',
-    // '#7c3aed',
-    // '#9333ea',
-    // '#c026d3',
-    // '#db2777',
-    // '#e11d48',
-  ]
+  watch(isDark, () => {
+    console.log('isDark', isDark.value)
+  })
+
+  const colorChoices = computed(() => {
+    if (!isDark.value) {
+      return [
+        '#dc2626',
+        '#ea580c',
+        '#d97706',
+        '#ca8a04',
+        '#65a30d',
+        '#16a34a',
+        '#059669',
+        '#0d9488',
+        '#0891b2',
+        '#0284c7',
+        '#2563eb',
+        '#4f46e5',
+        '#7c3aed',
+        '#9333ea',
+        '#c026d3',
+        '#db2777',
+        '#e11d48',
+      ]
+    }
+    return [
+      '#ef4444',
+      '#f97316',
+      '#f59e0b',
+      '#eab308',
+      '#84cc16',
+      '#22c55e',
+      '#10b981',
+      '#14b8a6',
+      '#06b6d4',
+      '#0ea5e9',
+      '#3b82f6',
+      '#6366f1',
+      '#8b5cf6',
+      '#a855f7',
+      '#d946ef',
+      '#ec4899',
+      '#f43f5e',
+    ]
+  })
+
+
+  function similarColors(hexColor: string) {
+    // Convert hex color to RGB
+    const hex = hexColor.replace(/^#/, '');
+    const rgb = {
+        r: parseInt(hex.substr(0, 2), 16),
+        g: parseInt(hex.substr(2, 2), 16),
+        b: parseInt(hex.substr(4, 2), 16)
+    };
+
+    const similarColors = [];
+    for (let i = 0; i < 10; i++) {
+        // Randomly adjust the RGB values with a wider range
+        const rShift = randomShift();
+        const gShift = randomShift();
+        const bShift = randomShift();
+
+        // Apply the shifts and clamp the values to [0, 255]
+        const r = clamp(rgb.r + Math.round(rShift * 255), 0, 255);
+        const g = clamp(rgb.g + Math.round(gShift * 255), 0, 255);
+        const b = clamp(rgb.b + Math.round(bShift * 255), 0, 255);
+
+        // Convert back to hex
+        const similarHexColor = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+        similarColors.push(similarHexColor);
+    }
+
+    return similarColors;
+}
+
+function randomShift() {
+    return Math.random() * 0.6 - 0.3; // Adjust the range as needed
+}
+
+function clamp(value: number, min: number, max: number) {
+    return Math.min(Math.max(value, min), max);
+}
+
+function componentToHex(c: any) {
+    const hex = c.toString(16);
+    return hex.length == 1 ? '0' + hex : hex;
+}
+
 
 
   return {
@@ -163,6 +217,7 @@ export const useSettings = defineStore('settings', () => {
     isDark,
     colorChoices,
     setColor,
+    similarColors
   }
 
 })
