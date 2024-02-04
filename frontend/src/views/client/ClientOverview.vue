@@ -1,15 +1,15 @@
 <template>
     <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-4">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
-        <div class="col-span-1 row-span-1 panel">
+        <div class="col-span-1 lg:hidden xl:block row-span-1 panel hidden sm:block">
           <PieChart :respondents="respondents" :field="'netWorth'" :title="'Net Worth'"/>
         </div>
-        <div class="col-span-1 row-span-1 panel">
+        <div class="col-span-2 lg:col-span-2 sm:col-span-1 xl:col-span-1 row-span-1 panel">
           <PieChart :respondents="respondents" :field="'wealthRating'" :title="'Wealth Rating'"/>
         </div>
       </div>
       <div class="col-span-12 lg:col-span-6 row-span-2 panel">
-        <PersonInfo v-if="selectedRespondent" :person="selectedRespondent" :campaign="selectedCampaign" />
+        <PersonInfo v-if="selectedRespondent && selectedCampaign" :person="selectedRespondent" :campaign="selectedCampaign" />
       </div>
       <div class="col-span-12 lg:col-span-6 row-span-4 panel">
         <CampaignList v-model="selectedCampaign" :search="search" />

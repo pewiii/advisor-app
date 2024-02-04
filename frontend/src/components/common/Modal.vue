@@ -1,15 +1,17 @@
 <template>
   <slot name="trigger" :open="open"></slot>
 
-  <pvDialog 
-  v-model:visible="showModal" 
-  :header="header" 
-  :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }" 
-  maximizable 
-  :keepInViewPort="false" 
-  :appendTo="windowArea" 
+  <pvDialog
+  v-model:visible="showModal"
+  :header="header"
+  :style="{ width: width }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+  maximizable
+  :class="dark ? 'bg-gray-800 text-gray-200' : 'bg-white'"
+  :keepInViewPort="false"
+  :appendTo="windowArea"
   @maximize="maximized=true"
   @unmaximize="maximized=false">
+  <!-- :pt="{root: { style: { backgroundColor: 'white' }}}" -->
 
     <slot name="content" :close="close" :maximized="maximized"></slot>
   </pvDialog>
@@ -18,7 +20,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 
-const props = defineProps(['header', 'size' ,'windowArea'])
+const props = defineProps(['header', 'size' ,'windowArea', 'dark' ])
 
 const showModal = ref(false)
 
