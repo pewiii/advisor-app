@@ -37,10 +37,12 @@ const props = defineProps({
 const chartData = computed(() => {
   const labelSet = new Set();
   props.respondents.forEach((respondent: any) => {
-      if (respondent.extraInfo[props.field]) {
-        labelSet.add(respondent.extraInfo[props.field]);
-      }
-  });
+    if (respondent.extraInfo[props.field] === null || respondent.extraInfo[props.field] === undefined) {
+      labelSet.add('N/A');
+    } else {
+      labelSet.add(respondent.extraInfo[props.field]);
+    }
+  })
 
   const labels = Array.from(labelSet);
 
