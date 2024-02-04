@@ -17,7 +17,7 @@
         </ul>
       </div>
     </div>
-    <Modal :header="`${person.firstName} ${person.lastName}`">
+    <Modal :header="`${person.firstName} ${person.lastName}`" :dark="isDark">
       <template #trigger="{ open }">
         <button @click="open" :style="{color: color.primary}">Show Map</button>
       </template>
@@ -51,4 +51,5 @@ const props = defineProps({
 .person-info {
   color: v-bind('color.primary');
 }
+
 </style>

@@ -83,15 +83,15 @@
           <RouterLink :to="{ name: 'client-overview' }" class="router-link">
             <li class="border-gray-700 rounded">Overview</li>
           </RouterLink>
-          <RouterLink :to="'/login'" class="router-link">
-            <li class="border-gray-700 rounded">Item 2</li>
-          </RouterLink>
-          <RouterLink :to="'/login'" class="router-link">
-            <li class="border-gray-700 rounded">Item 3</li>
-          </RouterLink>
-          <RouterLink :to="'/login'" class="router-link">
-            <li class="border-gray-700 rounded">Item 4</li>
-          </RouterLink>
+          <!-- <RouterLink :to="'/login'" class="router-link"> -->
+            <li class="border-gray-700 rounded">Campaigns</li>
+          <!-- </RouterLink> -->
+          <!-- <RouterLink :to="'/login'" class="router-link"> -->
+            <li class="border-gray-700 rounded">Respondents</li>
+          <!-- </RouterLink> -->
+          <!-- <RouterLink :to="'/login'" class="router-link"> -->
+            <li class="border-gray-700 rounded">Other</li>
+          <!-- </RouterLink> -->
         </ul>
       </div>
     </div>
