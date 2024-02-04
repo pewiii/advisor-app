@@ -2,7 +2,7 @@
     <div class="grid gap-4 grid-cols-12 p-4 lg:grid-rows-4">
       <div class="grid col-span-12 lg:col-span-6 row-span-2 gap-4 grid-rows-1 grid-cols-2">
         <div class="col-span-1 lg:hidden xl:block row-span-1 panel hidden sm:block relative">
-          <div class="absolute right-0 mr-2 mt-2 dark:text-gray-400 cursor-pointer z-10" @click="chartMenu1 = true">
+          <div class="absolute right-0 mr-2 mt-2 text-gray-400 cursor-pointer z-10" @click="chartMenu1 = true">
             <div class="pi pi-bars" v-if="!chartMenu1"></div>
             <div v-if="chartMenu1" class="bg-gray-800" @mouseleave="chartMenu1 = false">
               <ul>
@@ -13,7 +13,7 @@
           <PieChart v-if="chartField1" :respondents="respondents" :field="chartField1" :title="camelCaseToTitleCase(chartField1)"/>
         </div>
         <div class="col-span-2 lg:col-span-2 sm:col-span-1 xl:col-span-1 row-span-1 panel relative">
-          <div class="absolute right-0 mr-2 mt-2 dark:text-gray-400 cursor-pointer z-10" @click="chartMenu2 = true">
+          <div class="absolute right-0 mr-2 mt-2 text-gray-400 cursor-pointer z-10" @click="chartMenu2 = true">
             <div class="pi pi-bars" v-if="!chartMenu2"></div>
             <div v-if="chartMenu2" class="bg-gray-800" @mouseleave="chartMenu2 = false">
               <ul>
@@ -80,6 +80,7 @@ const chartField1 = computed({
   },
   set: (value: string) => {
     chartField1Ref.value = value
+    chartMenu1.value = false
   }
 })
 
@@ -92,6 +93,7 @@ const chartField2 = computed({
   },
   set: (value: string) => {
     chartField2Ref.value = value
+    chartMenu2.value = false
   }
 })
 
