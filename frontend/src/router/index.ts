@@ -47,6 +47,13 @@ const router = createRouter({
         document.title='RSVP'
       },
       component: () => import('@/views/offer/OfferView.vue'),
+      children: [
+        {
+          path: 'support',
+          name: 'offer-support',
+          component: () => import('@/views/offer/OfferSupport.vue')
+        }
+      ]
     },
     {
       path: '/setup/:clientId/:token',

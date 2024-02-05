@@ -1,7 +1,7 @@
 <template>
     <!-- Main section start -->
 	<section class="lg:h-screen px-12 lg:px-72 py-32" :class="showArrow ? 'section' : ''">
-		<div class="w-full md:w-1/2 h-full flex flex-col md:justify-center">
+		<div class="w-full h-full flex flex-col md:justify-center">
 			<!-- Main text start -->
 			<!-- <div class="bg-slate-900 p-6 bg-opacity-90 rounded-lg hover:bg-opacity-100 transition	ease-in-out"> -->
 			<div class="">
@@ -9,13 +9,13 @@
 					Empowering Your Events
 				</h1>
 				<p class="capitalize w-full text-stone-700 text-lg">
-					Pack Them In specializes in curating vibrant and responsive audiences for your events. 
-					With our expert team and innovative strategies, we ensure a packed house, 
-					providing advisors and organizers with the ideal platform to connect, 
+					Pack Them In specializes in curating vibrant and responsive audiences for your events.
+					With our expert team and innovative strategies, we ensure a packed house,
+					providing advisors and organizers with the ideal platform to connect,
 					share insights, and make a lasting impact. Elevate your events with Pack Them In and transform gatherings into unforgettable experiences.
 				</p>
 				<!-- Main text end -->
-	
+
 				<!-- Social links start -->
 				<div class="flex mt-4 gap-8 text-stone-700">
 					<a href="#">
@@ -65,7 +65,7 @@ onMounted(() => {
 	}, 3000)
 
 	window.onscroll = () => {
-		
+
 		clearTimeout(timeoutId)
 		setTimeout(() => {
 			showArrow.value = false
