@@ -30,7 +30,7 @@
 
 
 
-      <div class="p-8 lg:max-w-xl w-full"
+      <div class="p-8 lg:max-w-xl w-full backdrop-blur-md"
         :style="{ color: config.secondPanelTextColor, backgroundColor: config.secondPanelColor }">
 
         <div v-if="!success">
@@ -42,15 +42,20 @@
             Please select an event
           </div>
 
-          <div v-if="events" class="flex gap-4 flex-col">
+          <div v-if="events" class="flex gap-4 flex-col mt-2">
             <label v-for="(event) in events" :key="event._id"
-              class="flex align-items-center items-center p-4 gap-4 cursor-pointer"
-              :style="{ backgroundColor: config.optionBgColor, color: config.optionTextColor }"
-              :class="selectedEvent === event ? 'bg-opacity-60' : 'hover:bg-opacity-60'">
+              class="flex align-items-center items-center p-4 gap-4 cursor-pointer hover:transform hover:scale-105 transition-transform duration-300"
+              :class="selectedEvent === event ? 'scale-105' : ''"
+              :style="{ backgroundColor: config.optionBgColor, color: config.optionTextColor }">
               <pvRadioButton v-model="selectedEvent" :disabled="success" :inputId="event._id" name="dynamic"
                 :value="event" />
-              <div class="font-semibold opacity-90">
-                {{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY,h: mm a') }}
+              <div class="flex justify-between text-xl gap-2 w-full">
+                <div>
+                  {{ moment(event.eventDate).tz(event.timezone).format('MMMM Do, YYYY') }}
+                </div>
+                <div>
+                  {{ moment(event.eventDate).tz(event.timezone).format('h:mm a') }}
+                </div>
               </div>
               <div v-if="eventLocations.length > 1">
                 <div>{{ event.locationName }}</div>
@@ -63,7 +68,7 @@
 
           <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
 
-            <div class="ml-4 font-semibold text-lg opacity-70 whitespace-nowrap mr-4">
+            <div class="ml-4 font-semibold text-lg whitespace-nowrap mr-4" >
               <div>{{ eventLocations[0].locationName }}</div>
               <div>{{ eventLocations[0].address1 }}</div>
               <div v-if="eventLocations[0].address2">{{ eventLocations[0].address2 }}</div>
@@ -114,6 +119,10 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="mt-4">
+            By clicking 'Submit,' you are agreeing to receive between 1 to 3 reminder text messages prior to the event start time.
           </div>
 
           <div class="mt-4 flex justify-center">

@@ -71,6 +71,7 @@ app.post('/admin/users/:userId', auth.verifyToken, auth.requireAdmin, api.admin.
 app.delete('/admin/users/:userId', auth.verifyToken, auth.requireAdmin, api.admin.users.delete)
 
 
+app.post('/text/status', api.text.textStatus)
 
 // **** Client Routes ****
 app.post('/login', auth.login)
