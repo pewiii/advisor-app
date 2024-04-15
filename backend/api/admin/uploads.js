@@ -167,7 +167,7 @@ const csvUpload = async (req, res) => {
   try {
     const campaign = req.body.campaign
     const months = parseInt(req.body.months)
-    
+
     const currentDate = moment().utc()
     //test
     // const futureDate = currentDate.add(1, 'minutes')
@@ -175,19 +175,19 @@ const csvUpload = async (req, res) => {
     const expirationDate = futureDate.toDate()
 
     const records = []
-    let headerSkipped = false
+    // let headerSkipped = false
 
     let savedRecords = null
 
-    // const stream = Readable.from(buffer.toString())
+    // const stream = Readable.from(buffer.toString ())
     const stream = fs.createReadStream(req.file.path)
 
     const processRecord = (data) => {
-      if (!headerSkipped) {
-        // Skip the header record
-        headerSkipped = true
-        return
-      }
+      // if (!headerSkipped) {
+      //   // Skip the header record
+      //   headerSkipped = true
+      //   return
+      // }
       const keys = Object.keys(data)
       const record = {
         campaign,
@@ -313,7 +313,7 @@ const csvUpload = async (req, res) => {
         } catch (err) {
           try {
             await models.Record.deleteMany(savedRecords)
-          } catch(err) {
+          } catch (err) {
             console.log(err)
           }
 
@@ -335,7 +335,7 @@ const csvUpload = async (req, res) => {
 
 function createCSVStream(data) {
   // Create a writable stream to capture the CSV string
-  const csvStringifierStream = stringify({ 
+  const csvStringifierStream = stringify({
     header: true,
     // formatters: {
     //   number: (value) => "'" + value, // Prepend an apostrophe to numeric fields
@@ -359,7 +359,7 @@ function createCSVStream(data) {
 
   // Create a readable stream from the captured CSV string
   const readable = new Readable();
-  readable._read = () => {}; // Implement _read method for the Readable stream
+  readable._read = () => { }; // Implement _read method for the Readable stream
 
   // Push the CSV string into the readable stream
   csvStringifierStream.on('end', () => {
@@ -408,72 +408,72 @@ const csvCode = async (req, res) => {
   const stream = fs.createReadStream(req.file.path)
   const records = []
   stream
-  .pipe(csv())
-  .on('data', (data) => records.push(data))
-  .on('end', async () => {
-    
-    const codeCache = {}
-    let uniqueCodeError = false
+    .pipe(csv())
+    .on('data', (data) => records.push(data))
+    .on('end', async () => {
 
-    const processedRecords = await Promise.all(records.map(async (record) => {
-      let offerCode = null
-      let i = 0
-      // 100 tries to find unique code
-      while(i < 100) {
-        offerCode = generateRandomHex(6)
-        const existingRecord = await models.Record.findOne({ offerCode })
-        if (!existingRecord) {
-          const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode })
-          if (!usedOfferCode) {
-            if (!codeCache[offerCode]) {
-              codeCache[offerCode] = true
-              record.offerCode = "'" + offerCode
-              return record
+      const codeCache = {}
+      let uniqueCodeError = false
+
+      const processedRecords = await Promise.all(records.map(async (record) => {
+        let offerCode = null
+        let i = 0
+        // 100 tries to find unique code
+        while (i < 100) {
+          offerCode = generateRandomHex(6)
+          const existingRecord = await models.Record.findOne({ offerCode })
+          if (!existingRecord) {
+            const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode })
+            if (!usedOfferCode) {
+              if (!codeCache[offerCode]) {
+                codeCache[offerCode] = true
+                record.offerCode = "'" + offerCode
+                return record
+              }
             }
           }
+          i++
         }
-        i++
-      }
-      uniqueCodeError = true
-    }))
+        uniqueCodeError = true
+      }))
 
-    if (!uniqueCodeError && processedRecords.length === records.length) {
-      try {
-        const now = moment().utc()
-        const futureDate = now.add(1, 'month')
-        const expirationDate = futureDate.toDate()
-        const usedCodes = Object.keys(codeCache).map(code => {
-          return {
-            offerCode: code,
-            expirationDate
-          }
-        })
-        await models.UsedOfferCode.insertMany(usedCodes)
+      if (!uniqueCodeError && processedRecords.length === records.length) {
+        try {
+          const now = moment().utc()
+          const futureDate = now.add(1, 'month')
+          const expirationDate = futureDate.toDate()
+          const usedCodes = Object.keys(codeCache).map(code => {
+            return {
+              offerCode: code,
+              expirationDate
+            }
+          })
+          await models.UsedOfferCode.insertMany(usedCodes)
 
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename=processed_data.csv');
-        const csvStream = createCSVStream(processedRecords)
-        csvStream.pipe(res)
-      } catch(err) {
-        console.log(err)
-        res.status(500).send({ message: 'server error' })
-      }
-    } else {
-      if (uniqueCodeError) {
-        console.log('unique code error')
-        res.status(500).send({ message: 'out of unique codes' })
+          res.setHeader('Content-Type', 'text/csv');
+          res.setHeader('Content-Disposition', 'attachment; filename=processed_data.csv');
+          const csvStream = createCSVStream(processedRecords)
+          csvStream.pipe(res)
+        } catch (err) {
+          console.log(err)
+          res.status(500).send({ message: 'server error' })
+        }
       } else {
-        console.log('file read error')
-        res.status(500).send({ message: 'file read error' })
+        if (uniqueCodeError) {
+          console.log('unique code error')
+          res.status(500).send({ message: 'out of unique codes' })
+        } else {
+          console.log('file read error')
+          res.status(500).send({ message: 'file read error' })
+        }
       }
-    }
 
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-        console.error('Error deleting file:', err)
-      }
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error('Error deleting file:', err)
+        }
+      })
     })
-  })
 }
 
 export default {
