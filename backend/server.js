@@ -70,8 +70,12 @@ app.post('/admin/users', auth.verifyToken, auth.requireAdmin, api.admin.users.cr
 app.post('/admin/users/:userId', auth.verifyToken, auth.requireAdmin, api.admin.users.update)
 app.delete('/admin/users/:userId', auth.verifyToken, auth.requireAdmin, api.admin.users.delete)
 
+app.post('/voice', api.phone.voice.answer)
+app.post('/voice/action', api.phone.voice.action)
+app.post('/voice/offer', api.phone.voice.offerCode)
+app.post('/voice/verify/:id', api.phone.voice.verifyCode)
 
-app.post('/text/status', api.text.textStatus)
+app.post('/text/status', api.phone.text.textStatus)
 
 // **** Client Routes ****
 app.post('/login', auth.login)

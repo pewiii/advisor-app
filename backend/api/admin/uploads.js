@@ -370,8 +370,8 @@ function createCSVStream(data) {
   return readable;
 }
 
-function generateRandomHex(length) {
-  const characters = '0123456789ABCDEF';
+function generateRandomCode(length) {
+  const characters = '0123456789AXLRQS';
   let hex = '';
 
   for (let i = 0; i < length; i++) {
@@ -405,22 +405,26 @@ function generateRandomHex(length) {
 // }
 
 const csvCode = async (req, res) => {
+  console.log("HERE")
   const stream = fs.createReadStream(req.file.path)
   const records = []
   stream
     .pipe(csv())
-    .on('data', (data) => records.push(data))
+    .on('data', (data) => {
+      console.log('data')
+      records.push(data)
+    })
     .on('end', async () => {
-
       const codeCache = {}
       let uniqueCodeError = false
 
       const processedRecords = await Promise.all(records.map(async (record) => {
+        console.log('processing records')
         let offerCode = null
         let i = 0
         // 100 tries to find unique code
         while (i < 100) {
-          offerCode = generateRandomHex(6)
+          offerCode = generateRandomCode(6)
           const existingRecord = await models.Record.findOne({ offerCode })
           if (!existingRecord) {
             const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode })
@@ -437,10 +441,12 @@ const csvCode = async (req, res) => {
         uniqueCodeError = true
       }))
 
+      console.log('processed count', processedRecords.length)
+
       if (!uniqueCodeError && processedRecords.length === records.length) {
         try {
           const now = moment().utc()
-          const futureDate = now.add(1, 'month')
+          const futureDate = now.add(3, 'days')
           const expirationDate = futureDate.toDate()
           const usedCodes = Object.keys(codeCache).map(code => {
             return {

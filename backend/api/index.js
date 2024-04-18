@@ -6,7 +6,7 @@ import offers from './offers.js'
 // import users from './users.js'
 import admin from './admin/index.js'
 import client from './client/index.js'
-import text from './text/index.js'
+import phone from './phone/index.js'
 
 
 
@@ -14,7 +14,7 @@ export default {
   admin,
   client,
   offers,
-  text,
+  phone,
   // clients,
   // campaigns,
   // uploads,
