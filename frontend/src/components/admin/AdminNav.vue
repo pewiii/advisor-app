@@ -65,9 +65,9 @@
         <p class="mx-4">Users</p>
       </RouterLink>
 
-      <RouterLink :to="{ name: 'admin-code' }" class="" @click="showNav && navToggle()">
+      <!--<RouterLink :to="{ name: 'admin-code' }" class="" @click="showNav && navToggle()">
         <p class="mx-4">Coder</p>
-      </RouterLink>
+      </RouterLink>-->
 
       <div class="flex gap-4 text-black">
         <SearchInput />

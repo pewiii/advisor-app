@@ -111,22 +111,30 @@ clientSchema.virtual("usablePassword").get(function () {
 });
 
 const recordSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  company: String,
-  address1: String,
-  address2: String,
-  city: String,
-  state: {
-    type: String,
-    maxlength: 2,
+  // firstName: String,
+  // lastName: String,
+  // company: String,
+  // address1: String,
+  // address2: String,
+  // city: String,
+  // state: {
+  //   type: String,
+  //   maxlength: 2,
+  // },
+  // zip: String,
+  data: {
+    type: Object,
+    required: true
   },
-  zip: String,
   offerCode: {
     type: String,
     index: true,
     unique: true,
     required: true
+  },
+  recordNumber: {
+    type: Number,
+    required: true,
   },
   campaign: {
     type: mongoose.Schema.Types.ObjectId,
@@ -134,13 +142,13 @@ const recordSchema = new mongoose.Schema({
     ref: 'Campaign',
     index: true
   },
-  age: Number,
-  netWorth: String,
-  homeOwner: Boolean,
-  political: String,
-  race: String,
-  vetInHouse: Boolean,
-  wealthRating: String,
+  // age: Number,
+  // netWorth: String,
+  // homeOwner: Boolean,
+  // political: String,
+  // race: String,
+  // vetInHouse: Boolean,
+  // wealthRating: String,
   expirationDate: {
     type: Date,
     required: true,
@@ -163,29 +171,8 @@ const usedOfferCodeSchema = new mongoose.Schema({
 usedOfferCodeSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
 
 const respondentSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  address1: {
-    type: String,
-    required: true
-  },
-  address2: String,
-  city: {
-    type: String,
-    required: true
-  },
-  state: {
-    type: String,
-    required: true
-  },
-  zip: {
-    type: String,
+  data: {
+    type: Object,
     required: true
   },
   extraInfo: {
@@ -256,6 +243,12 @@ const eventSchema = new mongoose.Schema({
 
 const campaignSchema = new mongoose.Schema({
   title: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true
+  },
+  jobNumber: {
     type: String,
     required: true,
     unique: true,

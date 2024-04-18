@@ -14,6 +14,7 @@
     <template #loading>
       <VueLoader />
     </template>
+    <pvColumn field="jobNumber" header="Job #" sortable></pvColumn>
     <pvColumn field="title" header="Title" sortable></pvColumn>
     <pvColumn field="client" header="Client" sortable>
       <template #body="{ data }">
@@ -39,12 +40,18 @@
     </pvColumn> -->
     <pvColumn field="actions" header="Actions">
       <template #body="{ data }">
+        <template v-if="data.file && !fileExpired(data.file) && data.file.recordCount">
+          <div v-tooltip.top="'Download Coded Records'" :class="downloading.includes(data._id) ? 'text-gray-300' : 'cursor-pointer hover:text-green-600 text-gray-600'" class="material-icons md-30"  @click="downloadRecords(data)">download</div>
+          <!-- <div class="inline text-xl font-semibold">
+            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" v-tooltip.top="'Download Coded Records'" @click="downloadRecords(data)">download</div>
+          </div> -->
+        </template>
         <RouterLink :to="{ name: 'admin-campaigns-edit', params: { campaignId: data._id }}">
-          <div class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">edit</div>
+          <div v-tooltip.top="'Edit Campaign'" class="cursor-pointer material-icons md-30 hover:text-sky-600 text-gray-600">edit</div>
         </RouterLink>
         <Modal :header="'Delete Campaign'" v-if="auth.user.isAdmin">
           <template v-slot:trigger="{ open }">
-            <div class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
+            <div v-tooltip.top="'Delete Campaign'" class="cursor-pointer material-icons md-30 hover:text-red-600 text-gray-600" @click="open">delete</div>
           </template>
           <template v-slot:content="{ close }">
             <!-- <div v-if="!deleteSuccess"> -->
@@ -89,11 +96,40 @@ import { format } from 'date-fns'
 import { useAuth } from '@/stores/auth'
 import VueLoader from '@/components/common/VueLoader.vue'
 import Modal from '@/components/common/Modal.vue'
+import { useNotification } from '@kyvg/vue3-notification'
 
 const auth = useAuth()
 
 const props = defineProps(['search'])
 
+const { notify } = useNotification()
+
+const fileExpired = (file: any) => {
+  if (file.expiresAt) {
+    return new Date(file.expirationDate) < new Date()
+  }
+  return false
+}
+
+const downloading = ref([] as string[])
+const downloadRecords = async (campaign: any) => {
+  if (downloading.value.includes(campaign._id)) return
+  downloading.value.push(campaign._id)
+  try {
+    // app.get('/uploads/csv/:campaignId', auth.verifyToken, api.admin.uploads.csvGet)
+    const res = await auth.api.get(`/uploads/csv/${campaign._id}`, { responseType: 'blob' })
+
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `coded_${campaign.jobNumber}.csv`)
+    link.click()
+  } catch(err) {
+    console.log(err)
+    notify({ type: 'error', text: 'Failed to download coded records' })
+  }
+  downloading.value = downloading.value.filter(id => id !== campaign._id)
+}
 
 // const emit = defineEmits(['update:modelValue'])
 
@@ -134,6 +170,7 @@ const getCampaigns = async () => {
       `/admin/campaigns?search=${props.search}&page=${page.value}&perPage=${perPage.value}&sortField=${sortField.value}&sortOrder=${sortOrder.value}`)
 
     campaigns.value = res.data.paginatedResults
+    console.log(campaigns.value)
     totalRecords.value = res.data.totalCount
   } catch(err: any) {
     console.log(err.message)

@@ -16,7 +16,7 @@ const handleOfferCode = async (req, res) => {
       res.send({
         config: campaign.template.config,
         person: {
-          firstName: record.firstName,
+          firstName: record.data['First Name'],
           _id: record._id
         },
         // questions: campaign.questions,
@@ -52,29 +52,13 @@ const rsvp = async (req, res) => {
     // const record = await db.records.getById(data.personId)
     // const record = await models.Record.getById(data.personId)
     const record = await models.Record.findById(data.personId)
-    const respondent = db.respondents.createRespondent({
-      firstName: record.firstName,
-      lastName: record.lastName,
-      company: record.company,
-      address1: record.address1,
-      address2: record.address2,
-      city: record.city,
-      state: record.state,
-      zip: record.zip,
+    const repspondent = await models.Respondent.create({
+      data: record.data,
+      extraInfo: answerInfo,
       campaign: record.campaign,
       event: data.event,
-      extraInfo: {
-        age: record.age,
-        netWorth: record.netWorth,
-        political: record.political,
-        race: record.race,
-        vetInHouse: record.vetInHouse,
-        wealthRating: record.wealthRating,
-        ...answerInfo
-      }
     })
     await models.Record.deleteOne(record)
-    // await db.records.deleteRecord(record._id)
     res.sendStatus(201)
   } catch(err) {
     console.log(err)

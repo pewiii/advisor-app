@@ -17,6 +17,7 @@ const getList = async (req, res) => {
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
+        { jobNumber: { $regex: search, $options: 'i' }},
         { 'client.firstName': { $regex: search, $options: 'i' } },
         { 'client.lastName': { $regex: search, $options: 'i' } },
         { 'client.fullName': { $regex: search, $options: 'i' } },
@@ -41,6 +42,8 @@ const getList = async (req, res) => {
             title: 1,
             updatedAt: 1,
             createdAt: 1,
+            jobNumber: 1,
+            file: 1,
             'client.fullName': 1,
             'client.company': 1,
             'client._id': 1,
@@ -84,13 +87,13 @@ const getList = async (req, res) => {
 // const getList = async (req, res) => {
 //   try {
 //     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
-  
+
 //     const order = parseInt(sortOrder, 10)
 //     const limit = parseInt(perPage, 10);
 //     const skip = page * limit;
-  
+
 //     const query = {}
-  
+
 //     if (search) {
 //       query.$or = [
 //         { title: { $regex: search, $options: 'i' } },
@@ -102,7 +105,7 @@ const getList = async (req, res) => {
 //         { 'client.email': { $regex: search, $options: 'i' } },
 //       ]
 //     }
-  
+
 //     const campaigns = await models.Campaign.aggregate([
 //       {
 //         $lookup: {
@@ -293,7 +296,7 @@ const update = async (req, res) => {
 
 //   try {
 //     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
-    
+
 //     const campaigns = await db.campaigns.getList(search, page, perPage, sortField, sortOrder);
 //     const count = await db.campaigns.getCampaignCount(search)
 //     res.send({
@@ -327,7 +330,7 @@ const update = async (req, res) => {
 //     const clientId = req.user.userId
 
 //     const { search = '', page = 0, perPage = 10, sortField, sortOrder } = req.query;
-    
+
 //     const campaigns = await db.campaigns.getClientCampaigns(clientId, search, page, perPage, sortField, sortOrder);
 //     const count = await db.campaigns.getClientCampaignCount(clientId)
 //     res.send({

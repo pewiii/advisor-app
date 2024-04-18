@@ -83,7 +83,9 @@ const submitCode = async () => {
   try {
     console.log(offerCode.value)
     const { data } = await auth.api.post('/offer-code', { offerCode: offerCode.value.toUpperCase() })
+    console.log(data)
     templateData.value = data
+    console.log(templateData.value)
   } catch(err: any) {
     codeError.value = true
     console.log(err)

@@ -16,6 +16,16 @@
           <pvInputText id="campaign-title" v-model="campaign.title" placeholder="Campaign Title" class="w-full h-9"/>
         </div>
       </div>
+
+      <div class="md:pl-4 mt-2">
+        <label for="campaign-title" class="">
+            Job Number
+            <FieldError :error="formErrors.jobNumber"></FieldError>
+        </label>
+        <div class="pl-2">
+          <pvInputText id="campaign-job" v-model="campaign.jobNumber" placeholder="Job Number" class="w-full h-9"/>
+        </div>
+      </div>
       <!-- <div class="md:pl-4">
         <label for="campaign-client" class="">
           Client
@@ -104,7 +114,18 @@
               <div class="text-secondary">
                 {{ campaign.file.recordCount }} Records
               </div>
-              <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete File'" @click="removeFile"></pvButton>
+              <pvButton v-ripple class="p-ripple h-7" icon="pi pi-download" v-tooltip.top="'Download Coded File'" @click="downloadFile"></pvButton>
+              <modal>
+                <template #trigger="{open}">
+                  <pvButton severity="danger" v-ripple class="p-ripple h-7" icon="pi pi-delete-left" v-tooltip.top="'Delete File'" @click="open"></pvButton>
+                </template>
+                <template #content>
+                  Are you sure you want to delete this file?
+                  <div class="flex justify-end mt-4">
+                    <pvButton label="Delete" severity="danger" @click="removeFile"/>
+                  </div>
+                </template>
+              </modal>
             </div>
             <div v-if="!campaign.file && !fileLoading">
               <MailingListSelect v-model="campaign.file" :campaign="campaign"/>
@@ -265,7 +286,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed, watch, onBeforeMount, nextTick } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAuth } from '@/stores/auth'
 import { notify } from "@kyvg/vue3-notification"
 import objects from '@/objects'
@@ -286,6 +307,7 @@ const auth = useAuth()
 const expandedEvents = ref([] as any[])
 // const expandedQuestions = ref([] as any[])
 
+
 const campaign = computed({
   get() {
     return props.campaign
@@ -294,6 +316,22 @@ const campaign = computed({
     emit('update:campaign', campaign)
   }
 })
+
+const downloadFile = async () => {
+  try {
+    // app.get('/uploads/csv/:campaignId', auth.verifyToken, api.admin.uploads.csvGet)
+    const res = await auth.api.get(`/uploads/csv/${campaign.value._id}`, { responseType: 'blob' })
+
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `coded_${campaign.value.jobNumber}.csv`)
+    link.click()
+  } catch(err) {
+    console.log(err)
+    notify({ type: 'error', text: 'Failed to download coded records' })
+  }
+}
 
 const fileExpired = computed(() => {
   if (campaign.value.file) {
@@ -307,16 +345,17 @@ const fileExpired = computed(() => {
   return false
 })
 
-const nonUniqueTitles = {} as any
-const uniqueTitles = {} as any
+// const nonUniqueTitles = {} as any
+// const uniqueTitles = {} as any
 
 
 // validation
 const formErrors = ref({} as any)
-watch(campaign, async (newCampaign, oldCampaign) => {
+watch(campaign, async () => {
   const required = (field: string) => `${field} is required`
   let errors = {
     ...campaign.value.title ? {} : { title: required('Title') },
+    ...campaign.value.jobNumber ? {} : { jobNumber: required('Job Number') },
     ...campaign.value.client ? {} : { client: required('Client') },
   } as any
   const events = campaign.value.events.map((event: any) => {
@@ -332,23 +371,22 @@ watch(campaign, async (newCampaign, oldCampaign) => {
     }
   })
 
-  if (campaign.value.title && !uniqueTitles[campaign.value.title]) {
-    try {
-      const res = await auth.api.get(`/admin/campaigns/title/${campaign.value.title}`)
-      if (res.data.campaign && res.data.campaign !== campaign.value._id) {
-        nonUniqueTitles[campaign.value.title] = res.data.campaign
-      } else {
-        uniqueTitles[campaign.value.title] = true
-      }
-    } catch(err) {
-      console.log(err)
-    }
+  // if (campaign.value.title && !uniqueTitles[campaign.value.title]) {
+  //   try {
+  //     const res = await auth.api.get(`/admin/campaigns/title/${campaign.value.title}`)
+  //     if (res.data.campaign && res.data.campaign !== campaign.value._id) {
+  //       nonUniqueTitles[campaign.value.title] = res.data.campaign
+  //     } else {
+  //       uniqueTitles[campaign.value.title] = true
+  //     }
+  //   } catch(err) {
+  //     console.log(err)
+  //   }
+  // }
 
-  }
-
-  if (nonUniqueTitles[campaign.value.title]) {
-    errors.title = 'Title must be unique'
-  }
+  // if (nonUniqueTitles[campaign.value.title]) {
+  //   errors.title = 'Title must be unique'
+  // }
 
   const hasEventErrors = events.some((event: any) => Object.keys(event).length)
   errors.hasErrors = Boolean(Object.keys(errors).length) || hasEventErrors

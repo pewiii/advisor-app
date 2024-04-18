@@ -42,14 +42,14 @@
             Please select an event
           </div>
 
-          <div v-if="events" class="flex gap-4 flex-col mt-2">
+          <div v-if="events" class="flex gap-4 flex-col mt-2 text-sm md:text-base">
             <label v-for="(event) in events" :key="event._id"
               class="flex align-items-center items-center p-4 gap-4 cursor-pointer hover:transform hover:scale-105 transition-transform duration-300"
               :class="selectedEvent === event ? 'scale-105' : ''"
               :style="{ backgroundColor: config.optionBgColor, color: config.optionTextColor }">
               <pvRadioButton v-model="selectedEvent" :disabled="success" :inputId="event._id" name="dynamic"
                 :value="event" />
-              <div class="flex justify-between text-xl gap-2 w-full">
+              <div class="flex text-sm md:text-xl gap-2 w-full flex-col">
                 <div>
                   {{ moment(event.eventDate).tz(event.timezone).format('MMMM Do, YYYY') }}
                 </div>
@@ -57,7 +57,7 @@
                   {{ moment(event.eventDate).tz(event.timezone).format('h:mm a') }}
                 </div>
               </div>
-              <div v-if="eventLocations.length > 1">
+              <div class="w-full">
                 <div>{{ event.locationName }}</div>
                 <div>{{ event.address1 }}</div>
                 <div v-if="event.address2">{{ event.address2 }}</div>
@@ -66,7 +66,7 @@
             </label>
           </div>
 
-          <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
+          <!-- <div v-if="eventLocations.length === 1" class="flex justify-between mt-4 h-32 items-center">
 
             <div class="ml-4 font-semibold text-lg whitespace-nowrap mr-4" >
               <div>{{ eventLocations[0].locationName }}</div>
@@ -78,13 +78,9 @@
             <div>
               <Modal :header="eventLocations[0].locationName">
                 <template #trigger="{ open }">
-                  <!-- <div @click="open" class="w-32 h-32 bg-red-300">
-                    <GMap :addresses="eventLocations"/>
-                  </div> -->
                   <pvButton v-ripple class="p-ripple" icon="pi pi-map" v-tooltip.top="'View Map'" label="View Map"
                     @click="open" :style="{ 'background-color': config.btnColor, 'color': config.btnTextColor }">
                   </pvButton>
-                  <!-- <pvButton @click="open" icon="pi pi-map" v-tooltip.top="'View Map'"/> -->
                 </template>
                 <template #content="{ maximized }">
                   <div class="w-full" :class="maximized ? 'h-full' : 'h-96'">
@@ -93,7 +89,7 @@
                 </template>
               </Modal>
             </div>
-          </div>
+          </div> -->
 
           <div v-if="questions.length" class="mt-4">
 
@@ -132,9 +128,8 @@
 
         </div>
         <div v-else class="h-full flex flex-col">
-          <div class="text-xl text-center">
-            Thank you<span class="capitalize">{{ person.firstName ? ` ${person.firstName.toLowerCase()}` : `` }}</span>
-            for registering.
+          <div class="text-xl text-center font-semibold">
+            Success, you have been registered!
           </div>
 
           <div v-if="selectedEvent" class="text-center mt-8 flex flex-col gap-4 flex-1">
@@ -173,79 +168,9 @@
   </div>
 </template>
 
-
-<!-- <template>
-  <div class="relative w-full max-h-screen overflow-hidden lg:min-h-screen lg:flex items-center justify-center" :style="{'background-image': `url(${headerImage})`, 'background-size': 'cover', 'background-position': 'center', 'background-attachment': 'fixed' }">
-    <div class="flex w-full h-full lg:max-w-2xl ">
-      <div class="bg-white p-8" :style="{ 'background-color': `${templateData.config.headerPanelBgColor}`, 'color': `${templateData.config.headerPanelTextColor}` }">
-        <div class="font-bold text-2xl capitalize">
-          Hello {{ person.firstName.toLowerCase() }}
-        </div>
-        <div class="text-xl mt-4">
-          {{ config.headerPanelText }}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="p-20 flex flex-col justify-center items-center" :style="{ 'background-color': `${config.headingSectionBgColor}`, 'color': `${config.headingSectionTextColor}` }">
-    <div class="text-center max-w-7xl">
-      <div class="text-3xl font-semibold">{{ config.headingSectionHeading }}</div>
-      <div class="mt-6">{{ config.headingSectionText }}</div>
-    </div>
-  </div>
-  <div class="flex min-h-screen lg:justify-center lg:items-center" :style="{'background-image': `url(${infoImage})`, 'background-size': 'cover', 'background-position': 'center' }">
-    <div class="bg-white p-6 w-full lg:max-w-3xl" :style="{ 'background-color': `${config.infoPanelBgColor}`, 'color': `${config.infoPanelTextColor}` }">
-      <div v-if="success" class="text-center">
-        <div class="font-semibold text-4xl">
-          Success
-        </div>
-        <div>
-          You have been registered, Thank You!
-        </div>
-      </div>
-      <div v-else>
-        <div class="font-bold text-4xl">{{ config.infoPanelHeading }}</div>
-        <div>
-          {{ config.infoPanelText }}
-        </div>
-        <div>
-          <div v-if="events" class="flex gap-4 flex-col mt-8">
-            <div v-for="(event) in events" :key="event._id" class="flex align-items-center bg-white bg-opacity-20 p-4" :class="selectedEvent === event ? 'border-2' : ''">
-              <div class="flex items-center">
-                <pvRadioButton v-model="selectedEvent" :inputId="event._id" name="dynamic" :value="event"/>
-              </div>
-              <label :for="event._id" class="ml-2 w-full">
-                <div>{{ event.locationName }}</div>
-                <div>{{ event.address1 }}</div>
-                <div v-if="event.address2">{{ event.address2 }}</div>
-                <div>{{ event.city }}, {{ event.state }} {{ event.zip }}</div>
-                <div>{{ moment(event.eventDate).tz(event.timezone).format('MMMM Do YYYY, h:mm a') }}</div>
-              </label>
-            </div>
-          </div>
-          <div v-if="questions.length" class="mt-4">
-            <div class="font-semibold text-lg">Question<span v-if="questions.length > 1">s</span></div>
-            <div class="flex flex-col gap-4">
-              <div v-for="(question, idx) in questions" :key="`question-${idx}`" class="bg-white bg-opacity-20 p-4 flex gap-4 flex-wrap">
-                <div>{{ question.text }}</div>
-                <component :is="component[question.answerType]" v-model="answers[idx].answer" binary :options="question.options" :placeholder="question.placeholder" class="!py-0 h-8"/>
-              </div>
-            </div>
-          </div>
-          <div class="mt-4 flex justify-center">
-            <pvButton  raised :label="config.submitBtnText" class="w-1/2" :disabled="submitDisabled" @click="submit" :loading="loading" :style="{ 'background-color': config.submitBtnColor, 'color': config.submitBtnTextColor }"/>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template> -->
-
 <script lang="ts" setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 
-// // import image from '@/assets/tempimage.jpg'
-// import { ref, onMounted, computed, watch } from 'vue'
 import moment from 'moment-timezone'
 import { useAuth } from '@/stores/auth'
 import GMap from '@/components/common/GMap.vue'
@@ -352,7 +277,7 @@ const config = computed(() => {
 })
 
 const submitDisabled = computed(() => {
-  if (success.value) {
+  if (success.value || !selectedEvent.value) {
     return true
   }
   return questions.value.find((question: any, idx: number) => {
@@ -406,9 +331,9 @@ const submit = async () => {
 }
 
 
-watch(events, () => {
-  selectedEvent.value = events.value[0]
-}, { immediate: true, deep: true })
+// watch(events, () => {
+//   selectedEvent.value = events.value[0]
+// }, { immediate: true, deep: true })
 
 watch(questions, () => {
   answers.value = questions.value.map((question: any) => {

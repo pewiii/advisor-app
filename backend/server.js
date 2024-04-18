@@ -31,8 +31,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 app.post('/uploads/csv/add', auth.verifyToken, upload.single('file'), api.admin.uploads.csvUpload)
+app.get('/uploads/csv/:campaignId', auth.verifyToken, api.admin.uploads.csvGet)
 app.delete('/uploads/csv/:campaignId', auth.verifyToken, api.admin.uploads.csvDelete)
-app.post('/uploads/csv/code', auth.verifyToken, upload.single('file'), api.admin.uploads.csvCode)
+// app.post('/uploads/csv/code', auth.verifyToken, upload.single('file'), api.admin.uploads.csvCode)
 
 app.post('/uploads/image/add', auth.verifyToken, upload.single('file'), api.admin.uploads.imageUpload)
 app.post('/uploads/image/delete', auth.verifyToken, api.admin.uploads.imageDelete)
@@ -43,7 +44,7 @@ app.get('/images', auth.verifyToken, api.admin.uploads.getImageList)
 // **** Admin routes ****
 app.post('/admin/login', auth.adminLogin)
 
-app.get('/admin/campaigns/title/:campaignTitle', auth.verifyToken, api.admin.campaigns.checkTitle)
+// app.get('/admin/campaigns/title/:campaignTitle', auth.verifyToken, api.admin.campaigns.checkTitle)
 app.get('/admin/campaigns', auth.verifyToken, api.admin.campaigns.getList)
 app.get('/admin/campaigns/:campaignId', auth.verifyToken, api.admin.campaigns.get)
 app.post('/admin/campaigns', auth.verifyToken, api.admin.campaigns.create)

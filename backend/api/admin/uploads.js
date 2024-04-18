@@ -162,19 +162,31 @@ const csvDelete = async (req, res) => {
   }
 }
 
+function generateRandomCode(length) {
+  const characters = '0123456789AXLRQS';
+  let code = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters.charAt(randomIndex);
+  }
+
+  return code;
+}
+
 
 const csvUpload = async (req, res) => {
   try {
     const campaign = req.body.campaign
     const months = parseInt(req.body.months)
-
+    const codeCache = {}
     const currentDate = moment().utc()
     //test
     // const futureDate = currentDate.add(1, 'minutes')
     const futureDate = currentDate.add(months, 'months')
     const expirationDate = futureDate.toDate()
 
-    const records = []
+    // const records = []
     // let headerSkipped = false
 
     let savedRecords = null
@@ -182,81 +194,97 @@ const csvUpload = async (req, res) => {
     // const stream = Readable.from(buffer.toString ())
     const stream = fs.createReadStream(req.file.path)
 
-    const processRecord = (data) => {
+    const processRecord = async (data, recordNumber) => {
       // if (!headerSkipped) {
       //   // Skip the header record
       //   headerSkipped = true
       //   return
       // }
-      const keys = Object.keys(data)
       const record = {
         campaign,
-        expirationDate
+        expirationDate,
+        data,
+        recordNumber
+      }
+      let i = 0
+      while (i < 100) {
+        const offerCode = generateRandomCode(6)
+        const existingRecord = await models.Record.findOne({ offerCode })
+        if (!existingRecord) {
+          if (!codeCache[offerCode]) {
+            codeCache[offerCode] = true
+            record.offerCode = offerCode
+            return record
+          }
+        }
+        i++
       }
 
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i]
-        let lowKey = key.toLowerCase()
-        if (lowKey === 'offer code') {
-          lowKey = 'offercode'
-        }
-        const item = data[key] === 'N/A' ? null : data[key]
+      // const keys = Object.keys(data)
 
-        switch (lowKey) {
-          case 'homeowner':
-            record.homeOwner = Boolean(item)
-            break
-          case 'net worth':
-            record.netWorth = item
-            break
-          case 'political':
-            record.political = item
-            break
-          case 'race':
-            record.race = item
-            break
-          case 'veteran in household':
-            record.vetInHouse = Boolean(item)
-            break
-          case 'first name':
-            record.firstName = item
-            break
-          case 'last name':
-            record.lastName = item
-            break
-          case 'company':
-            record.company = item
-            break
-          case 'address line 1':
-            record.address1 = item
-            break
-          case 'address line 2':
-            record.address2 = item
-            break
-          case 'city':
-            record.city = item
-            break
-          case 'state':
-            record.state = item
-            break
-          case 'zip':
-            record.zip = item
-            break
-          case 'zip code':
-            record.zip = item
-            break
-          case 'age':
-            record.age = item
-            break
-          case 'wealth rating':
-            record.wealthRating = item
-            break
-          case 'offercode':
-            record.offerCode = item.replace("'", '')
-            break
-        }
+      // for (let i = 0; i < keys.length; i++) {
+      //   const key = keys[i]
+      //   let lowKey = key.toLowerCase()
+      //   if (lowKey === 'offer code') {
+      //     lowKey = 'offercode'
+      //   }
+      //   const item = data[key] === 'N/A' ? null : data[key]
 
-      }
+      //   switch (lowKey) {
+      //     case 'homeowner':
+      //       record.homeOwner = Boolean(item)
+      //       break
+      //     case 'net worth':
+      //       record.netWorth = item
+      //       break
+      //     case 'political':
+      //       record.political = item
+      //       break
+      //     case 'race':
+      //       record.race = item
+      //       break
+      //     case 'veteran in household':
+      //       record.vetInHouse = Boolean(item)
+      //       break
+      //     case 'first name':
+      //       record.firstName = item
+      //       break
+      //     case 'last name':
+      //       record.lastName = item
+      //       break
+      //     case 'company':
+      //       record.company = item
+      //       break
+      //     case 'address line 1':
+      //       record.address1 = item
+      //       break
+      //     case 'address line 2':
+      //       record.address2 = item
+      //       break
+      //     case 'city':
+      //       record.city = item
+      //       break
+      //     case 'state':
+      //       record.state = item
+      //       break
+      //     case 'zip':
+      //       record.zip = item
+      //       break
+      //     case 'zip code':
+      //       record.zip = item
+      //       break
+      //     case 'age':
+      //       record.age = item
+      //       break
+      //     case 'wealth rating':
+      //       record.wealthRating = item
+      //       break
+      //     case 'offercode':
+      //       record.offerCode = item.replace("'", '')
+      //       break
+      //   }
+
+      // }
 
       // let homeOwner = data['Homeowner'] || data['homeowner']
       // homeOwner = homeOwner !== 'N/A'
@@ -293,18 +321,22 @@ const csvUpload = async (req, res) => {
       //   campaign
       // }
 
-      records.push(record)
+      return record
     }
 
+    const promises = []
+    let recordNumber = 0
     stream
       .pipe(csv())
       .on('data', async (data) => {
-        processRecord(data)
+        promises.push(processRecord(data, recordNumber))
+        recordNumber++
       })
       .on('end', async () => {
 
 
         try {
+          const records = await Promise.all(promises)
           savedRecords = await models.Record.insertMany(records)
           const file = { name: req.file.originalname, recordCount: records.length, expirationDate }
           const resultCampaign = await models.Campaign.findByIdAndUpdate(campaign, { file })
@@ -312,6 +344,7 @@ const csvUpload = async (req, res) => {
           res.status(201).send(file)
         } catch (err) {
           try {
+
             await models.Record.deleteMany(savedRecords)
           } catch (err) {
             console.log(err)
@@ -370,39 +403,25 @@ function createCSVStream(data) {
   return readable;
 }
 
-function generateRandomCode(length) {
-  const characters = '0123456789AXLRQS';
-  let hex = '';
+const csvGet = async (req, res) => {
+  const campaignId = req.params.campaignId
+  const campaign = await models.Campaign.findById(campaignId)
+  let records = await models.Record.find({ campaign: campaignId })
+  // sort records by recordNumber
+  records.sort((a, b) => a.recordNumber - b.recordNumber)
+  records = records.map(record => {
+    return {
+      ...record.data,
+      offerCode: "'" + record.offerCode,
+    }
+  })
+  const csvStream = createCSVStream(records)
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename=coded_${campaign.jobNumber}.csv`);
+  csvStream.pipe(res)
 
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    hex += characters.charAt(randomIndex);
-  }
-
-  return hex;
 }
 
-
-// const generateUniqueOfferCode = async () => {
-//   let code = null
-//   let i = 0;
-//   while (i < 100) {
-//     code = generateRandomHex(6)
-//     if (!codeCache[code]) {
-//       const record = await models.Record.findOne({ offerCode: code })
-//       if (!record) {
-//         const usedOfferCode = await models.UsedOfferCode.findOne({ offerCode: code })
-//         if (!usedOfferCode) {
-//           codeCache[code] = true
-//           return code
-//         }
-//       }
-
-//     }
-//     i++
-//   }
-//   return null
-// }
 
 const csvCode = async (req, res) => {
   console.log("HERE")
@@ -484,8 +503,9 @@ const csvCode = async (req, res) => {
 
 export default {
   csvUpload,
+  csvGet,
   csvDelete,
-  csvCode,
+  // csvCode,
   imageUpload,
   imageDelete,
   getImageList
